@@ -1,0 +1,5 @@
+.favorites-films_listing,
+.watchlist-films_listing{
+  display: flex;
+  overflow: scroll;
+}

@@ -1,0 +1,14 @@
+<h1>movie-list works!</h1>
+
+<app-movie-card (addWatchList)="funcAddToWatchList(movie['id'])" (addFavourite)="funcAddToFavorites(movie['id'])"
+  [movieData]="movie" class="watchlist-films"></app-movie-card>
+
+<section class="favorites-films">
+  <h2>Favorites films</h2>
+  <div class="favorites-films_listing"></div>
+</section>
+
+<section class="watchlist-films">
+  <h2>Watch list</h2>
+  <div class="watchlist-films_listing"></div>
+</section>
