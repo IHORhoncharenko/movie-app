@@ -55,9 +55,9 @@ export class MovieListComponent {
     "rating": 8.5
   };
 
-  funcAddToFavorites = (MovieId: number) => {
+  funcAddToFavorites = (movieId: number) => {
     var filmIds = JSON.parse(`[]`);
-    filmIds.push(MovieId);
+    filmIds.push(movieId);
 
     var movieArr = Object.entries(this.movie);
 
@@ -72,8 +72,8 @@ export class MovieListComponent {
                 filmPrev['style']['margin'] = '0 10px 0 0';
                 document.getElementsByClassName('favorites-films_listing')[0].insertAdjacentElement('beforeend', filmPrev);
                 filmPrev.insertAdjacentHTML(`afterbegin`, `
-                    <img width="100px" heigh="100px" src="${this.movie.img['src']}" alt="${this.movie.img['alt']}">
-                    <h3 style="font-size:'1em';font-weight: 500;">${this.movie['title']}</h3>
+                    <img width="100px" heigh="100px" src="${this.movie.img.src}" alt="${this.movie.img.alt}">
+                    <h3 style="font-size:'1em';font-weight: 500;">${this.movie.title}</h3>
                   `)
               }
             )()}
@@ -82,9 +82,9 @@ export class MovieListComponent {
     });
   }
 
-  funcAddToWatchList = (MovieId: number) => {
+  funcAddToWatchList = (movieId: number) => {
     var filmIds = JSON.parse(`[]`);
-    filmIds.push(MovieId);
+    filmIds.push(movieId);
 
     var movieArr = Object.entries(this.movie);
 
@@ -99,8 +99,8 @@ export class MovieListComponent {
                 filmPrev['style']['margin'] = '0 10px 0 0';
                 document.getElementsByClassName('watchlist-films_listing')[0].insertAdjacentElement('beforeend', filmPrev);
                 filmPrev.insertAdjacentHTML(`afterbegin`, `
-                    <img width="100px" heigh="100px" src="${this.movie.img['src']}" alt="${this.movie.img['alt']}">
-                    <h3 style="font-size:'1em';font-weight: 500;">${this.movie['title']}</h3>
+                    <img width="100px" heigh="100px" src="${this.movie.img.src}" alt="${this.movie.img.alt}">
+                    <h3 style="font-size:'1em';font-weight: 500;">${this.movie.title}</h3>
                   `)
               }
             )()}

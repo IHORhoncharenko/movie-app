@@ -13,12 +13,11 @@ export class MovieCardComponent  {
   @Output() addWatchList = new EventEmitter();
 
   addToFavourite = () => {
-    this.addFavourite.emit(this.movieData['id'])
+    this.addFavourite.emit(this.movieData.id)
   }
 
   addToWatchList = () => {
-    this.addWatchList.emit(this.movieData['id'])
+    this.addWatchList.emit(this.movieData.id)
   }
-
 
 }

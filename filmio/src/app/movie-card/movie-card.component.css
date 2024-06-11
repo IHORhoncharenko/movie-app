@@ -2,6 +2,7 @@
   width: 100%;
   height: auto;
   object-fit: contain;
+  aspect-ratio: auto 2/3;
 }
 .img-container img::before {
  display: inline-block;
@@ -25,12 +26,10 @@ article{
   flex-direction: column;
   align-items: center;
 }
-a:hover{
+a, button:hover{
   cursor: pointer;
 }
-.icons svg{
-  margin: 0 10px 0px 10px;
-}
+
 .icons-parent{
   display: flex;
   align-items: center;
@@ -38,4 +37,22 @@ a:hover{
 .icons{
   display: inline-block;
   margin: 0 10px 0px 10px;
+}
+.icons__favorite{
+  content: '';
+  background-image: url('../../assets/icons/favorite_icon.svg');
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  border: none;
+  margin: 0 10px 0px 10px;
+}
+.icons__watch-list{
+    content: '';
+      background-image: url('../../assets/icons/list_icon.svg');
+      width: 24px;
+      height: 24px;
+      display: inline-block;
+      border: none;
+      margin: 0 10px 0px 10px;
 }
