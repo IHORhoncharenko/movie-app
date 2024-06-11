@@ -10,6 +10,9 @@ import { MovieCardComponent } from '../movie-card/movie-card.component';
 })
 export class MovieListComponent {
 
+  public filmIdsFav = JSON.parse(`[]`);
+  public filmIdsWatch = JSON.parse(`[]`);
+
   movie = {
     "img": {
       "src": "../../assets/planet-apes.jpg",
@@ -52,61 +55,16 @@ export class MovieListComponent {
     "overview": "Several generations in the future following Caesar's reign, apes are now the dominant species and live harmoniously while humans have been reduced to living in the shadows. As a new tyrannical ape leader builds his empire, one young ape undertakes a harrowing journey that will cause him to question all that he has known about the past and to make choices that will define a future for apes and humans alike.",
     "release_date": "May 5, 2024",
     "title": "Kingdom of the Planet of the Apes",
-    "rating": 8.5
+    "rating": 8.5,
+    "duration": 138
   };
 
   addToFavorites = (movieId: number) => {
-    var filmIds = JSON.parse(`[]`);
-    filmIds.push(movieId);
-
-    var movieArr = Object.entries(this.movie);
-
-    [...movieArr].forEach(([key, value]) => {
-      [...filmIds].forEach((e) => {
-        (value === e && key === 'id') && (`
-            ${(
-              () => {
-                console.log(this.movie);
-                var filmPrev = document.createElement('article');
-                filmPrev['style']['maxWidth'] = '100px';
-                filmPrev['style']['margin'] = '0 10px 0 0';
-                document.getElementsByClassName('favorites-films_listing')[0].insertAdjacentElement('beforeend', filmPrev);
-                filmPrev.insertAdjacentHTML(`afterbegin`, `
-                    <img width="100px" heigh="100px" src="${this.movie.img.src}" alt="${this.movie.img.alt}">
-                    <h3 style="font-size:'1em';font-weight: 500;">${this.movie.title}</h3>
-                  `)
-              }
-            )()}
-          `);
-      });
-    });
+    this.filmIdsFav.push(movieId);
   }
 
   addToWatchList = (movieId: number) => {
-    var filmIds = JSON.parse(`[]`);
-    filmIds.push(movieId);
-
-    var movieArr = Object.entries(this.movie);
-
-    [...movieArr].forEach(([key, value]) => {
-      [...filmIds].forEach((e) => {
-        (value === e && key === 'id') && (`
-            ${(
-              () => {
-                console.log(this.movie);
-                var filmPrev = document.createElement('article');
-                filmPrev['style']['maxWidth'] = '100px';
-                filmPrev['style']['margin'] = '0 10px 0 0';
-                document.getElementsByClassName('watchlist-films_listing')[0].insertAdjacentElement('beforeend', filmPrev);
-                filmPrev.insertAdjacentHTML(`afterbegin`, `
-                    <img width="100px" heigh="100px" src="${this.movie.img.src}" alt="${this.movie.img.alt}">
-                    <h3 style="font-size:'1em';font-weight: 500;">${this.movie.title}</h3>
-                  `)
-              }
-            )()}
-          `);
-      });
-    });
+    this.filmIdsWatch.push(movieId);
   }
 
 }

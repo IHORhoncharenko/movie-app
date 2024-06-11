@@ -1,0 +1,24 @@
+.favorites-films > div,
+.watchlist-films > div {
+  display: flex;
+  overflow: scroll;
+}
+.img-container img {
+  height: auto;
+  object-fit: contain;
+  aspect-ratio: auto 2/3;
+}
+
+.img-container img::before {
+  display: inline-block;
+}
+.favorites-films > h2,
+.watchlist-films > h2 {
+  font-size: 30px;
+  font-weight: 600;
+  margin: 25px 0 25px 0;
+  text-align: center;
+}
+article {
+  margin: 10px;
+}

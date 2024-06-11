@@ -23,6 +23,10 @@
     <dd>test</dd>
     <dt>вікові обмеження</dt>
     <dd>test</dd>
+    @if(movieData.duration){
+    <dt>тривалість фільму</dt>
+    <dd>{{ movieData.duration | durationTime }}</dd>
+    }
   </dl>
 
 </article>
