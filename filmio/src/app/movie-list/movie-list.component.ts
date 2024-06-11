@@ -55,7 +55,7 @@ export class MovieListComponent {
     "rating": 8.5
   };
 
-  funcAddToFavorites = (movieId: number) => {
+  addToFavorites = (movieId: number) => {
     var filmIds = JSON.parse(`[]`);
     filmIds.push(movieId);
 
@@ -82,7 +82,7 @@ export class MovieListComponent {
     });
   }
 
-  funcAddToWatchList = (movieId: number) => {
+  addToWatchList = (movieId: number) => {
     var filmIds = JSON.parse(`[]`);
     filmIds.push(movieId);
 

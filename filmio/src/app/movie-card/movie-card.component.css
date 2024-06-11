@@ -38,7 +38,7 @@ a, button:hover{
   display: inline-block;
   margin: 0 10px 0px 10px;
 }
-.icons__favorite{
+.icons__favorite::after{
   content: '';
   background-image: url('../../assets/icons/favorite_icon.svg');
   width: 24px;
@@ -47,7 +47,7 @@ a, button:hover{
   border: none;
   margin: 0 10px 0px 10px;
 }
-.icons__watch-list{
+.icons__watch-list::after{
     content: '';
       background-image: url('../../assets/icons/list_icon.svg');
       width: 24px;
