@@ -10,7 +10,8 @@ import { DurationTimePipe } from "../../pipes/durationTime.pipe";
 })
 export class MovieCardComponent  {
 
-  @Input() movieData: any;
+  @Input()
+  movieData: any = {};
   @Output() addFavourite = new EventEmitter();
   @Output() addWatchList = new EventEmitter();
 

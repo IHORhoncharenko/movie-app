@@ -1,10 +1,10 @@
 <article>
   <div class="img-container">
-    <img sizes="(max-width: 767px) 100vw, 30vw" fetchpriority="high" decoding="async" [src]="movieData.img.src"
-      [alt]="movieData.img.alt" [srcset]="movieData.img.srcset">
+    <img sizes="(max-width: 767px) 100vw, 30vw" fetchpriority="high" decoding="async" [src]="movieData.poster"
+      [alt]="movieData.title">
   </div>
 
-  <h2><a href="/">{{movieData.title}}</a><br><strong>{{movieData.release_date}}</strong></h2>
+  <h2><a href="/">{{movieData.title}}</a><br><strong>{{movieData.year}}</strong></h2>
 
   <div class="icons-parent">
     <div class="icons">
@@ -14,18 +14,24 @@
     <small>Рейтинг: {{movieData.rating}}</small>
   </div>
 
-  <p>{{movieData.overview}} <a href="/">Детальніше</a></p>
+  <p>{{movieData.plot}} <a href="/">Детальніше</a></p>
 
   <dl>
+    <dt>жанр</dt>
+    <dd>{{movieData.genre}}</dd>
     <dt>режисер</dt>
-    <dd>test</dd>
-    <dt>тривалість</dt>
-    <dd>test</dd>
-    <dt>вікові обмеження</dt>
-    <dd>test</dd>
-    @if(movieData.duration){
+    <dd>{{movieData.director}}</dd>
+    <dt>в головних ролях</dt>
+    @for (actor of movieData.actors; track $index) {
+    <dd>{{actor}}</dd>
+    }
+    <dt>країна</dt>
+    <dd>{{movieData.country}}</dd>
+    <dt>нагороди</dt>
+    <dd>{{movieData.awards}}</dd>
+    @if(movieData.runtime){
     <dt>тривалість фільму</dt>
-    <dd>{{ movieData.duration | durationTime }}</dd>
+    <dd>{{ movieData.runtime | durationTime }}</dd>
     }
   </dl>
 

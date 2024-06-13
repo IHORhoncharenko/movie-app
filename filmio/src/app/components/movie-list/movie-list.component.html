@@ -1,38 +1,54 @@
-<h1>movie-list works!</h1>
+<h1>movie-list</h1>
 
-<app-movie-card (addWatchList)="addToWatchList(movie.id)" (addFavourite)="addToFavorites(movie.id)" [movieData]="movie"
-  class="watchlist-films"></app-movie-card>
+<ul class="film-listing">
+  @for (movie of movies; track movie.id) {
+  <li>
+    <app-movie-card (addWatchList)="addToWatchList(movie.id)" (addFavourite)="addToFavorites(movie.id)"
+      [movieData]="movie" class="watchlist-films"></app-movie-card>
+  </li>
+  }
+</ul>
 
 
-@if(filmIdsFav[0] === movie.id){
+
+@if (filmIdsFav.length > 0) {
 <section class="favorites-films">
   <h2>Favorites films</h2>
   <div>
-    @for (item of filmIdsFav; track item.id) {
+    @for (movie of movies; track movie.id) {
+    @for (idF of filmIdsFav; track $index) {
+    @if(idF === movie.id){
     <article>
       <div class="img-container">
-        <img sizes="(max-width: 767px) 30vw, 50vw" fetchpriority="high" decoding="async" [src]="movie.img.src"
-          [alt]="movie.img.alt" [srcset]="movie.img.srcset">
+        <img sizes="(max-width: 767px) 30vw, 50vw" fetchpriority="high" decoding="async" [src]="movie.poster"
+          [alt]="movie.title">
       </div>
       <h3>{{ movie.title }}</h3>
     </article>
+    }
+    }
     }
   </div>
 </section>
 }
 
-@if(filmIdsWatch[0] === movie.id){
-<section class="watchlist-films">
+
+@if (filmIdsWatch.length > 0) {
+<section class="favorites-films">
   <h2>Watch list</h2>
   <div>
-    @for (item of filmIdsWatch; track item.id) {
+    @for (movie of movies; track movie.id) {
+    @for (idW of filmIdsWatch; track $index) {
+    @if(idW === movie.id){
     <article>
       <div class="img-container">
-        <img sizes="(max-width: 767px) 30vw, 50vw" fetchpriority="high" decoding="async" [src]="movie.img.src"
-          [alt]="movie.img.alt" [srcset]="movie.img.srcset">
+        <img sizes="(max-width: 767px) 30vw, 50vw" fetchpriority="high" decoding="async" [src]="movie.poster"
+          [alt]="movie.title">
       </div>
       <h3>{{ movie.title }}</h3>
     </article>
+    }
+    }
     }
   </div>
 </section>

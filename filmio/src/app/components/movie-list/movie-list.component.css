@@ -1,3 +1,5 @@
+@import url(../../../styles.scss);
+
 .favorites-films > div,
 .watchlist-films > div {
   display: flex;
@@ -21,4 +23,13 @@
 }
 article {
   margin: 10px;
+}
+.film-listing {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-wrap: nowrap;
+}
+.film-listing li {
+  margin: 0 25px 25px 25px;
 }
