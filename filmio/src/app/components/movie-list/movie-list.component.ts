@@ -86,11 +86,18 @@ export class MovieListComponent {
 
 
   addToFavorites = (movieId: number) => {
-    this.filmIdsFav.push(movieId);
+    if (!this.filmIdsFav.includes(movieId)) {
+        this.filmIdsFav.push(movieId);
+    }
+  }
+    addToWatchList = (movieId: number) => {
+    if (!this.filmIdsWatch.includes(movieId)) {
+        this.filmIdsWatch.push(movieId);
+    }
   }
 
-  addToWatchList = (movieId: number) => {
-    this.filmIdsWatch.push(movieId);
-  }
+
+
+
 
 }
