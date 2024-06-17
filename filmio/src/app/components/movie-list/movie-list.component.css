@@ -1,9 +1,11 @@
-@import url(../../../styles.scss);
-
 .favorites-films > div,
 .watchlist-films > div {
   display: flex;
   overflow: scroll;
+}
+.film-listing{
+  display: flex;
+  flex-wrap: wrap;
 }
 .img-container img {
   height: auto;
@@ -11,25 +13,4 @@
   aspect-ratio: auto 2/3;
 }
 
-.img-container img::before {
-  display: inline-block;
-}
-.favorites-films > h2,
-.watchlist-films > h2 {
-  font-size: 30px;
-  font-weight: 600;
-  margin: 25px 0 25px 0;
-  text-align: center;
-}
-article {
-  margin: 10px;
-}
-.film-listing {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  flex-wrap: nowrap;
-}
-.film-listing li {
-  margin: 0 25px 25px 25px;
-}
+

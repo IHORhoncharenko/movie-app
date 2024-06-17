@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { DurationTimePipe } from "../../pipes/durationTime.pipe";
+import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
 
 @Component({
-    selector: 'app-movie-card',
-    standalone: true,
-    templateUrl: './movie-card.component.html',
-    styleUrls: ['./movie-card.component.css'],
-    imports: [DurationTimePipe]
+  selector: 'app-movie-card',
+  standalone: true,
+  templateUrl: './movie-card.component.html',
+  styleUrls: ['./movie-card.component.css'],
+  imports: [ConvertingMinutesToHoursPipe]
 })
-export class MovieCardComponent  {
+export class MovieCardComponent {
 
   @Input()
   movieData: any = {};

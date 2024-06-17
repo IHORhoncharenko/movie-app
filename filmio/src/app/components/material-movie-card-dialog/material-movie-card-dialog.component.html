@@ -1,0 +1,18 @@
+<dl>
+  <dt>Director</dt>
+  <dd>{{movieDataPopup.director}}</dd>
+  <dt>actors</dt>
+  @for (actor of movieDataPopup.actors; track $index) {
+  <dd>{{actor}}</dd>
+  }
+  <dt>country</dt>
+  <dd>{{movieDataPopup.country}}</dd>
+  <dt>language</dt>
+  <dd>{{movieDataPopup.language}}</dd>
+  <dt>boxOffice</dt>
+  <dd>{{movieDataPopup.boxOffice}}</dd>
+  <dt>production</dt>
+  <dd>{{movieDataPopup.production}}</dd>
+  <dt>runtime</dt>
+  <dd>{{movieDataPopup.runtime | convertingMinutesToHours}}</dd>
+</dl>

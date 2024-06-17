@@ -31,7 +31,7 @@
     <dd>{{movieData.awards}}</dd>
     @if(movieData.runtime){
     <dt>тривалість фільму</dt>
-    <dd>{{ movieData.runtime | durationTime }}</dd>
+    <dd>{{ movieData.runtime | convertingMinutesToHours }}</dd>
     }
   </dl>
 
