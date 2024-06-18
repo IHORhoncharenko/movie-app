@@ -16,8 +16,7 @@
       <button mat-fab title="add to watch list" type="button" class="icons__watch-list" (click)="addToWatchList()">
         <mat-icon>list_alt</mat-icon>
       </button>
-      <button (showData)='showDataFilm(movieData.id)' (click)="openDialog()" mat-mini-fab>More</button>
-      <!-- <app-material-movie-card-dialog [movieDataPopup]='movieData'></app-material-movie-card-dialog> -->
+      <button (click)="openDialog()" mat-mini-fab>More</button>
     </mat-card-actions>
     <mat-chip-set class="movie-card__tags" aria-label="Movies genre">
       @for (genre of movieData.genre; track $index) {

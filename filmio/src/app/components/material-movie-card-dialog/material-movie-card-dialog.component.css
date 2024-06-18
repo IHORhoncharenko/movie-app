@@ -1,0 +1,14 @@
+.modal-content {
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+  }
+  .modal-content dt {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  .modal-content dd {
+    margin: 0 0 10px 0;
+  }

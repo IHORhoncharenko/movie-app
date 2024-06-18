@@ -7,7 +7,6 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { MaterialMovieCardDialogComponent } from '../material-movie-card-dialog/material-movie-card-dialog.component';
-import { movies } from '../../staticData/movies';
 
 @Component({
   selector: 'app-material-movie-card',
@@ -30,9 +29,6 @@ export class MaterialMovieCardComponent {
   @Output() addFavourite = new EventEmitter();
   @Output() addWatchList = new EventEmitter();
 
-  public moviesListPopup: any[] = movies;
-  public filmIdsPopup: number[] = [];
-
   addToFavourite = () => {
     this.addFavourite.emit(this.movieData.id)
   }
@@ -46,13 +42,17 @@ export class MaterialMovieCardComponent {
   openDialog = () => {
     this.dialog.open(MaterialMovieCardDialogComponent, {
       width: '500px',
-      height: 'auto'
+      height: 'auto',
+      data: {
+        director: this.movieData.director,
+        actors: this.movieData.actors,
+        country: this.movieData.country,
+        language: this.movieData.language,
+        boxOffice: this.movieData.boxOffice,
+        production: this.movieData.production,
+        runtime: this.movieData.runtime
+      }
     });
-  }
-
-  showDataFilm = (movieDataId: number) => {
-    this.filmIdsPopup.push(movieDataId);
-    console.log(this.filmIdsPopup);
   }
 
 }

@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-material-movie-card-dialog',
@@ -9,14 +10,5 @@ import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHou
   imports: [ConvertingMinutesToHoursPipe]
 })
 export class MaterialMovieCardDialogComponent {
-  @Input()
-  movieDataPopup: any = {};
-  @Output() showData = new EventEmitter();
-
-  showDataFilm = () => {
-    this.showData.emit(this.movieDataPopup.id)
-  }
-
-  ngOnInit() { console.log(this.movieDataPopup) }
-
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) { }
 }
