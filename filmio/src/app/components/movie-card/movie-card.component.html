@@ -1,0 +1,38 @@
+<article>
+  <div class="img-container">
+    <img sizes="(max-width: 767px) 100vw, 30vw" fetchpriority="high" decoding="async" [src]="movieData.poster"
+      [alt]="movieData.title">
+  </div>
+
+  <h2><a href="/">{{movieData.title}}</a><br><strong>{{movieData.year}}</strong></h2>
+
+  <div class="icons-parent">
+    <div class="icons">
+      <button title="add to favorite" type="button" class="icons__favorite" (click)="addToFavourite()"></button>
+      <button title="add to watch list" type="button" class="icons__watch-list" (click)="addToWatchList()"></button>
+    </div>
+    <small>Рейтинг: {{movieData.rating}}</small>
+  </div>
+
+  <p>{{movieData.plot}} <a href="/">Детальніше</a></p>
+
+  <dl>
+    <dt>жанр</dt>
+    <dd>{{movieData.genre}}</dd>
+    <dt>режисер</dt>
+    <dd>{{movieData.director}}</dd>
+    <dt>в головних ролях</dt>
+    @for (actor of movieData.actors; track $index) {
+    <dd>{{actor}}</dd>
+    }
+    <dt>країна</dt>
+    <dd>{{movieData.country}}</dd>
+    <dt>нагороди</dt>
+    <dd>{{movieData.awards}}</dd>
+    @if(movieData.runtime){
+    <dt>тривалість фільму</dt>
+    <dd>{{ movieData.runtime | durationTime }}</dd>
+    }
+  </dl>
+
+</article>
