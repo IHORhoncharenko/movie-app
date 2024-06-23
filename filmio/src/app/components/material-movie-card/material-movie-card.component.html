@@ -2,22 +2,29 @@
   <mat-card-header>
     <mat-card-title>{{movieData.title}}</mat-card-title>
   </mat-card-header>
+
   <div class="movie-card__header">
     <div>{{movieData.year}}</div>
     <div>{{movieData.rating}}</div>
   </div>
+
   <mat-card-content>
     <img mat-card-xl-image fetchpriority="high" decoding="async" [src]="movieData.poster" [alt]="movieData.title">
+
     <p>{{movieData.plot}}</p>
+
     <mat-card-actions class="movie-card__action">
       <button mat-fab title="add to favorite" type="button" class="icons__favorite" (click)="addToFavourite()">
         <mat-icon>favorite_border</mat-icon>
       </button>
+
       <button mat-fab title="add to watch list" type="button" class="icons__watch-list" (click)="addToWatchList()">
         <mat-icon>list_alt</mat-icon>
       </button>
+
       <button (click)="openDialog()" mat-mini-fab>More</button>
     </mat-card-actions>
+
     <mat-chip-set class="movie-card__tags" aria-label="Movies genre">
       @for (genre of movieData.genre; track $index) {
       <mat-chip ariaLabel="Movie genre">{{genre}}</mat-chip>

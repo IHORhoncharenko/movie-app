@@ -1,0 +1,9 @@
+<div class="movie-list">
+  @for (movie of moviesList; track movie.id) {
+  @for (favorId of favoriteList; track favorId.id) {
+  @if(movie.id === +favorId){
+  <app-movie-card [movieData]='movie'></app-movie-card>
+  }
+  }
+  }
+</div>

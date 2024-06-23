@@ -1,1 +1,40 @@
-<app-movie-list></app-movie-list>
+<p-menubar (watchListStatus)='toggleWatchList()' (favoriteListStatus)='toggleFavoriteList()' [model]="items">
+  <ng-template pTemplate="item" let-item>
+    <ng-container *ngIf="item.route; else urlRef">
+      <a [routerLink]="item.route" class="p-menuitem-link">
+        <span [class]="item.icon"></span>
+        <span class="ml-2">{{ item.label }}</span>
+      </a>
+    </ng-container>
+    <ng-template #urlRef>
+      <a *ngIf="item.url; else noLink" [href]="item.url" class="p-menuitem-link">
+        <span [class]="item.icon"></span>
+        <span class="ml-2">{{ item.label }}</span>
+      </a>
+    </ng-template>
+    <ng-template #noLink>
+      <div class="p-menuitem-link">
+        <span [class]="item.icon"></span>
+        <span class="ml-2">{{ item.label }}</span>
+        <span class="pi pi-fw pi-angle-down ml-2"></span>
+      </div>
+    </ng-template>
+  </ng-template>
+</p-menubar>
+
+@if (showBlock) {
+<router-outlet name="card"></router-outlet>
+} @else {
+<div class="main-listing">
+  <app-sidebar [style]="{
+  'margin':'1em 0 0 0'
+}" (watchListStatus)='toggleWatchList()' (favoriteListStatus)='toggleFavoriteList()'></app-sidebar>
+  <div class="flex">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+}
+
+<footer>
+  <small>IHOR[honcharenko], 2024</small>
+</footer>

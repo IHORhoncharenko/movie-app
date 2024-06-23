@@ -1,0 +1,32 @@
+hgroup {
+  text-align: center;
+  margin-top: 20px;
+
+  h1 {
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 1.2em;
+    color: #777;
+  }
+}
+
+.main-listing {
+  display: flex;
+}
+
+footer {
+  text-align: center;
+
+  small {
+    font-family: monospace;
+    color: #777;
+  }
+}
+
+.ml-2 {
+  margin-left: 1em;
+}

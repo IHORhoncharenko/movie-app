@@ -1,0 +1,7 @@
+<div class="movie-list">
+  @for (movie of movieList; track movie.id) {
+  @if (movie['category-label'] === 'top') {
+  <app-movie-card [movieData]='movie'></app-movie-card>
+  }
+  }
+</div>

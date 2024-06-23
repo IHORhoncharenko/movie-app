@@ -1,0 +1,6 @@
+<p-button [style]="{
+  'margin':'1em 0 0 1em'
+}" [size]="'small'" (click)="removeLocalStorage()" label="clear" />
+@if (!isClear) {
+<app-movie-favorite-list [favorMovieData]='queryParam'></app-movie-favorite-list>
+}
