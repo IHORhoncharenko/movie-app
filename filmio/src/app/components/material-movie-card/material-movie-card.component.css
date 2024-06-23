@@ -1,0 +1,14 @@
+.movie-card{
+  max-width: 400px;
+  margin: 25px;
+}
+.movie-card__action{
+  justify-content: space-evenly;
+}
+img{
+  margin: 20px;
+}
+.movie-card__header{
+  display: flex;
+  justify-content: space-around;
+}
