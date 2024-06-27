@@ -1,74 +1,109 @@
-<p-card [header]="movieData.title" [subheader]="movieData.year" [style]="{
-  'max-width': '250px',
-  'margin':'1em'
-  }">
-
+<p-card
+  class="ff"
+  [header]="movieData.title"
+  [subheader]="movieData.year"
+  [style]="{
+    'max-width': '250px',
+    margin: '1em',
+  }"
+>
   <ng-template pTemplate="header">
-    <img (click)="openMovieCard()" fetchpriority="high" decoding="async" alt="movieData.title"
-      [src]="movieData.poster" />
+    <img
+      (click)="openMovieCard()"
+      fetchpriority="high"
+      decoding="async"
+      alt="movieData.title"
+      [src]="movieData.poster"
+    />
   </ng-template>
 
-  <div [style]="{
-        'textAlign':'center'
-      }">
-    <p-rating class="small-rating" (mouseleave)='mouseover()' (mouseenter)='mouseenter()' stars='5' [(ngModel)]="value"
-      [readonly]="true" [cancel]="false" />
+  <div
+    [style]="{
+      textAlign: 'center',
+    }"
+  >
+    <p-rating
+      class="small-rating"
+      (mouseleave)="mouseover()"
+      (mouseenter)="mouseenter()"
+      stars="5"
+      [(ngModel)]="value"
+      [readonly]="true"
+      [cancel]="false"
+    />
   </div>
 
   @if (isShowrating) {
-  <p-badge [style]="{
-              'margin-left': '10px',
-              'position':'absolute'
-              }" [value]="movieData.rating" />
+    <p-badge
+      [style]="{
+        'margin-left': '10px',
+        position: 'absolute',
+      }"
+      [value]="movieData.rating"
+    />
   }
 
   <ng-template pTemplate="footer">
     <div class="flex gap-3 mt-1">
-
-      <div [style]="{
-        'textAlign':'center'
-      }">
-        <p-button [style]="{
-              'textAlign':'center'
-            }" (click)="showDialog()" label="Show detailse" />
+      <div
+        [style]="{
+          textAlign: 'center',
+        }"
+      >
+        <p-button
+          [style]="{
+            textAlign: 'center',
+          }"
+          (click)="showDialog()"
+          label="Show detailse"
+        />
       </div>
 
-      <p-dialog (mouseenter)='showLink()' (mouseleave)='hideLink()' (click)="openMovieCard()" [header]="movieData.title"
-        [modal]="true" [(visible)]="visible" [style]="{ width: '50rem' }"
-        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+      <p-dialog
+        (mouseenter)="showLink()"
+        (mouseleave)="hideLink()"
+        (click)="openMovieCard()"
+        [header]="movieData.title"
+        [modal]="true"
+        [(visible)]="visible"
+        [style]="{ width: '50rem' }"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+      >
         <p-button (click)="openMovieCard()">Go to film</p-button>
         <p class="mb-5">
-          {{movieData.director}}
+          {{ movieData.director }}
         </p>
         <p class="mb-5">
           @for (actor of movieData.actors; track $index) {
-        <ul>
-          <li>{{actor}}</li>
-        </ul>
-        }
+            <ul>
+              <li>{{ actor }}</li>
+            </ul>
+          }
         </p>
         <p class="mb-5">
-          {{movieData.country}}
+          {{ movieData.country }}
         </p>
         <p class="mb-5">
-          {{movieData.language}}
+          {{ movieData.language }}
         </p>
         <p class="mb-5">
-          {{movieData.boxOffice}}
+          {{ movieData.boxOffice }}
         </p>
         <p class="mb-5">
-          {{movieData.runtime | convertingMinutesToHours}}
+          {{ movieData.runtime | convertingMinutesToHours }}
         </p>
       </p-dialog>
     </div>
 
     <div class="footer__tags">
       @for (genre of movieData.genre; track $index) {
-      <p-tag [style]="{
-        'backgroundColor':'darkgray'
-      }" [value]="genre" />
+        <p-tag
+          [style]="{
+            backgroundColor: 'darkgray',
+          }"
+          [value]="genre"
+        />
       }
     </div>
   </ng-template>
-
 </p-card>

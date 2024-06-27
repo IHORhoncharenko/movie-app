@@ -1,8 +1,4 @@
-.main-movie-list {
+.movie-list {
   display: flex;
-
-  .main-movie-list__wrapper {
-    display: flex;
-    flex-direction: column;
-  }
+  flex-wrap: wrap;
 }

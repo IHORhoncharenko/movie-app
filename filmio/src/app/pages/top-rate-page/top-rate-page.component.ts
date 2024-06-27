@@ -1,27 +1,30 @@
-import { Component, OnInit } from '@angular/core';
-import { SidebarComponent } from '../../components/sidebar/sidebar.component';
-import { MovieListComponent } from "../../components/movie-list/movie-list.component";
-import { movies } from '../../staticData/movies';
+import { Component, OnInit } from "@angular/core";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
+import { SidebarComponent } from "../../components/sidebar/sidebar.component";
+import { MoviesService } from "../../services/movies.service";
 
 @Component({
-  selector: 'app-top-rate-page',
+  selector: "app-top-rate-page",
   standalone: true,
-  templateUrl: './top-rate-page.component.html',
-  styleUrls: ['./top-rate-page.component.css'],
-  imports: [
-    SidebarComponent,
-    MovieListComponent,
-    MovieCardComponent
-  ]
+  templateUrl: "./top-rate-page.component.html",
+  styleUrls: ["./top-rate-page.component.css"],
+  imports: [SidebarComponent, MovieCardComponent],
 })
 export class TopRatePageComponent implements OnInit {
+  public movies: any = [];
+  public topMovies: any = [];
 
-  public movieList = movies;
-
-  constructor() { }
+  constructor(public movieService: MoviesService) {}
 
   ngOnInit() {
-  }
+    this.movies.push(this.movieService.getMovies());
 
+    this.movies.forEach((e: any) => {
+      [...e].forEach((m) => {
+        if (m["category-label"] === "top") {
+          this.topMovies.push(m);
+        }
+      });
+    });
+  }
 }

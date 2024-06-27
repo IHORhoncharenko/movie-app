@@ -1,1 +1,5 @@
-<app-movie-list></app-movie-list>
+<div class="movie-list">
+  @for (movie of allMovies; track movie.id) {
+    <app-movie-card [movieData]="movie"></app-movie-card>
+  }
+</div>

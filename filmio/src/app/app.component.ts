@@ -1,20 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
-import { MovieListPageComponent } from './pages/movie-list-page/movie-list-page.component';
+import { NgIf } from "@angular/common";
+import { Component, OnInit } from "@angular/core";
+import {
+  ActivatedRoute,
+  Router,
+  RouterModule,
+  RouterOutlet,
+} from "@angular/router";
+import { MenuItem } from "primeng/api";
+import { MenubarModule } from "primeng/menubar";
+import { MovieCardMainComponent } from "./components/movie-card-main/movie-card-main.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
-import { MovieCardPageComponent } from './pages/movie-card-page/movie-card-page.component';
-import { MovieCardMainComponent } from './components/movie-card-main/movie-card-main.component';
-import { MenuItem } from 'primeng/api';
-import { MenubarModule } from 'primeng/menubar';
-import { NgIf } from '@angular/common';
-
-
+import { MovieCardPageComponent } from "./pages/movie-card-page/movie-card-page.component";
+import { MovieListPageComponent } from "./pages/movie-list-page/movie-list-page.component";
 
 @Component({
-  selector: 'app-root',
+  selector: "app-root",
   standalone: true,
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"],
   imports: [
     RouterOutlet,
     MovieListPageComponent,
@@ -23,14 +26,15 @@ import { NgIf } from '@angular/common';
     MovieCardMainComponent,
     RouterModule,
     MenubarModule,
-    NgIf
-  ]
+    NgIf,
+  ],
 })
 export class AppComponent implements OnInit {
-
   public isFavoriteListActive = false;
   public isWatchListActive = false;
   public items: MenuItem[] | undefined;
+  public isShowCard: boolean = false;
+  public isShowListing: boolean = false;
 
   toggleFavoriteList() {
     this.isFavoriteListActive = !this.isFavoriteListActive;
@@ -46,36 +50,40 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public showBlock: boolean = false;
-
-  constructor(private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     this.router.events.subscribe(() => {
       const url = this.router.url;
-      this.showBlock = url.includes('movie/');
+      this.isShowCard = url.includes("movie/");
 
-      console.log(this.router);
+      if (url === "/favorite(card:movie/1)" || url === "/") {
+        this.isShowListing = true;
+      }
+
+      if (url.includes("movie/")) {
+        this.isShowCard = true;
+      }
 
       this.items = [
         {
-          icon: 'pi pi-home',
-          route: '/'
+          icon: "pi pi-home",
+          route: "/",
         },
         {
-          label: 'Favorite list',
-          icon: 'pi pi-heart',
-          route: 'favorite',
-
+          label: "Favorite list",
+          icon: "pi pi-heart",
+          route: "favorite",
         },
         {
-          label: 'Watch list',
-          icon: 'pi pi-eye',
-          route: 'watch-list'
-        }
+          label: "Watch list",
+          icon: "pi pi-eye",
+          route: "watch-list",
+        },
       ];
-
     });
   }
 }
-

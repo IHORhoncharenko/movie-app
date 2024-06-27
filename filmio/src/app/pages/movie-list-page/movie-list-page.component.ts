@@ -1,26 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { MovieListComponent } from '../../components/movie-list/movie-list.component';
-import { SidebarComponent } from '../../components/sidebar/sidebar.component';
-import { MovieFavoriteListComponent } from '../../components/movie-favorite-list/movie-favorite-list.component';
-import { MovieWatchListComponent } from '../../components/movie-watch-list/movie-watch-list.component';
+import { Component, OnInit } from "@angular/core";
+import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
+import { SidebarComponent } from "../../components/sidebar/sidebar.component";
+import { MoviesService } from "../../services/movies.service";
 
 @Component({
-  selector: 'app-movie-list-page',
+  selector: "app-movie-list-page",
   standalone: true,
-  imports: [
-    MovieListComponent,
-    SidebarComponent,
-    MovieFavoriteListComponent,
-    MovieWatchListComponent
-  ],
-  templateUrl: './movie-list-page.component.html',
-  styleUrls: ['./movie-list-page.component.css']
+  templateUrl: "./movie-list-page.component.html",
+  styleUrls: ["./movie-list-page.component.css"],
+  imports: [SidebarComponent, MovieCardComponent],
 })
 export class MovieListPageComponent implements OnInit {
+  public allMovies: any = [];
 
-  constructor() { }
+  constructor(public movieService: MoviesService) {}
 
   ngOnInit() {
+    this.allMovies.push(this.movieService.getMovies());
+    this.allMovies = this.allMovies[0];
+    console.log(this.allMovies);
   }
-
 }

@@ -1,27 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { movies } from '../../staticData/movies';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { MovieCardMainComponent } from '../../components/movie-card-main/movie-card-main.component';
-import { ButtonModule } from 'primeng/button';
-import { FormsModule } from '@angular/forms';
-import { ToggleButtonModule } from 'primeng/togglebutton';
-
+import { Component, OnInit } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { ButtonModule } from "primeng/button";
+import { ToggleButtonModule } from "primeng/togglebutton";
+import { MovieCardMainComponent } from "../../components/movie-card-main/movie-card-main.component";
+import { movies } from "../../staticData/movies";
 
 @Component({
-  selector: 'app-movie-card-page',
+  selector: "app-movie-card-page",
   standalone: true,
   imports: [
     MovieCardMainComponent,
     RouterLink,
     ButtonModule,
     ToggleButtonModule,
-    FormsModule
+    FormsModule,
   ],
-  templateUrl: './movie-card-page.component.html',
-  styleUrls: ['./movie-card-page.component.css']
+  templateUrl: "./movie-card-page.component.html",
+  styleUrls: ["./movie-card-page.component.css"],
 })
 export class MovieCardPageComponent implements OnInit {
-
   public moviesData: any[] = movies;
   public movieDetailseData: any = {};
   public idFavData: any[] = [];
@@ -32,16 +30,20 @@ export class MovieCardPageComponent implements OnInit {
   public favoriteList: any[] = [];
   public watchList: any[] = [];
 
-  constructor(private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const movieId = params['id'];
-      this.movieDetailseData = this.moviesData.find(movie => movie.id === Number(movieId)) || {};
+    this.route.params.subscribe((params) => {
+      const movieId = params["id"];
+      this.movieDetailseData =
+        this.moviesData.find((movie) => movie.id === Number(movieId)) || {};
     });
 
-    const storedFavorites = localStorage.getItem('favoriteList');
-    const storedWatchlist = localStorage.getItem('watchList');
+    const storedFavorites = localStorage.getItem("favoriteList");
+    const storedWatchlist = localStorage.getItem("watchList");
 
     if (storedFavorites) {
       this.favoriteList = JSON.parse(storedFavorites);
@@ -59,9 +61,9 @@ export class MovieCardPageComponent implements OnInit {
       this.favoriteList.push(String(this.idFavData));
     }
 
-    localStorage.setItem('favoriteList', JSON.stringify(this.favoriteList));
-    console.log(`favoriteList: ${this.favoriteList}`)
-  }
+    localStorage.setItem("favoriteList", JSON.stringify(this.favoriteList));
+    console.log(`favoriteList: ${this.favoriteList}`);
+  };
 
   getDataWatchFilm = (data: any) => {
     this.idWatchData = data;
@@ -70,8 +72,7 @@ export class MovieCardPageComponent implements OnInit {
       this.watchList.push(String(this.idWatchData));
     }
 
-    localStorage.setItem('watchList', JSON.stringify(this.watchList));
-    console.log(`watchlist: ${this.watchList}`)
-  }
-
+    localStorage.setItem("watchList", JSON.stringify(this.watchList));
+    console.log(`watchlist: ${this.watchList}`);
+  };
 }

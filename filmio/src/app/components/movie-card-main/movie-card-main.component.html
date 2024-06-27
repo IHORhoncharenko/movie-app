@@ -1,80 +1,92 @@
 <p-tabView>
   <p-tabPanel header="Information">
     <div class="header-card">
-      <h2>{{movieData.title}}</h2>
+      <h2>{{ movieData.title }}</h2>
       <div class="header-card__icons icons-group">
-        @if (isFavorite) {
-        <button (click)="addToFavourite()" class="icons-group__favorite--active"></button>
-        } @else {
-        <button (click)="addToFavourite()" class="icons-group__favorite"></button>
-        }
-
-        @if (isWatch) {
-        <button (click)="addToWatch()" class="icons-group__watch-list--active"></button>
-        }@else {
-        <button (click)="addToWatch()" class="icons-group__watch-list"></button>
-        }
+        <button
+          (click)="movieService.getFavoritesMovies(movieData.id)"
+          class="icons-group__favorite--active"
+        ></button>
+        <button
+          (click)="movieService.getWatchListMovies(movieData.id)"
+          class="icons-group__watch-list"
+        ></button>
       </div>
     </div>
 
     <div class="poster">
-      <img [src]="movieData.poster" [alt]="movieData.title">
+      <img [src]="movieData.poster" [alt]="movieData.title" />
     </div>
 
     <ul>
-      <li>{{movieData.year}}</li>
+      <li>{{ movieData.year }}</li>
       <li>
-        <p-rating (mouseleave)='mouseover()' (mouseenter)='mouseenter()' stars='10' [(ngModel)]="value"
-          [readonly]="true" [cancel]="false" />
+        <p-rating
+          (mouseleave)="mouseover()"
+          (mouseenter)="mouseenter()"
+          stars="10"
+          [(ngModel)]="value"
+          [readonly]="true"
+          [cancel]="false"
+        />
 
         @if (isShowrating) {
-        <p-badge [style]="{
-      'margin-left': '10px',
-      'position':'absolute'
-      }" [value]="movieData.rating" />
+          <p-badge
+            [style]="{
+              'margin-left': '10px',
+              position: 'absolute',
+            }"
+            [value]="movieData.rating"
+          />
         }
       </li>
     </ul>
 
-    <p>{{movieData.plot}}</p>
+    <p>{{ movieData.plot }}</p>
   </p-tabPanel>
   <p-tabPanel header="Details">
     <dl>
       <dt>Director</dt>
-      <dd>{{movieData.director}}</dd>
+      <dd>{{ movieData.director }}</dd>
       <dt>Actors</dt>
       @for (actor of movieData.actors; track $index) {
-      <dd>{{actor}}</dd>
+        <dd>{{ actor }}</dd>
       }
       <dt>Country</dt>
-      <dd>{{movieData.country}}</dd>
+      <dd>{{ movieData.country }}</dd>
       <dt>Language</dt>
-      <dd>{{movieData.language}}</dd>
+      <dd>{{ movieData.language }}</dd>
       <dt>Box Office</dt>
-      <dd>{{movieData.boxOffice}}</dd>
+      <dd>{{ movieData.boxOffice }}</dd>
       <dt>Production</dt>
-      <dd>{{movieData.production}}</dd>
+      <dd>{{ movieData.production }}</dd>
       <dt>Runtime</dt>
-      <dd>{{movieData.runtime | convertingMinutesToHours}}</dd>
+      <dd>{{ movieData.runtime | convertingMinutesToHours }}</dd>
     </dl>
   </p-tabPanel>
   <p-tabPanel header="Reviews">
-    <p>
-      At vero eos et accusamus et iusto odio dignissimos...
-    </p>
+    <p>At vero eos et accusamus et iusto odio dignissimos...</p>
   </p-tabPanel>
   <p-tabPanel header="Watch">
-
     @if (isShowYoutube) {
-    <div class="video-container">
-      <iframe allow='autoplay' width="560" height="315" [src]="movieData.trailer | safeUrl" frameborder="0"
-        allowfullscreen></iframe>
-    </div>
+      <div class="video-container">
+        <iframe
+          allow="autoplay"
+          width="560"
+          height="315"
+          [src]="movieData.trailer | safeUrl"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      </div>
     } @else {
-    <div (click)="showPlayerYouTube()" class="poster">
-      <img title="click to watch trailer" [src]="correctUrlPoster | safeUrl" [alt]="movieData.title">
-    </div>
+      <div (click)="showPlayerYouTube()" class="poster">
+        <img
+          title="click to watch trailer"
+          [src]="correctUrlPoster | safeUrl"
+          [alt]="movieData.title"
+        />
+      </div>
     }
-
   </p-tabPanel>
 </p-tabView>

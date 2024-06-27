@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { SidebarModule } from 'primeng/sidebar';
-import { ButtonModule } from 'primeng/button';
-import { AvatarModule } from 'primeng/avatar';
-import { AvatarGroupModule } from 'primeng/avatargroup';
-import { RippleModule } from 'primeng/ripple';
-import { StyleClassModule } from 'primeng/styleclass';
-import { Sidebar } from 'primeng/sidebar';
+import { Component, OnInit } from "@angular/core";
+import { RouterLink, RouterLinkActive } from "@angular/router";
+import { AvatarModule } from "primeng/avatar";
+import { AvatarGroupModule } from "primeng/avatargroup";
+import { ButtonModule } from "primeng/button";
+import { RippleModule } from "primeng/ripple";
+import { SidebarModule } from "primeng/sidebar";
+import { StyleClassModule } from "primeng/styleclass";
 
 @Component({
-  selector: 'app-sidebar',
+  selector: "app-sidebar",
   standalone: true,
   imports: [
     RouterLink,
@@ -19,18 +18,15 @@ import { Sidebar } from 'primeng/sidebar';
     AvatarModule,
     AvatarGroupModule,
     RippleModule,
-    StyleClassModule
+    StyleClassModule,
   ],
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.css']
+  templateUrl: "./sidebar.component.html",
+  styleUrls: ["./sidebar.component.css"],
 })
 export class SidebarComponent implements OnInit {
-
   sidebarVisible: boolean = false;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

@@ -1,7 +1,5 @@
 <div class="movie-list">
-  @for (movie of movieList; track movie.id) {
-  @if (movie['category-label'] === 'popular') {
-  <app-movie-card [movieData]='movie'></app-movie-card>
-  }
+  @for (movie of popularMovies; track movie.id) {
+    <app-movie-card [movieData]="movie"></app-movie-card>
   }
 </div>

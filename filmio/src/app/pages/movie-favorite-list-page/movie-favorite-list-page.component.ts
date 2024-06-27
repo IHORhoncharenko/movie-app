@@ -1,34 +1,35 @@
-import { Component, OnInit } from '@angular/core';
-import { MovieFavoriteListComponent } from '../../components/movie-favorite-list/movie-favorite-list.component';
-import { ActivatedRoute } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
+import { Component, OnInit } from "@angular/core";
+import { ButtonModule } from "primeng/button";
+import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
+import { MoviesService } from "../../services/movies.service";
 
 @Component({
-  selector: 'app-movie-favorite-list-page',
+  selector: "app-movie-favorite-list-page",
   standalone: true,
-  imports: [
-    MovieFavoriteListComponent,
-    ButtonModule
-  ],
-  templateUrl: './movie-favorite-list-page.component.html',
-  styleUrls: ['./movie-favorite-list-page.component.css']
+  imports: [ButtonModule, MovieCardComponent],
+  templateUrl: "./movie-favorite-list-page.component.html",
+  styleUrls: ["./movie-favorite-list-page.component.css"],
 })
 export class MovieFavoriteListPageComponent implements OnInit {
-  public queryParam: any
-  public isClear = false;
-
-  constructor(private route: ActivatedRoute) { }
+  public favoritesMoviesId: any = [];
+  public allMovies: any = [];
+  public favoritesMovies: any = [];
+  constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.queryParam = params;
-      console.log(this.queryParam);
+    this.favoritesMoviesId = this.movieService.setFavoritesMovies();
+    this.allMovies = this.movieService.getMovies();
+
+    this.allMovies.forEach((m: any) => {
+      this.favoritesMoviesId.forEach((f: any) => {
+        if (String(m.id) === String(f)) {
+          this.favoritesMovies.push(m);
+        }
+      });
     });
   }
 
-  removeLocalStorage = () => {
-    localStorage.clear();
-    this.isClear = true;
-  }
-
+  clearFavoriteList = () => {
+    this.favoritesMovies = [];
+  };
 }

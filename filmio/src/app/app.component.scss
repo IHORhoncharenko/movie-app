@@ -14,8 +14,8 @@ hgroup {
   }
 }
 
-.main-listing {
-  display: flex;
+.main-listing>:nth-child(1) {
+  margin: 1em 0 0 0;
 }
 
 footer {
@@ -29,4 +29,7 @@ footer {
 
 .ml-2 {
   margin-left: 1em;
+}
+.menubar{
+  margin: 0 0 1em 0;
 }

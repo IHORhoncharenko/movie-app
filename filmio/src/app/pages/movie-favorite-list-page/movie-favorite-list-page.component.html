@@ -1,6 +1,9 @@
-<p-button [style]="{
-  'margin':'1em 0 0 1em'
-}" [size]="'small'" (click)="removeLocalStorage()" label="clear" />
-@if (!isClear) {
-<app-movie-favorite-list [favorMovieData]='queryParam'></app-movie-favorite-list>
+<p-button
+  (onClick)="clearFavoriteList()"
+  class="btn"
+  [size]="'small'"
+  label="clear"
+/>
+@for (movie of favoritesMovies; track movie.id) {
+  <app-movie-card [movieData]="movie"></app-movie-card>
 }
