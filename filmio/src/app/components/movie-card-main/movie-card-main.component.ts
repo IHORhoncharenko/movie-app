@@ -37,7 +37,6 @@ export class MovieCardMainComponent {
     let url = this.movieData.trailer;
     let urlTrailerId = url.split("/").reverse();
     this.correctUrlPoster = ` https://i.ytimg.com/vi/${urlTrailerId[0]}/sddefault.jpg`;
-    console.log(this.correctUrlPoster);
   }
 
   mouseenter = () => {

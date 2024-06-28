@@ -1,11 +1,13 @@
 <p-button
-  [style]="{
-    margin: '1em 0 0 1em',
-  }"
+  (click)="movieService.clearWatchListMovies(); hideWatchlist()"
+  class="btn"
   [size]="'small'"
-  (click)="removeLocalStorage()"
   label="clear"
 />
-@if (!isClear) {
-  <app-movie-card></app-movie-card>
+@if (!isClearList) {
+  <div class="movie-list">
+    @for (movie of watchlistMovies; track movie.id) {
+      <app-movie-card [movieData]="movie"></app-movie-card>
+    }
+  </div>
 }

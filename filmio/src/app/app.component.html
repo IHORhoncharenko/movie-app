@@ -1,9 +1,4 @@
-<p-menubar
-  class="menubar"
-  (watchListStatus)="toggleWatchList()"
-  (favoriteListStatus)="toggleFavoriteList()"
-  [model]="items"
->
+<p-menubar class="menubar" [model]="items">
   <ng-template pTemplate="item" let-item>
     <ng-container *ngIf="item.route; else urlRef">
       <a [routerLink]="item.route" class="p-menuitem-link">
@@ -31,15 +26,8 @@
   </ng-template>
 </p-menubar>
 
-<div class="main-listing">
-  <app-sidebar
-    (watchListStatus)="toggleWatchList()"
-    (favoriteListStatus)="toggleFavoriteList()"
-  ></app-sidebar>
-  <div class="flex">
-    <router-outlet></router-outlet>
-  </div>
-</div>
+<app-sidebar></app-sidebar>
+<router-outlet></router-outlet>
 
 <footer>
   <small>IHOR[honcharenko], 2024</small>

@@ -30,25 +30,7 @@ import { MovieListPageComponent } from "./pages/movie-list-page/movie-list-page.
   ],
 })
 export class AppComponent implements OnInit {
-  public isFavoriteListActive = false;
-  public isWatchListActive = false;
   public items: MenuItem[] | undefined;
-  public isShowCard: boolean = false;
-  public isShowListing: boolean = false;
-
-  toggleFavoriteList() {
-    this.isFavoriteListActive = !this.isFavoriteListActive;
-    if (this.isFavoriteListActive) {
-      this.isWatchListActive = false;
-    }
-  }
-
-  toggleWatchList() {
-    this.isWatchListActive = !this.isWatchListActive;
-    if (this.isWatchListActive) {
-      this.isFavoriteListActive = false;
-    }
-  }
 
   constructor(
     private route: ActivatedRoute,
@@ -57,17 +39,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.router.events.subscribe(() => {
-      const url = this.router.url;
-      this.isShowCard = url.includes("movie/");
-
-      if (url === "/favorite(card:movie/1)" || url === "/") {
-        this.isShowListing = true;
-      }
-
-      if (url.includes("movie/")) {
-        this.isShowCard = true;
-      }
-
       this.items = [
         {
           icon: "pi pi-home",

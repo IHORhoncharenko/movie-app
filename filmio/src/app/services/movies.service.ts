@@ -14,15 +14,25 @@ export class MoviesService {
   };
 
   getFavoritesMovies = (id: any) => {
-    this.favoritesMoviesId.push(id);
+    if (!this.favoritesMoviesId.includes(id)) {
+      this.favoritesMoviesId.push(id);
+    }
   };
   getWatchListMovies = (id: any) => {
-    this.watchlistMoviesId.push(id);
+    if (!this.watchlistMoviesId.includes(id)) {
+      this.watchlistMoviesId.push(id);
+    }
   };
   setFavoritesMovies = () => {
     return this.favoritesMoviesId;
   };
   setWatchListMovies = () => {
     return this.watchlistMoviesId;
+  };
+  clearWatchListMovies = () => {
+    this.watchlistMoviesId = [];
+  };
+  clearFavoritesMovies = () => {
+    this.favoritesMoviesId = [];
   };
 }
