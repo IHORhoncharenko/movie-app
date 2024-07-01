@@ -1,38 +1,109 @@
-<article>
-  <div class="img-container">
-    <img sizes="(max-width: 767px) 100vw, 30vw" fetchpriority="high" decoding="async" [src]="movieData.poster"
-      [alt]="movieData.title">
+<p-card
+  class="ff"
+  [header]="movieData.title"
+  [subheader]="movieData.year"
+  [style]="{
+    'max-width': '250px',
+    margin: '1em',
+  }"
+>
+  <ng-template pTemplate="header">
+    <img
+      (click)="openMovieCard()"
+      fetchpriority="high"
+      decoding="async"
+      alt="movieData.title"
+      [src]="movieData.poster"
+    />
+  </ng-template>
+
+  <div
+    [style]="{
+      textAlign: 'center',
+    }"
+  >
+    <p-rating
+      class="small-rating"
+      (mouseleave)="mouseover()"
+      (mouseenter)="mouseenter()"
+      stars="5"
+      [(ngModel)]="value"
+      [readonly]="true"
+      [cancel]="false"
+    />
   </div>
 
-  <h2><a href="/">{{movieData.title}}</a><br><strong>{{movieData.year}}</strong></h2>
+  @if (isShowrating) {
+    <p-badge
+      [style]="{
+        'margin-left': '10px',
+        position: 'absolute',
+      }"
+      [value]="movieData.rating"
+    />
+  }
 
-  <div class="icons-parent">
-    <div class="icons">
-      <button title="add to favorite" type="button" class="icons__favorite" (click)="addToFavourite()"></button>
-      <button title="add to watch list" type="button" class="icons__watch-list" (click)="addToWatchList()"></button>
+  <ng-template pTemplate="footer">
+    <div class="flex gap-3 mt-1">
+      <div
+        [style]="{
+          textAlign: 'center',
+        }"
+      >
+        <p-button
+          [style]="{
+            textAlign: 'center',
+          }"
+          (click)="showDialog()"
+          label="Show detailse"
+        />
+      </div>
+
+      <p-dialog
+        (mouseenter)="showLink()"
+        (mouseleave)="hideLink()"
+        (click)="openMovieCard()"
+        [header]="movieData.title"
+        [modal]="true"
+        [(visible)]="visible"
+        [style]="{ width: '50rem' }"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+      >
+        <p-button (click)="openMovieCard()">Go to film</p-button>
+        <p class="mb-5">
+          {{ movieData.director }}
+        </p>
+        <p class="mb-5">
+          @for (actor of movieData.actors; track $index) {
+            <ul>
+              <li>{{ actor }}</li>
+            </ul>
+          }
+        </p>
+        <p class="mb-5">
+          {{ movieData.country }}
+        </p>
+        <p class="mb-5">
+          {{ movieData.language }}
+        </p>
+        <p class="mb-5">
+          {{ movieData.boxOffice }}
+        </p>
+        <p class="mb-5">
+          {{ movieData.runtime | convertingMinutesToHours }}
+        </p>
+      </p-dialog>
     </div>
-    <small>Рейтинг: {{movieData.rating}}</small>
-  </div>
 
-  <p>{{movieData.plot}} <a href="/">Детальніше</a></p>
-
-  <dl>
-    <dt>жанр</dt>
-    <dd>{{movieData.genre}}</dd>
-    <dt>режисер</dt>
-    <dd>{{movieData.director}}</dd>
-    <dt>в головних ролях</dt>
-    @for (actor of movieData.actors; track $index) {
-    <dd>{{actor}}</dd>
-    }
-    <dt>країна</dt>
-    <dd>{{movieData.country}}</dd>
-    <dt>нагороди</dt>
-    <dd>{{movieData.awards}}</dd>
-    @if(movieData.runtime){
-    <dt>тривалість фільму</dt>
-    <dd>{{ movieData.runtime | convertingMinutesToHours }}</dd>
-    }
-  </dl>
-
-</article>
+    <div class="footer__tags">
+      @for (genre of movieData.genre; track $index) {
+        <p-tag
+          [style]="{
+            backgroundColor: 'darkgray',
+          }"
+          [value]="genre"
+        />
+      }
+    </div>
+  </ng-template>
+</p-card>

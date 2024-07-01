@@ -1,0 +1,65 @@
+<p-sidebar [(visible)]="sidebarVisible">
+  <ng-template pTemplate="header">
+    <div class="flex align-items-center gap-2">
+      <p-avatar
+        fetchpriority="high"
+        decoding="async"
+        [style]="{
+          width: '100%',
+          height: 'auto',
+          aspectRatio: '1/1',
+        }"
+        size="xlarge"
+        image="../../../assets/logo.webp"
+        shape="circle"
+      />
+      <h1
+        [style]="{
+          fontFamily: 'monospace',
+          textAlign: 'center',
+          fontSize: 'x-large',
+        }"
+        class="font-bold"
+      >
+        Films of our youth...
+      </h1>
+    </div>
+  </ng-template>
+
+  <div class="container">
+    <p-button
+      size="large"
+      (click)="sidebarVisible = false"
+      [routerLink]="['/now-plaing']"
+      routerLinkActive="page-active"
+    >
+      Now Plaing
+    </p-button>
+    <p-button
+      size="large"
+      (click)="sidebarVisible = false"
+      [routerLink]="['/popular']"
+      routerLinkActive="page-active"
+    >
+      Popular
+    </p-button>
+    <p-button
+      size="large"
+      (click)="sidebarVisible = false"
+      [routerLink]="['/top-rate']"
+      routerLinkActive="page-active"
+    >
+      Top rate
+    </p-button>
+    <p-button
+      size="large"
+      (click)="sidebarVisible = false"
+      [routerLink]="['/upcoming']"
+      routerLinkActive="page-active"
+    >
+      Upcoming
+    </p-button>
+  </div>
+</p-sidebar>
+
+<p-button (click)="sidebarVisible = true" icon="pi pi-plus" />

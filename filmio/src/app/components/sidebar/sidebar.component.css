@@ -1,0 +1,14 @@
+.page-active {
+  background-color: aqua;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+
+  p-button {
+    margin-bottom: 1em;
+  }
+}
