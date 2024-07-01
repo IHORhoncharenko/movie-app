@@ -1,12 +1,4 @@
-<p-card
-  class="ff"
-  [header]="movieData.title"
-  [subheader]="movieData.year"
-  [style]="{
-    'max-width': '250px',
-    margin: '1em',
-  }"
->
+<p-card class="card" [header]="movieData.title" [subheader]="movieData.year">
   <ng-template pTemplate="header">
     <img
       (click)="openMovieCard()"
@@ -17,13 +9,8 @@
     />
   </ng-template>
 
-  <div
-    [style]="{
-      textAlign: 'center',
-    }"
-  >
+  <div class="card__rating rating">
     <p-rating
-      class="small-rating"
       (mouseleave)="mouseover()"
       (mouseenter)="mouseenter()"
       stars="5"
@@ -31,33 +18,14 @@
       [readonly]="true"
       [cancel]="false"
     />
+    @if (isShowrating) {
+      <p-badge class="rating__badge" [value]="movieData.rating" />
+    }
   </div>
 
-  @if (isShowrating) {
-    <p-badge
-      [style]="{
-        'margin-left': '10px',
-        position: 'absolute',
-      }"
-      [value]="movieData.rating"
-    />
-  }
-
   <ng-template pTemplate="footer">
-    <div class="flex gap-3 mt-1">
-      <div
-        [style]="{
-          textAlign: 'center',
-        }"
-      >
-        <p-button
-          [style]="{
-            textAlign: 'center',
-          }"
-          (click)="showDialog()"
-          label="Show detailse"
-        />
-      </div>
+    <div class="card__action">
+      <p-button (click)="showDialog()" label="Show detailse" />
 
       <p-dialog
         (mouseenter)="showLink()"
@@ -95,14 +63,9 @@
       </p-dialog>
     </div>
 
-    <div class="footer__tags">
+    <div class="card__tags">
       @for (genre of movieData.genre; track $index) {
-        <p-tag
-          [style]="{
-            backgroundColor: 'darkgray',
-          }"
-          [value]="genre"
-        />
+        <p-tag [value]="genre" />
       }
     </div>
   </ng-template>
