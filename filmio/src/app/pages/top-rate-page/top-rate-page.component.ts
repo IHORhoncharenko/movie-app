@@ -14,7 +14,7 @@ export class TopRatePageComponent implements OnInit {
   public movies: any = [];
   public topMovies: any = [];
 
-  constructor(public movieService: MoviesService) {}
+  constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
     this.movies.push(this.movieService.getMovies());

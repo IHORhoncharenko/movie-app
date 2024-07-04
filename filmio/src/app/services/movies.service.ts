@@ -7,31 +7,37 @@ import { movies } from "../staticData/movies";
 export class MoviesService {
   public favoritesMoviesId: any = [];
   public watchlistMoviesId: any = [];
+
   constructor() {}
 
   getMovies = () => {
     return movies;
   };
 
-  getFavoritesMovies = (id: any) => {
+  setFavoritesMovies = (id: any) => {
     if (!this.favoritesMoviesId.includes(id)) {
       this.favoritesMoviesId.push(id);
     }
   };
-  getWatchListMovies = (id: any) => {
+
+  setWatchListMovies = (id: any) => {
     if (!this.watchlistMoviesId.includes(id)) {
       this.watchlistMoviesId.push(id);
     }
   };
-  setFavoritesMovies = () => {
+
+  getFavoritesMovies = () => {
     return this.favoritesMoviesId;
   };
-  setWatchListMovies = () => {
+
+  getWatchListMovies = () => {
     return this.watchlistMoviesId;
   };
+
   clearWatchListMovies = () => {
     this.watchlistMoviesId = [];
   };
+
   clearFavoritesMovies = () => {
     this.favoritesMoviesId = [];
   };

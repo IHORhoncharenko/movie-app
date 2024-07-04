@@ -3,6 +3,10 @@ p-card.card {
   margin: 1em;
   display: inline-block;
 
+  ::ng-deep.p-card-header>img:hover {
+    cursor: pointer;
+  }
+
   .card__rating {
     text-align: center;
 
@@ -14,6 +18,10 @@ p-card.card {
 
   .card__action {
     text-align: center;
+
+    .modal__content dt {
+      text-align: left;
+    }
   }
 
   .card__tags {
@@ -29,6 +37,10 @@ p-card.card {
       }
     }
 
+  }
+
+  ::ng-deep .p-dialog {
+    width: 50rem;
   }
 
 }

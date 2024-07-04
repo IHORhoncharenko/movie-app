@@ -15,10 +15,11 @@ export class MovieFavoriteListPageComponent implements OnInit {
   public allMovies: any = [];
   public favoritesMovies: any = [];
   public isClearList = false;
-  constructor(public movieService: MoviesService) {}
+
+  constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
-    this.favoritesMoviesId = this.movieService.setFavoritesMovies();
+    this.favoritesMoviesId = this.movieService.getFavoritesMovies();
     this.allMovies = this.movieService.getMovies();
 
     this.allMovies.forEach((m: any) => {
@@ -32,7 +33,8 @@ export class MovieFavoriteListPageComponent implements OnInit {
     });
   }
 
-  hideFavoritelist = () => {
+  clearFavoritelist = () => {
     this.isClearList = true;
+    this.movieService.clearFavoritesMovies();
   };
 }

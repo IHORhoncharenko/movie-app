@@ -15,10 +15,11 @@ export class MovieWatchListPageComponent implements OnInit {
   public allMovies: any = [];
   public watchlistMovies: any = [];
   public isClearList = false;
-  constructor(public movieService: MoviesService) {}
+
+  constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
-    this.watchlistMoviesId = this.movieService.setWatchListMovies();
+    this.watchlistMoviesId = this.movieService.getWatchListMovies();
     this.allMovies = this.movieService.getMovies();
 
     this.allMovies.forEach((m: any) => {
@@ -32,7 +33,8 @@ export class MovieWatchListPageComponent implements OnInit {
     });
   }
 
-  hideWatchlist = () => {
+  clearWatchlist = () => {
     this.isClearList = true;
+    this.movieService.clearWatchListMovies();
   };
 }

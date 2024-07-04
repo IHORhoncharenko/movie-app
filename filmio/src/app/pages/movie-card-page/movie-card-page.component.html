@@ -1,1 +1,86 @@
-<app-movie-card-main [movieData]="movieDetailseData"></app-movie-card-main>
+<p-tabView>
+  <p-tabPanel header="Information">
+    <div class="header-card">
+      <h2>{{ movieDetailseData.title }}</h2>
+      <div class="header-card__icons icons-group">
+        <button
+          (click)="choosingFavoriteMovie(movieDetailseData.id)"
+          class="icons-group__favorite--active"
+        ></button>
+        <button
+          (click)="choosingToWatchListMovie(movieDetailseData.id)"
+          class="icons-group__watch-list--active"
+        ></button>
+      </div>
+    </div>
+
+    <div class="poster">
+      <img [src]="movieDetailseData.poster" [alt]="movieDetailseData.title" />
+    </div>
+
+    <ul>
+      <li>{{ movieDetailseData.year }}</li>
+      <li>
+        <p-rating
+          (mouseleave)="mouseover()"
+          (mouseenter)="mouseenter()"
+          stars="10"
+          [(ngModel)]="value"
+          [readonly]="true"
+          [cancel]="false"
+        />
+
+        @if (isShowrating) {
+          <p-badge class="badge-rating" [value]="movieDetailseData.rating" />
+        }
+      </li>
+    </ul>
+
+    <p>{{ movieDetailseData.plot }}</p>
+  </p-tabPanel>
+  <p-tabPanel header="Details">
+    <dl>
+      <dt>Director</dt>
+      <dd>{{ movieDetailseData.director }}</dd>
+      <dt>Actors</dt>
+      @for (actor of movieDetailseData.actors; track $index) {
+        <dd>{{ actor }}</dd>
+      }
+      <dt>Country</dt>
+      <dd>{{ movieDetailseData.country }}</dd>
+      <dt>Language</dt>
+      <dd>{{ movieDetailseData.language }}</dd>
+      <dt>Box Office</dt>
+      <dd>{{ movieDetailseData.boxOffice }}</dd>
+      <dt>Production</dt>
+      <dd>{{ movieDetailseData.production }}</dd>
+      <dt>Runtime</dt>
+      <dd>{{ movieDetailseData.runtime | convertingMinutesToHours }}</dd>
+    </dl>
+  </p-tabPanel>
+  <p-tabPanel header="Reviews">
+    <p>At vero eos et accusamus et iusto odio dignissimos...</p>
+  </p-tabPanel>
+  <p-tabPanel header="Watch">
+    @if (isShowYoutube) {
+      <div class="video-container">
+        <iframe
+          allow="autoplay"
+          width="560"
+          height="315"
+          [src]="movieDetailseData.trailer | safeUrl"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      </div>
+    } @else {
+      <div (click)="showPlayerYouTube()" class="poster">
+        <img
+          title="click to watch trailer"
+          [src]="correctUrlPoster | safeUrl"
+          [alt]="movieDetailseData.title"
+        />
+      </div>
+    }
+  </p-tabPanel>
+</p-tabView>

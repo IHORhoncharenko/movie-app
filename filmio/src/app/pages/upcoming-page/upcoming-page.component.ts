@@ -14,10 +14,11 @@ export class UpcomingPageComponent implements OnInit {
   public movies: any = [];
   public upcomingMovies: any = [];
 
-  constructor(public movieService: MoviesService) {}
+  constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
     this.movies.push(this.movieService.getMovies());
+    console.log(this.movies);
 
     this.movies.forEach((e: any) => {
       [...e].forEach((m) => {

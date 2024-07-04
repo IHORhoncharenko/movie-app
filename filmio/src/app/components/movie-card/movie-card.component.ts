@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { BadgeModule } from "primeng/badge";
@@ -29,35 +29,24 @@ import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHou
 export class MovieCardComponent {
   @Input()
   movieData: any = {};
-  @Output() addFavourite = new EventEmitter();
-  @Output() addWatchList = new EventEmitter();
 
-  public isShowrating = false;
+  public isShowRating = false;
   public value: number | undefined;
   public isLink = false;
-
-  addToFavourite = () => {
-    this.addFavourite.emit(this.movieData.id);
-  };
-
-  addToWatchList = () => {
-    this.addWatchList.emit(this.movieData.id);
-  };
+  public isVisible = false;
 
   constructor(private router: Router) {}
 
-  visible: boolean = false;
-
   showDialog() {
-    this.visible = true;
+    this.isVisible = true;
   }
 
   mouseenter = () => {
-    this.isShowrating = true;
+    this.isShowRating = true;
   };
 
   mouseover = () => {
-    this.isShowrating = false;
+    this.isShowRating = false;
   };
 
   showLink = () => {
@@ -73,13 +62,6 @@ export class MovieCardComponent {
   }
 
   openMovieCard = () => {
-    // Використовуємо програмну навігацію для встановлення основного маршруту
-    this.router.navigateByUrl(`/movie/${this.movieData.id}`).then(() => {
-      // Додаємо маршрут для іменованого аутлета без зміни URL
-      this.router.navigate(
-        [{ outlets: { card: ["movie", this.movieData.id] } }],
-        { skipLocationChange: true },
-      );
-    });
+    this.router.navigateByUrl(`/movie/${this.movieData.id}`);
   };
 }

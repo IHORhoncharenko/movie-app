@@ -14,7 +14,7 @@ export class PopularPageComponent implements OnInit {
   public movies: any = [];
   public popularMovies: any = [];
 
-  constructor(public movieService: MoviesService) {}
+  constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
     this.movies.push(this.movieService.getMovies());

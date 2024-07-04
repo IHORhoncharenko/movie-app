@@ -18,7 +18,7 @@
       [readonly]="true"
       [cancel]="false"
     />
-    @if (isShowrating) {
+    @if (isShowRating) {
       <p-badge class="rating__badge" [value]="movieData.rating" />
     }
   </div>
@@ -28,43 +28,40 @@
       <p-button (click)="showDialog()" label="Show detailse" />
 
       <p-dialog
+        class="card__action modal"
         (mouseenter)="showLink()"
         (mouseleave)="hideLink()"
-        (click)="openMovieCard()"
         [header]="movieData.title"
         [modal]="true"
-        [(visible)]="visible"
-        [style]="{ width: '50rem' }"
+        [(visible)]="isVisible"
         [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
       >
         <p-button (click)="openMovieCard()">Go to film</p-button>
-        <p class="mb-5">
-          {{ movieData.director }}
-        </p>
-        <p class="mb-5">
-          @for (actor of movieData.actors; track $index) {
+        <dl class="modal__content">
+          <dt>Director</dt>
+          <dd>{{ movieData.director }}</dd>
+          <dt>Actors</dt>
+          <dd>
             <ul>
-              <li>{{ actor }}</li>
+              @for (actor of movieData.actors; track movieData.id) {
+                <li>{{ actor }}</li>
+              }
             </ul>
-          }
-        </p>
-        <p class="mb-5">
-          {{ movieData.country }}
-        </p>
-        <p class="mb-5">
-          {{ movieData.language }}
-        </p>
-        <p class="mb-5">
-          {{ movieData.boxOffice }}
-        </p>
-        <p class="mb-5">
-          {{ movieData.runtime | convertingMinutesToHours }}
-        </p>
+          </dd>
+          <dt>Country</dt>
+          <dd>{{ movieData.country }}</dd>
+          <dt>Language</dt>
+          <dd>{{ movieData.language }}</dd>
+          <dt>boxOffice</dt>
+          <dd>{{ movieData.boxOffice }}</dd>
+          <dt>Movie duration</dt>
+          <dd>{{ movieData.runtime | convertingMinutesToHours }}</dd>
+        </dl>
       </p-dialog>
     </div>
 
     <div class="card__tags">
-      @for (genre of movieData.genre; track $index) {
+      @for (genre of movieData.genre; track movieData.id) {
         <p-tag [value]="genre" />
       }
     </div>

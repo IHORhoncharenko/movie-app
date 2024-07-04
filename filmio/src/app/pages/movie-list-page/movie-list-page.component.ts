@@ -13,11 +13,10 @@ import { MoviesService } from "../../services/movies.service";
 export class MovieListPageComponent implements OnInit {
   public allMovies: any = [];
 
-  constructor(public movieService: MoviesService) {}
+  constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
-    this.allMovies.push(this.movieService.getMovies());
-    this.allMovies = this.allMovies[0];
+    this.allMovies = this.movieService.getMovies();
     console.log(this.allMovies);
   }
 }

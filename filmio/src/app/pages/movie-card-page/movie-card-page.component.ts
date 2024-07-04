@@ -1,78 +1,80 @@
 import { Component, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { ActivatedRoute, RouterLink } from "@angular/router";
+import { BadgeModule } from "primeng/badge";
 import { ButtonModule } from "primeng/button";
+import { RatingModule } from "primeng/rating";
+import { TabViewModule } from "primeng/tabview";
 import { ToggleButtonModule } from "primeng/togglebutton";
-import { MovieCardMainComponent } from "../../components/movie-card-main/movie-card-main.component";
-import { movies } from "../../staticData/movies";
+import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
+import { SafeUrlPipe } from "../../pipes/safeUrl/safeUrl.pipe";
+import { MoviesService } from "../../services/movies.service";
 
 @Component({
   selector: "app-movie-card-page",
   standalone: true,
   imports: [
-    MovieCardMainComponent,
     RouterLink,
     ButtonModule,
     ToggleButtonModule,
     FormsModule,
+    ConvertingMinutesToHoursPipe,
+    RatingModule,
+    FormsModule,
+    BadgeModule,
+    TabViewModule,
+    ButtonModule,
+    SafeUrlPipe,
   ],
   templateUrl: "./movie-card-page.component.html",
   styleUrls: ["./movie-card-page.component.css"],
 })
 export class MovieCardPageComponent implements OnInit {
-  public moviesData: any[] = movies;
   public movieDetailseData: any = {};
-  public idFavData: any[] = [];
-  public idWatchData: any[] = [];
-  public idStringFavor: any;
-  public idStringWatch: any;
-  public checked: boolean = false;
-  public favoriteList: any[] = [];
-  public watchList: any[] = [];
+  public value: number | undefined;
+  public isShowrating = false;
+  public isShowYoutube = false;
+  public correctUrlPoster: any;
+  public allMovies: any = [];
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    private movieServices: MoviesService,
   ) {}
 
   ngOnInit(): void {
+    this.allMovies.push(this.movieServices.getMovies());
+    this.allMovies = this.allMovies[0];
+    console.log(this.allMovies);
+
     this.route.params.subscribe((params) => {
       const movieId = params["id"];
       this.movieDetailseData =
-        this.moviesData.find((movie) => movie.id === Number(movieId)) || {};
+        this.allMovies.find((movie: any) => movie.id === Number(movieId)) || {};
     });
 
-    const storedFavorites = localStorage.getItem("favoriteList");
-    const storedWatchlist = localStorage.getItem("watchList");
-
-    if (storedFavorites) {
-      this.favoriteList = JSON.parse(storedFavorites);
-    }
-
-    if (storedWatchlist) {
-      this.watchList = JSON.parse(storedWatchlist);
-    }
+    this.value = Math.round(Number(this.movieDetailseData.rating));
+    let url = this.movieDetailseData.trailer;
+    let urlTrailerId = url.split("/").reverse();
+    this.correctUrlPoster = ` https://i.ytimg.com/vi/${urlTrailerId[0]}/sddefault.jpg`;
   }
 
-  getDataFilm = (data: any) => {
-    this.idFavData = data;
-
-    if (!this.favoriteList.includes(String(this.idFavData))) {
-      this.favoriteList.push(String(this.idFavData));
-    }
-
-    localStorage.setItem("favoriteList", JSON.stringify(this.favoriteList));
-    console.log(`favoriteList: ${this.favoriteList}`);
+  mouseenter = () => {
+    this.isShowrating = true;
   };
 
-  getDataWatchFilm = (data: any) => {
-    this.idWatchData = data;
+  mouseover = () => {
+    this.isShowrating = false;
+  };
 
-    if (!this.watchList.includes(String(this.idWatchData))) {
-      this.watchList.push(String(this.idWatchData));
-    }
+  showPlayerYouTube = () => {
+    this.isShowYoutube = true;
+  };
 
-    localStorage.setItem("watchList", JSON.stringify(this.watchList));
-    console.log(`watchlist: ${this.watchList}`);
+  choosingFavoriteMovie = (movieId: any) => {
+    this.movieServices.setFavoritesMovies(movieId);
+  };
+  choosingToWatchListMovie = (movieId: any) => {
+    this.movieServices.setWatchListMovies(movieId);
   };
 }
