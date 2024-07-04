@@ -72,9 +72,9 @@ export class MovieCardPageComponent implements OnInit {
   };
 
   choosingFavoriteMovie = (movieId: any) => {
-    this.movieServices.setFavoritesMovies(movieId);
+    this.movieServices.setFavoritesMoviesId(movieId);
   };
   choosingToWatchListMovie = (movieId: any) => {
-    this.movieServices.setWatchListMovies(movieId);
+    this.movieServices.setWatchListMoviesId(movieId);
   };
 }

@@ -11,26 +11,13 @@ import { MoviesService } from "../../services/movies.service";
   styleUrls: ["./movie-favorite-list-page.component.css"],
 })
 export class MovieFavoriteListPageComponent implements OnInit {
-  public favoritesMoviesId: any = [];
-  public allMovies: any = [];
   public favoritesMovies: any = [];
   public isClearList = false;
 
   constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
-    this.favoritesMoviesId = this.movieService.getFavoritesMovies();
-    this.allMovies = this.movieService.getMovies();
-
-    this.allMovies.forEach((m: any) => {
-      this.favoritesMoviesId.forEach((f: any) => {
-        if (String(m.id) === String(f)) {
-          if (!this.favoritesMovies.includes(m)) {
-            this.favoritesMovies.push(m);
-          }
-        }
-      });
-    });
+    this.favoritesMovies = this.movieService.getFavoritesMovies();
   }
 
   clearFavoritelist = () => {

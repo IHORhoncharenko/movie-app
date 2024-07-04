@@ -11,26 +11,13 @@ import { MoviesService } from "../../services/movies.service";
   imports: [ButtonModule, MovieCardComponent],
 })
 export class MovieWatchListPageComponent implements OnInit {
-  public watchlistMoviesId: any = [];
-  public allMovies: any = [];
   public watchlistMovies: any = [];
   public isClearList = false;
 
   constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
-    this.watchlistMoviesId = this.movieService.getWatchListMovies();
-    this.allMovies = this.movieService.getMovies();
-
-    this.allMovies.forEach((m: any) => {
-      this.watchlistMoviesId.forEach((w: any) => {
-        if (String(m.id) === String(w)) {
-          if (!this.watchlistMovies.includes(m)) {
-            this.watchlistMovies.push(m);
-          }
-        }
-      });
-    });
+    this.watchlistMovies = this.movieService.getWatchListMovies();
   }
 
   clearWatchlist = () => {
