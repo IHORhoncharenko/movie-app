@@ -34,8 +34,21 @@ export class MovieCardComponent {
   public value: number | undefined;
   public isLink = false;
   public isVisible = false;
+  public isFamilyFriendly: boolean | undefined;
+  public urlPoster: string | undefined;
 
   constructor(private router: Router) {}
+
+  ngOnInit() {
+    this.value = Math.round(Number(this.movieData.vote_average / 2));
+    this.urlPoster = `https://media.themoviedb.org/t/p/w220_and_h330_face${this.movieData.poster_path}`;
+
+    if (this.movieData.adult === false) {
+      this.isFamilyFriendly = true;
+    } else {
+      this.isFamilyFriendly = false;
+    }
+  }
 
   showDialog() {
     this.isVisible = true;
@@ -56,10 +69,6 @@ export class MovieCardComponent {
   hideLink = () => {
     this.isLink = false;
   };
-
-  ngOnInit() {
-    this.value = Math.round(Number(this.movieData.rating / 2));
-  }
 
   openMovieCard = () => {
     this.router.navigateByUrl(`/movie/${this.movieData.id}`);

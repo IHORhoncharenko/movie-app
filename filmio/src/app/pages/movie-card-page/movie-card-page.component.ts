@@ -6,6 +6,7 @@ import { ButtonModule } from "primeng/button";
 import { RatingModule } from "primeng/rating";
 import { TabViewModule } from "primeng/tabview";
 import { ToggleButtonModule } from "primeng/togglebutton";
+import { Movie } from "../../models/movie.models";
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
 import { SafeUrlPipe } from "../../pipes/safeUrl/safeUrl.pipe";
 import { MoviesService } from "../../services/movies.service";
@@ -30,33 +31,50 @@ import { MoviesService } from "../../services/movies.service";
   styleUrls: ["./movie-card-page.component.css"],
 })
 export class MovieCardPageComponent implements OnInit {
-  public movieDetailseData: any = {};
+  public movieDetailseData: Movie | undefined;
   public value: number | undefined;
   public isShowrating = false;
   public isShowYoutube = false;
   public correctUrlPoster: any;
-  public allMovies: any = [];
+  public allMovies: Movie[] | undefined;
+  public isFamilyFriendly: boolean | undefined;
+  public urlPoster: string | undefined;
 
   constructor(
     private route: ActivatedRoute,
-    private movieServices: MoviesService,
+    private movieService: MoviesService,
   ) {}
 
-  ngOnInit(): void {
-    this.allMovies.push(this.movieServices.getMovies());
-    this.allMovies = this.allMovies[0];
-    console.log(this.allMovies);
+  ngOnInit() {
+    this.movieService.getAllMovies().subscribe((data) => {
+      this.allMovies = data.flatMap((movieApi) => movieApi.results);
 
-    this.route.params.subscribe((params) => {
-      const movieId = params["id"];
-      this.movieDetailseData =
-        this.allMovies.find((movie: any) => movie.id === Number(movieId)) || {};
+      this.route.params.subscribe((params) => {
+        const movieId = Number(params["id"]);
+
+        if (this.allMovies) {
+          this.allMovies.forEach((movie) => {
+            if (movie.id === movieId) {
+              this.movieDetailseData = movie;
+            }
+          });
+        }
+
+        console.log(this.movieDetailseData);
+
+        if (this.movieDetailseData) {
+          this.value = Math.round(Number(this.movieDetailseData.vote_average));
+
+          this.urlPoster = `https://media.themoviedb.org/t/p/w220_and_h330_face${this.movieDetailseData.poster_path}`;
+
+          if (this.movieDetailseData.adult === false) {
+            this.isFamilyFriendly = true;
+          } else {
+            this.isFamilyFriendly = false;
+          }
+        }
+      });
     });
-
-    this.value = Math.round(Number(this.movieDetailseData.rating));
-    let url = this.movieDetailseData.trailer;
-    let urlTrailerId = url.split("/").reverse();
-    this.correctUrlPoster = ` https://i.ytimg.com/vi/${urlTrailerId[0]}/sddefault.jpg`;
   }
 
   mouseenter = () => {
@@ -71,10 +89,10 @@ export class MovieCardPageComponent implements OnInit {
     this.isShowYoutube = true;
   };
 
-  choosingFavoriteMovie = (movieId: any) => {
-    this.movieServices.setFavoritesMoviesId(movieId);
+  choosingFavoriteMovie = (movieId: number) => {
+    this.movieService.setFavoritesMoviesId(movieId);
   };
-  choosingToWatchListMovie = (movieId: any) => {
-    this.movieServices.setWatchListMoviesId(movieId);
+  choosingToWatchListMovie = (movieId: number) => {
+    this.movieService.setWatchListMoviesId(movieId);
   };
 }

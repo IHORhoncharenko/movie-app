@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { SidebarComponent } from "../../components/sidebar/sidebar.component";
+import { Movie } from "../../models/movie.models";
 import { MoviesService } from "../../services/movies.service";
 
 @Component({
@@ -11,20 +12,14 @@ import { MoviesService } from "../../services/movies.service";
   imports: [SidebarComponent, MovieCardComponent],
 })
 export class NowPlaingPageComponent implements OnInit {
-  public movies: any = [];
-  public nowPlayingMovies: any = [];
+  public nowPlayingMovies: Movie[] | undefined;
 
   constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
-    this.movies.push(this.movieService.getMovies());
-
-    this.movies.forEach((e: any) => {
-      [...e].forEach((m) => {
-        if (m["category-label"] === "playing") {
-          this.nowPlayingMovies.push(m);
-        }
-      });
+    this.movieService.getNowPlayingMovies().subscribe((data) => {
+      this.nowPlayingMovies = data.results;
+      console.log(this.nowPlayingMovies);
     });
   }
 }

@@ -1,29 +1,55 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { movies } from "../staticData/movies";
+import { Observable, forkJoin } from "rxjs";
+import { Movie, MovieApi } from "../models/movie.models";
 
 @Injectable({
   providedIn: "root",
 })
 export class MoviesService {
-  public favoritesMoviesId: any = [];
-  public favoritesMovies: any = [];
-  public watchlistMoviesId: any = [];
-  public watchlistMovies: any = [];
-  public allMovies = movies;
+  public favoritesMoviesId: number[] = [];
+  public favoritesMovies: Movie[] = [];
+  public watchlistMoviesId: number[] = [];
+  public watchlistMovies: Movie[] = [];
 
-  constructor() {}
+  private apiUrl = "https://api.themoviedb.org/3/movie";
+  private apiKey = "?api_key=3a52fcc8f8a0f860ecd716dd7a6e6334";
 
-  getMovies = () => {
-    return movies;
-  };
+  constructor(private http: HttpClient) {}
 
-  setFavoritesMoviesId = (id: any) => {
+  getUpcomingMovies(): Observable<MovieApi> {
+    return this.http.get<MovieApi>(`${this.apiUrl}/upcoming${this.apiKey}`);
+  }
+
+  getTopRategMovies(): Observable<MovieApi> {
+    return this.http.get<MovieApi>(`${this.apiUrl}/top_rated${this.apiKey}`);
+  }
+
+  getPopularMovies(): Observable<MovieApi> {
+    return this.http.get<MovieApi>(`${this.apiUrl}/popular${this.apiKey}`);
+  }
+
+  getNowPlayingMovies(): Observable<MovieApi> {
+    return this.http.get<MovieApi>(`${this.apiUrl}/now_playing${this.apiKey}`);
+  }
+
+  getAllMovies(): Observable<MovieApi[]> {
+    //forkJoin для об'єднання всіх Observable<MovieApi> в один.
+    return forkJoin([
+      this.getUpcomingMovies(),
+      this.getTopRategMovies(),
+      this.getPopularMovies(),
+      this.getNowPlayingMovies(),
+    ]);
+  }
+
+  setFavoritesMoviesId = (id: number) => {
     if (!this.favoritesMoviesId.includes(id)) {
       this.favoritesMoviesId.push(id);
     }
   };
 
-  setWatchListMoviesId = (id: any) => {
+  setWatchListMoviesId = (id: number) => {
     if (!this.watchlistMoviesId.includes(id)) {
       this.watchlistMoviesId.push(id);
     }
@@ -40,25 +66,41 @@ export class MoviesService {
   };
 
   setFavoritesMovies = () => {
-    this.allMovies.forEach((m: any) => {
-      this.favoritesMoviesId.forEach((w: any) => {
-        if (String(m.id) === String(w)) {
-          if (!this.favoritesMovies.includes(m)) {
-            this.favoritesMovies.push(m);
+    this.getAllMovies().subscribe((data) => {
+      let allMovies = data.flatMap((movieApi) => movieApi.results);
+
+      allMovies.forEach((m) => {
+        this.favoritesMoviesId.forEach((fId: number) => {
+          if (Number(m.id) === Number(fId)) {
+            if (
+              !this.favoritesMovies.some(
+                (favMovie: Movie) => favMovie.id === m.id,
+              )
+            ) {
+              this.favoritesMovies.push(m);
+            }
           }
-        }
+        });
       });
     });
   };
 
   setWatchListMovies = () => {
-    this.allMovies.forEach((m: any) => {
-      this.watchlistMoviesId.forEach((w: any) => {
-        if (String(m.id) === String(w)) {
-          if (!this.watchlistMovies.includes(m)) {
-            this.watchlistMovies.push(m);
+    this.getAllMovies().subscribe((data) => {
+      let allMovies = data.flatMap((movieApi) => movieApi.results);
+
+      allMovies.forEach((m) => {
+        this.watchlistMoviesId.forEach((fId: number) => {
+          if (Number(m.id) === Number(fId)) {
+            if (
+              !this.watchlistMovies.some(
+                (watchMovie: Movie) => watchMovie.id === m.id,
+              )
+            ) {
+              this.watchlistMovies.push(m);
+            }
           }
-        }
+        });
       });
     });
   };

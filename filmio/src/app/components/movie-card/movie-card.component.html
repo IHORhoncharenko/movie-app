@@ -1,11 +1,15 @@
-<p-card class="card" [header]="movieData.title" [subheader]="movieData.year">
+<p-card
+  class="card"
+  [header]="movieData.title"
+  [subheader]="movieData.release_date"
+>
   <ng-template pTemplate="header">
     <img
       (click)="openMovieCard()"
       fetchpriority="high"
       decoding="async"
       alt="movieData.title"
-      [src]="movieData.poster"
+      [src]="urlPoster"
     />
   </ng-template>
 
@@ -19,7 +23,7 @@
       [cancel]="false"
     />
     @if (isShowRating) {
-      <p-badge class="rating__badge" [value]="movieData.rating" />
+      <p-badge class="rating__badge" [value]="movieData.vote_average" />
     }
   </div>
 
@@ -38,24 +42,20 @@
       >
         <p-button (click)="openMovieCard()">Go to film</p-button>
         <dl class="modal__content">
-          <dt>Director</dt>
-          <dd>{{ movieData.director }}</dd>
-          <dt>Actors</dt>
-          <dd>
-            <ul>
-              @for (actor of movieData.actors; track movieData.id) {
-                <li>{{ actor }}</li>
-              }
-            </ul>
-          </dd>
-          <dt>Country</dt>
-          <dd>{{ movieData.country }}</dd>
+          <dt>Original title</dt>
+          <dd>{{ movieData.original_title }}</dd>
+          <dt>Recommended age for watching</dt>
+          @if (isFamilyFriendly) {
+            <dd>0+</dd>
+          } @else {
+            <dd>18+</dd>
+          }
+          <dt>ID</dt>
+          <dd>{{ movieData.id }}</dd>
           <dt>Language</dt>
-          <dd>{{ movieData.language }}</dd>
-          <dt>boxOffice</dt>
-          <dd>{{ movieData.boxOffice }}</dd>
-          <dt>Movie duration</dt>
-          <dd>{{ movieData.runtime | convertingMinutesToHours }}</dd>
+          <dd>{{ movieData.original_language }}</dd>
+          <dt>Overview</dt>
+          <dd>{{ movieData.overview }}</dd>
         </dl>
       </p-dialog>
     </div>

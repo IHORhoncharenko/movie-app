@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { SidebarComponent } from "../../components/sidebar/sidebar.component";
+import { Movie } from "../../models/movie.models";
 import { MoviesService } from "../../services/movies.service";
 
 @Component({
@@ -11,12 +12,17 @@ import { MoviesService } from "../../services/movies.service";
   imports: [SidebarComponent, MovieCardComponent],
 })
 export class MovieListPageComponent implements OnInit {
-  public allMovies: any = [];
+  public allMovies: Movie[] | undefined;
 
   constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
-    this.allMovies = this.movieService.getMovies();
-    console.log(this.allMovies);
+    // Об'єднати всі масиви фільмів в один
+    //  Метод flatMap об'єднує масиви результатів з кожного MovieApi в один масив фільмів.
+    this.movieService.getAllMovies().subscribe((data) => {
+      console.log(`data: ${data}`);
+      this.allMovies = data.flatMap((movieApi) => movieApi.results);
+      console.log(this.allMovies);
+    });
   }
 }

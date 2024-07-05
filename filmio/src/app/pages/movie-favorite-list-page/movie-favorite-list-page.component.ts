@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ButtonModule } from "primeng/button";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
+import { Movie } from "../../models/movie.models";
 import { MoviesService } from "../../services/movies.service";
 
 @Component({
@@ -11,7 +12,7 @@ import { MoviesService } from "../../services/movies.service";
   styleUrls: ["./movie-favorite-list-page.component.css"],
 })
 export class MovieFavoriteListPageComponent implements OnInit {
-  public favoritesMovies: any = [];
+  public favoritesMovies: Movie[] | undefined;
   public isClearList = false;
 
   constructor(private movieService: MoviesService) {}
