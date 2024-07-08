@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { AvatarModule } from "primeng/avatar";
 import { AvatarGroupModule } from "primeng/avatargroup";
@@ -25,10 +25,6 @@ import { StyleClassModule } from "primeng/styleclass";
   templateUrl: "./sidebar.component.html",
   styleUrls: ["./sidebar.component.css"],
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
   public isSidebarVisible = false;
-
-  constructor() {}
-
-  ngOnInit() {}
 }

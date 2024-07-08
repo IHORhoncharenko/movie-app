@@ -1,7 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, forkJoin } from "rxjs";
-import { Movie, MovieApi } from "../models/movie.models";
+import { Movie } from "../models/movie.models";
+import { MovieApi } from "../models/movieApi.models";
 
 @Injectable({
   providedIn: "root",

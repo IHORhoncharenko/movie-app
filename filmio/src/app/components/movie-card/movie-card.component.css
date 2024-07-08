@@ -1,46 +1,10 @@
-p-card.card {
+p-card {
   max-width: 250px;
-  margin: 1em;
-  display: inline-block;
+  text-align: center;
 
-  ::ng-deep.p-card-header>img:hover {
-    cursor: pointer;
-  }
-
-  .card__rating {
-    text-align: center;
-
-    .rating__badge {
-      position: absolute;
-      margin: 0 0 0 1em;
-    }
-  }
-
-  .card__action {
-    text-align: center;
-
-    .modal__content dt {
-      text-align: left;
-    }
-  }
-
-  .card__tags {
-    text-align: center;
-
-    >p-tag {
-      display: inline-block;
-      margin: 10px 0 0 5px;
-
-      ::ng-deep .p-tag {
-        background-color: gainsboro;
-        border-radius: 15%;
-      }
-    }
-
-  }
-
-  ::ng-deep .p-dialog {
-    width: 50rem;
+  hgroup {
+    max-width: 200px;
+    margin: 0 auto;
   }
 
 }

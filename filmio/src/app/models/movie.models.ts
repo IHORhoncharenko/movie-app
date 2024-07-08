@@ -1,13 +1,3 @@
-export interface MovieApi {
-  dates?: MovieDatesApi;
-  page: number;
-  results: Movie[];
-}
-export interface MovieDatesApi {
-  maximum: string;
-  minimum: string;
-}
-
 export interface Movie {
   adult: boolean;
   backdrop_path: string;

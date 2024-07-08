@@ -1,8 +1,4 @@
-<p-card
-  class="card"
-  [header]="movieData.title"
-  [subheader]="movieData.release_date"
->
+<p-card>
   <ng-template pTemplate="header">
     <img
       (click)="openMovieCard()"
@@ -11,6 +7,10 @@
       alt="movieData.title"
       [src]="urlPoster"
     />
+    <hgroup>
+      <h2>{{ movieData.title }}</h2>
+      <p>{{ movieData.release_date }}</p>
+    </hgroup>
   </ng-template>
 
   <div class="card__rating rating">

@@ -29,13 +29,13 @@
             [(ngModel)]="value"
             [readonly]="true"
             [cancel]="false"
-          />
+          ></p-rating>
 
           @if (isShowrating) {
             <p-badge
               class="badge-rating"
               [value]="movieDetailseData.vote_average"
-            />
+            ></p-badge>
           }
         </li>
       </ul>
