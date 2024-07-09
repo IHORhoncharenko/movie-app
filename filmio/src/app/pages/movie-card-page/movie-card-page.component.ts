@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { BadgeModule } from "primeng/badge";
@@ -6,6 +6,7 @@ import { ButtonModule } from "primeng/button";
 import { RatingModule } from "primeng/rating";
 import { TabViewModule } from "primeng/tabview";
 import { ToggleButtonModule } from "primeng/togglebutton";
+import { Subscription } from "rxjs";
 import { Movie } from "../../models/movie.models";
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
 import { SafeUrlPipe } from "../../pipes/safeUrl/safeUrl.pipe";
@@ -30,7 +31,7 @@ import { MoviesService } from "../../services/movies.service";
   templateUrl: "./movie-card-page.component.html",
   styleUrls: ["./movie-card-page.component.css"],
 })
-export class MovieCardPageComponent implements OnInit {
+export class MovieCardPageComponent implements OnInit, OnDestroy {
   public movieDetailseData: Movie | undefined;
   public value: number | undefined;
   public isShowrating = false;
@@ -39,6 +40,8 @@ export class MovieCardPageComponent implements OnInit {
   public allMovies: Movie[] | undefined;
   public isFamilyFriendly: boolean | undefined;
   public urlPoster: string | undefined;
+  private subscription: Subscription = new Subscription();
+  private token: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,21 +49,11 @@ export class MovieCardPageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.movieService.getAllMovies().subscribe((data) => {
-      this.allMovies = data.flatMap((movieApi) => movieApi.results);
+    this.subscription = this.route.params.subscribe((params) => {
+      const movieId = Number(params["id"]);
 
-      this.route.params.subscribe((params) => {
-        const movieId = Number(params["id"]);
-
-        if (this.allMovies) {
-          this.allMovies.forEach((movie) => {
-            if (movie.id === movieId) {
-              this.movieDetailseData = movie;
-            }
-          });
-        }
-
-        console.log(this.movieDetailseData);
+      this.movieService.getMovieById(movieId).subscribe((data) => {
+        this.movieDetailseData = data;
 
         if (this.movieDetailseData) {
           this.value = Math.round(Number(this.movieDetailseData.vote_average));
@@ -75,6 +68,13 @@ export class MovieCardPageComponent implements OnInit {
         }
       });
     });
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      console.log(`Відписка від Observable`);
+      this.subscription.unsubscribe();
+    }
   }
 
   mouseenter = () => {
@@ -94,5 +94,17 @@ export class MovieCardPageComponent implements OnInit {
   };
   choosingToWatchListMovie = (movieId: number) => {
     this.movieService.setWatchListMoviesId(movieId);
+  };
+
+  postTestFav = (movieId: any) => {
+    this.movieService.getToken().subscribe((response) => {
+      let authSessionUrl = `${response.headers.get("Authentication-Callback")}`;
+      this.token = response.body;
+      this.token = this.token.request_token;
+      window.open(authSessionUrl, "_blank");
+      console.log(authSessionUrl);
+      console.log(this.token);
+      console.log(this.route);
+    });
   };
 }

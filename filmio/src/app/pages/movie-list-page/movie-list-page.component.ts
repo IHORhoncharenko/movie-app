@@ -19,15 +19,14 @@ export class MovieListPageComponent implements OnInit, OnDestroy {
   constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
-    // Об'єднати всі масиви фільмів в один
-    //  Метод flatMap об'єднує масиви результатів з кожного MovieApi в один масив фільмів.
     this.subscription = this.movieService.getAllMovies().subscribe((data) => {
-      this.allMovies = data.flatMap((movieApi) => movieApi.results);
+      this.allMovies = data;
     });
   }
 
   ngOnDestroy() {
     if (this.subscription) {
+      console.log("Відписка від Observable");
       this.subscription.unsubscribe();
     }
   }

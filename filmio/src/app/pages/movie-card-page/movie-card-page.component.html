@@ -5,7 +5,10 @@
         <h2>{{ movieDetailseData.title }}</h2>
         <div class="header-card__icons icons-group">
           <button
-            (click)="choosingFavoriteMovie(movieDetailseData.id)"
+            (click)="
+              choosingFavoriteMovie(movieDetailseData.id);
+              postTestFav(movieDetailseData.id)
+            "
             class="icons-group__favorite--active"
           ></button>
           <button

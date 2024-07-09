@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, forkJoin } from "rxjs";
+import { forkJoin, map } from "rxjs";
 import { Movie } from "../models/movie.models";
 import { MovieApi } from "../models/movieApi.models";
 
@@ -12,37 +12,67 @@ export class MoviesService {
   public favoritesMovies: Movie[] = [];
   public watchlistMoviesId: number[] = [];
   public watchlistMovies: Movie[] = [];
-
+  public page: string = "/favorite" || "/watchlist";
   private apiUrl = "https://api.themoviedb.org/3/movie";
   private apiKey = "?api_key=3a52fcc8f8a0f860ecd716dd7a6e6334";
+  private apiUrlAccount = "https://api.themoviedb.org/3/account";
+  private accountId = "/21365380";
 
   constructor(private http: HttpClient) {}
 
-  getUpcomingMovies(): Observable<MovieApi> {
+  getToken = () => {
+    return this.http.get(
+      `https://api.themoviedb.org/3/authentication/token/new${this.apiKey}`,
+      {
+        observe: "response",
+      },
+    );
+  };
+
+  postData = (data: any, page: string) => {
+    return this.http.post(
+      `${this.apiUrlAccount}${this.accountId}${page}`,
+      data,
+    );
+  };
+
+  getUpcomingMovies = () => {
     return this.http.get<MovieApi>(`${this.apiUrl}/upcoming${this.apiKey}`);
-  }
+  };
 
-  getTopRategMovies(): Observable<MovieApi> {
+  getTopRategMovies = () => {
     return this.http.get<MovieApi>(`${this.apiUrl}/top_rated${this.apiKey}`);
-  }
+  };
 
-  getPopularMovies(): Observable<MovieApi> {
+  getPopularMovies = () => {
     return this.http.get<MovieApi>(`${this.apiUrl}/popular${this.apiKey}`);
-  }
+  };
 
-  getNowPlayingMovies(): Observable<MovieApi> {
+  getNowPlayingMovies = () => {
     return this.http.get<MovieApi>(`${this.apiUrl}/now_playing${this.apiKey}`);
-  }
+  };
 
-  getAllMovies(): Observable<MovieApi[]> {
+  getMovieById = (id: number) => {
+    return this.getAllMovies().pipe(
+      map((data) => {
+        return data.find((m) => m.id === id);
+      }),
+    );
+  };
+
+  getAllMovies = () => {
     //forkJoin для об'єднання всіх Observable<MovieApi> в один.
     return forkJoin([
       this.getUpcomingMovies(),
       this.getTopRategMovies(),
       this.getPopularMovies(),
       this.getNowPlayingMovies(),
-    ]);
-  }
+    ]).pipe(
+      map((data) => {
+        return data.flatMap((movieApi) => movieApi.results);
+      }),
+    );
+  };
 
   setFavoritesMoviesId = (id: number) => {
     if (!this.favoritesMoviesId.includes(id)) {
@@ -68,7 +98,7 @@ export class MoviesService {
 
   setFavoritesMovies = () => {
     this.getAllMovies().subscribe((data) => {
-      let allMovies = data.flatMap((movieApi) => movieApi.results);
+      let allMovies = data;
 
       allMovies.forEach((m) => {
         this.favoritesMoviesId.forEach((fId: number) => {
@@ -88,7 +118,7 @@ export class MoviesService {
 
   setWatchListMovies = () => {
     this.getAllMovies().subscribe((data) => {
-      let allMovies = data.flatMap((movieApi) => movieApi.results);
+      let allMovies = data;
 
       allMovies.forEach((m) => {
         this.watchlistMoviesId.forEach((fId: number) => {
