@@ -15,6 +15,10 @@ export class MoviesService {
   public page: string = "/favorite" || "/watchlist";
   private apiUrl = "https://api.themoviedb.org/3/movie";
   private apiKey = "?api_key=3a52fcc8f8a0f860ecd716dd7a6e6334";
+  private apiUrlValidToken =
+    "https://api.themoviedb.org/3/authentication/token/validate_with_login";
+  private apiUrlSession =
+    "https://api.themoviedb.org/3/authentication/session/new";
   private apiUrlAccount = "https://api.themoviedb.org/3/account";
   private accountId = "/21365380";
 
@@ -29,10 +33,35 @@ export class MoviesService {
     );
   };
 
-  postData = (data: any, page: string) => {
+  getValidToken = (token: string) => {
     return this.http.post(
-      `${this.apiUrlAccount}${this.accountId}${page}`,
-      data,
+      `${this.apiUrlValidToken}${this.apiKey}`,
+      {
+        username: "IHORhoncharenko",
+        password: "ejU9v9UxvRjpwe.",
+        request_token: token,
+      },
+      {
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+        },
+      },
+    );
+  };
+
+  createSessionId = (token: string) => {
+    return this.http.post(
+      `${this.apiUrlSession}${this.apiKey}`,
+      {
+        request_token: token,
+      },
+      {
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+        },
+      },
     );
   };
 

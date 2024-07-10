@@ -101,9 +101,23 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
       let authSessionUrl = `${response.headers.get("Authentication-Callback")}`;
       this.token = response.body;
       this.token = this.token.request_token;
-      window.open(authSessionUrl, "_blank");
-      console.log(authSessionUrl);
-      console.log(this.token);
+      // window.open(`${authSessionUrl}`, "_blank");
+
+      if (this.token) {
+        this.movieService.getValidToken(this.token).subscribe((response) => {
+          this.token = this.token.request_token;
+          console.log(response);
+
+          this.movieService
+            .createSessionId(this.token)
+            .subscribe((response2) => {
+              console.log(response2);
+            });
+        });
+      }
+
+      console.log(`request_token: ${this.token}`);
+      console.log(`Authentication-Callback: ${authSessionUrl}`);
       console.log(this.route);
     });
   };
