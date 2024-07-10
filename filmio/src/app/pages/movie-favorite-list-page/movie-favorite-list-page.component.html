@@ -1,9 +1,4 @@
-<p-button
-  (click)="clearFavoritelist()"
-  class="btn"
-  [size]="'small'"
-  label="clear"
-/>
+<p-button class="btn" [size]="'small'" label="clear" />
 @if (!isClearList) {
   <div class="movie-list">
     @for (movie of favoritesMovies; track movie.id) {

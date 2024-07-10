@@ -17,12 +17,5 @@ export class MovieFavoriteListPageComponent implements OnInit {
 
   constructor(private movieService: MoviesService) {}
 
-  ngOnInit() {
-    this.favoritesMovies = this.movieService.getFavoritesMovies();
-  }
-
-  clearFavoritelist = () => {
-    this.isClearList = true;
-    this.movieService.clearFavoritesMovies();
-  };
+  ngOnInit() {}
 }

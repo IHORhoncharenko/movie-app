@@ -1,69 +1,21 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { forkJoin, map } from "rxjs";
-import { Movie } from "../models/movie.models";
 import { MovieApi } from "../models/movieApi.models";
+import { AuthUserService } from "./authUser.service.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class MoviesService {
-  public favoritesMoviesId: number[] = [];
-  public favoritesMovies: Movie[] = [];
-  public watchlistMoviesId: number[] = [];
-  public watchlistMovies: Movie[] = [];
-  public page: string = "/favorite" || "/watchlist";
   private apiUrl = "https://api.themoviedb.org/3/movie";
+  private apiUrlUserListMovie = "https://api.themoviedb.org/3/account";
   private apiKey = "?api_key=3a52fcc8f8a0f860ecd716dd7a6e6334";
-  private apiUrlValidToken =
-    "https://api.themoviedb.org/3/authentication/token/validate_with_login";
-  private apiUrlSession =
-    "https://api.themoviedb.org/3/authentication/session/new";
-  private apiUrlAccount = "https://api.themoviedb.org/3/account";
-  private accountId = "/21365380";
 
-  constructor(private http: HttpClient) {}
-
-  getToken = () => {
-    return this.http.get(
-      `https://api.themoviedb.org/3/authentication/token/new${this.apiKey}`,
-      {
-        observe: "response",
-      },
-    );
-  };
-
-  getValidToken = (token: string) => {
-    return this.http.post(
-      `${this.apiUrlValidToken}${this.apiKey}`,
-      {
-        username: "IHORhoncharenko",
-        password: "ejU9v9UxvRjpwe.",
-        request_token: token,
-      },
-      {
-        headers: {
-          accept: "application/json",
-          "content-type": "application/json",
-        },
-      },
-    );
-  };
-
-  createSessionId = (token: string) => {
-    return this.http.post(
-      `${this.apiUrlSession}${this.apiKey}`,
-      {
-        request_token: token,
-      },
-      {
-        headers: {
-          accept: "application/json",
-          "content-type": "application/json",
-        },
-      },
-    );
-  };
+  constructor(
+    private http: HttpClient,
+    private authUser: AuthUserService,
+  ) {}
 
   getUpcomingMovies = () => {
     return this.http.get<MovieApi>(`${this.apiUrl}/upcoming${this.apiKey}`);
@@ -103,75 +55,28 @@ export class MoviesService {
     );
   };
 
-  setFavoritesMoviesId = (id: number) => {
-    if (!this.favoritesMoviesId.includes(id)) {
-      this.favoritesMoviesId.push(id);
-    }
-  };
-
-  setWatchListMoviesId = (id: number) => {
-    if (!this.watchlistMoviesId.includes(id)) {
-      this.watchlistMoviesId.push(id);
-    }
-  };
-
-  clearWatchListMovies = () => {
-    this.watchlistMoviesId = [];
-    this.watchlistMovies = [];
-  };
-
-  clearFavoritesMovies = () => {
-    this.favoritesMoviesId = [];
-    this.favoritesMovies = [];
-  };
-
-  setFavoritesMovies = () => {
-    this.getAllMovies().subscribe((data) => {
-      let allMovies = data;
-
-      allMovies.forEach((m) => {
-        this.favoritesMoviesId.forEach((fId: number) => {
-          if (Number(m.id) === Number(fId)) {
-            if (
-              !this.favoritesMovies.some(
-                (favMovie: Movie) => favMovie.id === m.id,
-              )
-            ) {
-              this.favoritesMovies.push(m);
-            }
-          }
-        });
-      });
-    });
-  };
-
-  setWatchListMovies = () => {
-    this.getAllMovies().subscribe((data) => {
-      let allMovies = data;
-
-      allMovies.forEach((m) => {
-        this.watchlistMoviesId.forEach((fId: number) => {
-          if (Number(m.id) === Number(fId)) {
-            if (
-              !this.watchlistMovies.some(
-                (watchMovie: Movie) => watchMovie.id === m.id,
-              )
-            ) {
-              this.watchlistMovies.push(m);
-            }
-          }
-        });
-      });
-    });
-  };
-
-  getFavoritesMovies = () => {
-    this.setFavoritesMovies();
-    return this.favoritesMovies;
-  };
-
-  getWatchListMovies = () => {
-    this.setWatchListMovies();
-    return this.watchlistMovies;
+  addToFavorite = (accountID: string, validToken: string, media_id: number) => {
+    console.log(
+      `
+      accountID --- ${accountID},
+      validToken --- ${validToken},
+      media_id --- ${media_id}
+      `,
+    );
+    return this.http.post(
+      `${this.apiUrlUserListMovie}/${accountID}/favorite${this.apiKey}`,
+      {
+        media_type: "movie",
+        media_id: media_id,
+        favorite: true,
+      },
+      {
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          Authorization: `Bearer ${validToken}`,
+        },
+      },
+    );
   };
 }

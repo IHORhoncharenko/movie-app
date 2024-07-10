@@ -16,12 +16,5 @@ export class MovieWatchListPageComponent implements OnInit {
 
   constructor(private movieService: MoviesService) {}
 
-  ngOnInit() {
-    this.watchlistMovies = this.movieService.getWatchListMovies();
-  }
-
-  clearWatchlist = () => {
-    this.isClearList = true;
-    this.movieService.clearWatchListMovies();
-  };
+  ngOnInit() {}
 }

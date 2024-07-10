@@ -1,9 +1,4 @@
-<p-button
-  (click)="clearWatchlist()"
-  class="btn"
-  [size]="'small'"
-  label="clear"
-/>
+<p-button class="btn" [size]="'small'" label="clear" />
 @if (!isClearList) {
   <div class="movie-list">
     @for (movie of watchlistMovies; track movie.id) {

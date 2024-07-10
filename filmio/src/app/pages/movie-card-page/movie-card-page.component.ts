@@ -8,8 +8,10 @@ import { TabViewModule } from "primeng/tabview";
 import { ToggleButtonModule } from "primeng/togglebutton";
 import { Subscription } from "rxjs";
 import { Movie } from "../../models/movie.models";
+import { User } from "../../models/user.models";
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
 import { SafeUrlPipe } from "../../pipes/safeUrl/safeUrl.pipe";
+import { AuthUserService } from "../../services/authUser.service.service";
 import { MoviesService } from "../../services/movies.service";
 
 @Component({
@@ -41,11 +43,12 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
   public isFamilyFriendly: boolean | undefined;
   public urlPoster: string | undefined;
   private subscription: Subscription = new Subscription();
-  private token: any;
+  private userData: User | undefined | void;
 
   constructor(
     private route: ActivatedRoute,
     private movieService: MoviesService,
+    private authUserService: AuthUserService,
   ) {}
 
   ngOnInit() {
@@ -90,35 +93,17 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
   };
 
   choosingFavoriteMovie = (movieId: number) => {
-    this.movieService.setFavoritesMoviesId(movieId);
-  };
-  choosingToWatchListMovie = (movieId: number) => {
-    this.movieService.setWatchListMoviesId(movieId);
-  };
+    this.userData = this.authUserService.getUserData();
 
-  postTestFav = (movieId: any) => {
-    this.movieService.getToken().subscribe((response) => {
-      let authSessionUrl = `${response.headers.get("Authentication-Callback")}`;
-      this.token = response.body;
-      this.token = this.token.request_token;
-      // window.open(`${authSessionUrl}`, "_blank");
-
-      if (this.token) {
-        this.movieService.getValidToken(this.token).subscribe((response) => {
-          this.token = this.token.request_token;
+    if (this.userData && this.movieDetailseData) {
+      console.log(
+        `userData --- ${JSON.stringify(this.userData)}, movie --- ${JSON.stringify(this.movieDetailseData)}`,
+      );
+      this.movieService
+        .addToFavorite(this.userData.accountId, this.userData.token, movieId)
+        .subscribe((response) => {
           console.log(response);
-
-          this.movieService
-            .createSessionId(this.token)
-            .subscribe((response2) => {
-              console.log(response2);
-            });
         });
-      }
-
-      console.log(`request_token: ${this.token}`);
-      console.log(`Authentication-Callback: ${authSessionUrl}`);
-      console.log(this.route);
-    });
+    }
   };
 }
