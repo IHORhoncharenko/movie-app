@@ -3,7 +3,7 @@ import { Subscription } from "rxjs";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { SidebarComponent } from "../../components/sidebar/sidebar.component";
 import { Movie } from "../../models/movie.models";
-import { MoviesService } from "../../services/movies.service";
+import { MoviesService } from "../../services/movies/movies.service";
 
 @Component({
   selector: "app-movie-list-page",
@@ -19,9 +19,11 @@ export class MovieListPageComponent implements OnInit, OnDestroy {
   constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
-    this.subscription = this.movieService.getAllMovies().subscribe((data) => {
-      this.allMovies = data;
-    });
+    this.subscription = this.movieService
+      .getAllMovies()
+      .subscribe((response) => {
+        this.allMovies = response;
+      });
   }
 
   ngOnDestroy() {

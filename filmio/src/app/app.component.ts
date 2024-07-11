@@ -3,7 +3,7 @@ import { RouterModule, RouterOutlet } from "@angular/router";
 import { switchMap } from "rxjs";
 import { CatalogComponent } from "./components/catalog/catalog.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
-import { AuthUserService } from "./services/authUser.service.service";
+import { AuthUserService } from "./services/users/authUser.service.service";
 
 @Component({
   selector: "app-root",
@@ -13,7 +13,7 @@ import { AuthUserService } from "./services/authUser.service.service";
   imports: [RouterOutlet, SidebarComponent, RouterModule, CatalogComponent],
 })
 export class AppComponent implements OnInit {
-  private token: any;
+  private requestToken: any;
   private sessionID: any;
   private accountId: any;
 
@@ -21,15 +21,15 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.authUserService
-      .getToken()
+      .getRequestToken()
       .pipe(
         switchMap((response: any) => {
-          this.token = response;
-          this.token = this.token.request_token;
-          return this.authUserService.getValidToken(this.token);
+          this.requestToken = response;
+          this.requestToken = this.requestToken.request_token;
+          return this.authUserService.getValidToken(this.requestToken);
         }),
         switchMap(() => {
-          return this.authUserService.createSessionId(this.token);
+          return this.authUserService.createSessionId(this.requestToken);
         }),
         switchMap((response: any) => {
           this.sessionID = response;
@@ -41,14 +41,16 @@ export class AppComponent implements OnInit {
         this.accountId = response;
         this.accountId = this.accountId.id;
         this.authUserService.setUserData(
-          this.token,
+          this.requestToken,
           this.sessionID,
           this.accountId,
         );
 
-        console.log(`request_token: ${this.token}`);
-        console.log(`session_id: ${this.sessionID}`);
-        console.log(`account_id: ${this.accountId}`);
+        console.log(`
+          request_token: ${this.requestToken}
+          session_id: ${this.sessionID}
+          account_id: ${this.accountId}
+          `);
       });
   }
 }

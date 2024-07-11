@@ -11,8 +11,8 @@ import { Movie } from "../../models/movie.models";
 import { User } from "../../models/user.models";
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
 import { SafeUrlPipe } from "../../pipes/safeUrl/safeUrl.pipe";
-import { AuthUserService } from "../../services/authUser.service.service";
-import { MoviesService } from "../../services/movies.service";
+import { MoviesService } from "../../services/movies/movies.service";
+import { AuthUserService } from "../../services/users/authUser.service.service";
 
 @Component({
   selector: "app-movie-card-page",
@@ -96,11 +96,28 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
     this.userData = this.authUserService.getUserData();
 
     if (this.userData && this.movieDetailseData) {
-      console.log(
-        `userData --- ${JSON.stringify(this.userData)}, movie --- ${JSON.stringify(this.movieDetailseData)}`,
-      );
+      console.log(`
+        userData --- ${JSON.stringify(this.userData)}
+        movie --- ${JSON.stringify(this.movieDetailseData)}
+        `);
       this.movieService
-        .addToFavorite(this.userData.accountId, this.userData.token, movieId)
+        .addToFavorite(this.userData.accountId, movieId)
+        .subscribe((response) => {
+          console.log(response);
+        });
+    }
+  };
+
+  choosingWatchlistMovie = (movieId: number) => {
+    this.userData = this.authUserService.getUserData();
+
+    if (this.userData && this.movieDetailseData) {
+      console.log(`
+        userData --- ${JSON.stringify(this.userData)}
+        movie --- ${JSON.stringify(this.movieDetailseData)}
+        `);
+      this.movieService
+        .addToWatchlist(this.userData.accountId, movieId)
         .subscribe((response) => {
           console.log(response);
         });

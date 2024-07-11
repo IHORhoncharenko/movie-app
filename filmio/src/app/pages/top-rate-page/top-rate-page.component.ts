@@ -3,7 +3,7 @@ import { Subscription } from "rxjs";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { SidebarComponent } from "../../components/sidebar/sidebar.component";
 import { Movie } from "../../models/movie.models";
-import { MoviesService } from "../../services/movies.service";
+import { MoviesService } from "../../services/movies/movies.service";
 
 @Component({
   selector: "app-top-rate-page",
