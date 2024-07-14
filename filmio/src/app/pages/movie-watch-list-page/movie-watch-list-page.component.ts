@@ -1,7 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ButtonModule } from "primeng/button";
-import { Subscription, catchError, concatMap, tap, throwError } from "rxjs";
+import { Subscription, catchError, tap } from "rxjs";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
+import { User } from "../../models/user.models";
 import { MoviesService } from "../../services/movies/movies.service";
 import { AuthUserService } from "../../services/users/authUser.service.service";
 
@@ -16,10 +17,8 @@ export class MovieWatchListPageComponent implements OnInit {
   public watchlistMovies: any;
   public mesLoadingStatus = false;
   public isClearList = false;
-  private sessionID: any;
-  private accountId: any;
-  private requestToken: any;
   private subscription = new Subscription();
+  private userData: User | undefined | void;
 
   constructor(
     private movieService: MoviesService,
@@ -27,61 +26,29 @@ export class MovieWatchListPageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.subscription = this.authUserService
-      .getRequestToken()
-      .pipe(
-        tap(() => {
-          this.mesLoadingStatus = true;
-        }),
-        concatMap((response: any) => {
-          this.requestToken = response;
-          this.requestToken = this.requestToken.request_token;
-          return this.authUserService.getValidToken(this.requestToken).pipe(
-            catchError((error) => {
-              alert(`This is very bad...${error}`);
-              return throwError(error);
-            }),
-          );
-        }),
-        concatMap(() => {
-          return this.authUserService.createSessionId(this.requestToken).pipe(
-            catchError((error) => {
-              alert(`This is very bad...${error}`);
-              return throwError(error);
-            }),
-          );
-        }),
-        concatMap((response: any) => {
-          this.sessionID = response;
-          this.sessionID = this.sessionID.session_id;
-          return this.authUserService.getAccountId(this.sessionID).pipe(
-            catchError((error) => {
-              alert(`This is very bad...${error}`);
-              return throwError(error);
-            }),
-          );
-        }),
-        tap(() => {
-          this.mesLoadingStatus = false;
-        }),
-      )
-      .subscribe((response) => {
-        console.log(response);
-        this.watchlistMovies = response;
-        this.watchlistMovies = this.watchlistMovies.results;
-        this.authUserService.setUserDataTMDB(
-          this.requestToken,
-          this.sessionID,
-          this.accountId,
-        );
+    this.userData = this.authUserService.getUserDataTMDB();
 
-        console.log(`
-          request_token: ${this.requestToken}
-          session_id: ${this.sessionID}
-          account_id: ${this.accountId}
-          watchlistMovies: ${JSON.stringify(this.watchlistMovies)}
-          `);
-      });
+    if (this.userData) {
+      this.mesLoadingStatus = true;
+
+      this.movieService
+        .getWatchlistMovies(this.userData.accountId)
+        .pipe(
+          catchError((error) => {
+            alert(`This is very bad bro...${error}`);
+            return error;
+          }),
+          tap(() => {
+            this.mesLoadingStatus = false;
+          }),
+        )
+        .subscribe((data) => {
+          this.mesLoadingStatus = false;
+          this.watchlistMovies = data;
+          this.watchlistMovies = this.watchlistMovies.results;
+          console.log(this.watchlistMovies);
+        });
+    }
   }
 
   ngOnDestroy() {
