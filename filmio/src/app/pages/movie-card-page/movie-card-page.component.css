@@ -84,22 +84,19 @@ p {
 }
 
 dl {
-  margin: 0;
-  padding: 20px;
-  background-color: #fff;
-  border: 1px solid #dee2e6;
-  border-radius: 5px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 16px;
+  margin-top: 16px;
 
   dt {
-    font-weight: 600;
-    margin-top: 10px;
-    color: #495057;
+    font-weight: bold;
+    color: #333;
   }
 
   dd {
-    margin-left: 0;
-    margin-bottom: 10px;
-    color: #6c757d;
+    margin: 0;
+    color: #666;
   }
 }
 

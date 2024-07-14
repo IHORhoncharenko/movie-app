@@ -139,9 +139,9 @@ export class MoviesService {
     );
   };
 
-  getAllListMoviesbyUser = (accountID: string, sessionID: string) => {
+  getReviewsAboutMovie = (movieId: any) => {
     return this.http.get(
-      `${this.baseApiUrlTMDB}/account/${accountID}/lists?api_key=${this.apiKeyTMDB}&session_id=${sessionID}`,
+      `${this.baseApiUrlTMDB}/movie/${movieId}/reviews?api_key=${this.apiKeyTMDB}`,
       {
         headers: {
           accept: "application/json",

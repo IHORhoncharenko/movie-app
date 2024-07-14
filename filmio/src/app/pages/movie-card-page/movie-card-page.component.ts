@@ -7,6 +7,7 @@ import { RatingModule } from "primeng/rating";
 import { TabViewModule } from "primeng/tabview";
 import { ToggleButtonModule } from "primeng/togglebutton";
 import { Subscription } from "rxjs";
+import { ReviewComponent } from "../../components/review/review.component";
 import { Movie } from "../../models/movie.models";
 import { User } from "../../models/user.models";
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
@@ -29,6 +30,7 @@ import { AuthUserService } from "../../services/users/authUser.service.service";
     TabViewModule,
     ButtonModule,
     SafeUrlPipe,
+    ReviewComponent,
   ],
   templateUrl: "./movie-card-page.component.html",
   styleUrls: ["./movie-card-page.component.css"],
@@ -42,6 +44,7 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
   public allMovies: Movie[] | undefined;
   public isFamilyFriendly: boolean | undefined;
   public urlPoster: string | undefined;
+  public reviewsMovie: any;
   private subscription: Subscription = new Subscription();
   private userData: User | undefined | void;
 
@@ -68,6 +71,14 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
           } else {
             this.isFamilyFriendly = false;
           }
+
+          this.movieService
+            .getReviewsAboutMovie(this.movieDetailseData.id)
+            .subscribe((data) => {
+              this.reviewsMovie = data;
+              this.reviewsMovie = this.reviewsMovie.results;
+              console.log(JSON.stringify(this.reviewsMovie));
+            });
         }
       });
     });

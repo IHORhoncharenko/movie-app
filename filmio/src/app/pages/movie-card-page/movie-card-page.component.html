@@ -43,23 +43,27 @@
       <p>{{ movieDetailseData.overview }}</p>
     </p-tabPanel>
     <p-tabPanel header="Details">
-      <dt>Original title</dt>
-      <dd>{{ movieDetailseData.original_title }}</dd>
-      <dt>Recommended age for watching</dt>
-      @if (isFamilyFriendly) {
-        <dd>0+</dd>
-      } @else {
-        <dd>18+</dd>
-      }
-      <dt>ID</dt>
-      <dd>{{ movieDetailseData.id }}</dd>
-      <dt>Language</dt>
-      <dd>{{ movieDetailseData.original_language }}</dd>
-      <dt>Overview</dt>
-      <dd>{{ movieDetailseData.overview }}</dd>
+      <dl>
+        <dt>Original title</dt>
+        <dd>{{ movieDetailseData.original_title }}</dd>
+        <dt>Recommended age for watching</dt>
+        @if (isFamilyFriendly) {
+          <dd>0+</dd>
+        } @else {
+          <dd>18+</dd>
+        }
+        <dt>ID</dt>
+        <dd>{{ movieDetailseData.id }}</dd>
+        <dt>Language</dt>
+        <dd>{{ movieDetailseData.original_language }}</dd>
+        <dt>Overview</dt>
+        <dd>{{ movieDetailseData.overview }}</dd>
+      </dl>
     </p-tabPanel>
     <p-tabPanel header="Reviews">
-      <p>At vero eos et accusamus et iusto odio dignissimos...</p>
+      @for (movie of reviewsMovie; track movie.id) {
+        <app-review [movieData]="movie"></app-review>
+      }
     </p-tabPanel>
   </p-tabView>
 }
