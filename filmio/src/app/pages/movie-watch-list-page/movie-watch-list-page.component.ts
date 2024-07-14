@@ -57,4 +57,10 @@ export class MovieWatchListPageComponent implements OnInit {
       this.subscription.unsubscribe();
     }
   }
+
+  clearMoviesList = () => {
+    if (!this.isClearList) {
+      this.isClearList = true;
+    }
+  };
 }

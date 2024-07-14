@@ -1,4 +1,9 @@
-<p-button class="btn" [size]="'small'" label="clear" />
+<p-button
+  (onClick)="clearMoviesList()"
+  class="btn"
+  [size]="'small'"
+  label="clear"
+/>
 @if (mesLoadingStatus) {
   <p>Loading...</p>
 }
