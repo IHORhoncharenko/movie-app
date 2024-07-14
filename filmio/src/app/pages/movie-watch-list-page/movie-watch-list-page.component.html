@@ -1,4 +1,7 @@
 <p-button class="btn" [size]="'small'" label="clear" />
+@if (mesLoadingStatus) {
+  <p>Loading...</p>
+}
 @if (!isClearList) {
   <div class="movie-list">
     @for (movie of watchlistMovies; track movie.id) {

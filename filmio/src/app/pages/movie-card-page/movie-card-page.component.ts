@@ -38,7 +38,7 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
   public value: number | undefined;
   public isShowrating = false;
   public isShowYoutube = false;
-  public correctUrlPoster: any;
+  public correctUrlPoster: string | undefined;
   public allMovies: Movie[] | undefined;
   public isFamilyFriendly: boolean | undefined;
   public urlPoster: string | undefined;
@@ -93,7 +93,7 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
   };
 
   choosingFavoriteMovie = (movieId: number) => {
-    this.userData = this.authUserService.getUserData();
+    this.userData = this.authUserService.getUserDataTMDB();
 
     if (this.userData && this.movieDetailseData) {
       console.log(`
@@ -109,7 +109,7 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
   };
 
   choosingWatchlistMovie = (movieId: number) => {
-    this.userData = this.authUserService.getUserData();
+    this.userData = this.authUserService.getUserDataTMDB();
 
     if (this.userData && this.movieDetailseData) {
       console.log(`

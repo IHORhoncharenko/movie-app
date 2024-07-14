@@ -1,23 +1,24 @@
 import { Component, OnInit } from "@angular/core";
 import { ButtonModule } from "primeng/button";
-import { Subscription, switchMap } from "rxjs";
+import { MessagesModule } from "primeng/messages";
+import { Subscription, catchError, tap } from "rxjs";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
+import { User } from "../../models/user.models";
 import { MoviesService } from "../../services/movies/movies.service";
 import { AuthUserService } from "../../services/users/authUser.service.service";
 
 @Component({
   selector: "app-movie-favorite-list-page",
   standalone: true,
-  imports: [ButtonModule, MovieCardComponent],
+  imports: [ButtonModule, MovieCardComponent, MessagesModule],
   templateUrl: "./movie-favorite-list-page.component.html",
   styleUrls: ["./movie-favorite-list-page.component.css"],
 })
 export class MovieFavoriteListPageComponent implements OnInit {
   public favoritesMovies: any;
   public isClearList = false;
-  private sessionID: any;
-  private accountId: any;
-  private requestToken: any;
+  public mesLoadingStatus = false;
+  private userData: User | undefined | void;
   private subscription = new Subscription();
 
   constructor(
@@ -26,45 +27,29 @@ export class MovieFavoriteListPageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.subscription = this.authUserService
-      .getRequestToken()
-      .pipe(
-        switchMap((response: any) => {
-          this.requestToken = response;
-          this.requestToken = this.requestToken.request_token;
-          return this.authUserService.getValidToken(this.requestToken);
-        }),
-        switchMap(() => {
-          return this.authUserService.createSessionId(this.requestToken);
-        }),
-        switchMap((response: any) => {
-          this.sessionID = response;
-          this.sessionID = this.sessionID.session_id;
-          return this.authUserService.getAccountId(this.sessionID);
-        }),
-        switchMap((response: any) => {
-          this.accountId = response;
-          this.accountId = this.accountId.id;
-          return this.movieService.getFavoriteMovies(this.accountId);
-        }),
-      )
-      .subscribe((response) => {
-        console.log(response);
-        this.favoritesMovies = response;
-        this.favoritesMovies = this.favoritesMovies.results;
-        this.authUserService.setUserData(
-          this.requestToken,
-          this.sessionID,
-          this.accountId,
-        );
+    this.userData = this.authUserService.getUserDataTMDB();
 
-        console.log(`
-          request_token: ${this.requestToken}
-          session_id: ${this.sessionID}
-          account_id: ${this.accountId}
-          favoritesMovies: ${JSON.stringify(this.favoritesMovies)}
-          `);
-      });
+    if (this.userData) {
+      this.mesLoadingStatus = true;
+
+      this.movieService
+        .getFavoriteMovies(this.userData.accountId)
+        .pipe(
+          catchError((error) => {
+            alert(`This is very bad bro...${error}`);
+            return error;
+          }),
+          tap(() => {
+            this.mesLoadingStatus = false;
+          }),
+        )
+        .subscribe((data) => {
+          this.mesLoadingStatus = false;
+          this.favoritesMovies = data;
+          this.favoritesMovies = this.favoritesMovies.results;
+          console.log(this.favoritesMovies);
+        });
+    }
   }
 
   ngOnDestroy() {

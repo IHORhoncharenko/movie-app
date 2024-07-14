@@ -45,13 +45,13 @@ export class MoviesService {
   getMovieById = (id: number) => {
     return this.getAllMovies().pipe(
       map((data) => {
+        console.log(data);
         return data.find((m) => m.id === id);
       }),
     );
   };
 
   getAllMovies = () => {
-    //forkJoin для об'єднання всіх Observable<MovieApi> в один.
     return forkJoin([
       this.getUpcomingMovies(),
       this.getTopRategMovies(),
@@ -59,7 +59,11 @@ export class MoviesService {
       this.getNowPlayingMovies(),
     ]).pipe(
       map((data) => {
-        return data.flatMap((movieApi) => movieApi.results);
+        return data
+          .map((movieApi) => {
+            return [...movieApi.results];
+          })
+          .flat();
       }),
     );
   };
@@ -126,6 +130,18 @@ export class MoviesService {
   getWatchlistMovies = (accountID: string) => {
     return this.http.get(
       `${this.baseApiUrlTMDB}/account/${accountID}/${this.apiUrlWatchlistMoviesTMDB}?api_key=${this.apiKeyTMDB}`,
+      {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${this.tokenTMDB}`,
+        },
+      },
+    );
+  };
+
+  getAllListMoviesbyUser = (accountID: string, sessionID: string) => {
+    return this.http.get(
+      `${this.baseApiUrlTMDB}/account/${accountID}/lists?api_key=${this.apiKeyTMDB}&session_id=${sessionID}`,
       {
         headers: {
           accept: "application/json",

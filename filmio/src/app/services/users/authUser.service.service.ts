@@ -63,7 +63,7 @@ export class AuthUserService {
     );
   };
 
-  setUserData = (token: string, sessionID: string, accountId: string) => {
+  setUserDataTMDB = (token: string, sessionID: string, accountId: string) => {
     return (this.userAuthPropTMDB = {
       token: token,
       accountId: accountId,
@@ -71,7 +71,7 @@ export class AuthUserService {
     });
   };
 
-  getUserData = () => {
+  getUserDataTMDB = () => {
     if (this.userAuthPropTMDB) {
       return this.userAuthPropTMDB;
     } else {

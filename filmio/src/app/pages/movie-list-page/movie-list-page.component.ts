@@ -19,11 +19,10 @@ export class MovieListPageComponent implements OnInit, OnDestroy {
   constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
-    this.subscription = this.movieService
-      .getAllMovies()
-      .subscribe((response) => {
-        this.allMovies = response;
-      });
+    this.subscription = this.movieService.getAllMovies().subscribe((data) => {
+      console.log(data);
+      this.allMovies = data;
+    });
   }
 
   ngOnDestroy() {
