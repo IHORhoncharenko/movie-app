@@ -7,7 +7,9 @@ import { CardModule } from "primeng/card";
 import { DialogModule } from "primeng/dialog";
 import { RatingModule } from "primeng/rating";
 import { TagModule } from "primeng/tag";
+import { map } from "rxjs";
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
+import { MoviesService } from "../../services/movies/movies.service";
 
 @Component({
   selector: "app-movie-card",
@@ -36,8 +38,13 @@ export class MovieCardComponent {
   public isVisible = false;
   public isFamilyFriendly: boolean | undefined;
   public urlPoster: string | undefined;
+  public movieGenres: any = [];
+  private movieGenresApi: any;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private moviesService: MoviesService,
+  ) {}
 
   ngOnInit() {
     this.value = Math.round(Number(this.movieData.vote_average / 2));
@@ -48,6 +55,25 @@ export class MovieCardComponent {
     } else {
       this.isFamilyFriendly = false;
     }
+
+    this.moviesService
+      .getGenresForMovies()
+      .pipe(
+        map((data) => {
+          this.movieGenresApi = data;
+          this.movieGenresApi = this.movieGenresApi.genres;
+          return this.movieGenresApi.map((genrApi: any) => {
+            this.movieData.genre_ids.map((genr: any) => {
+              if (genrApi.id === genr) {
+                this.movieGenres.push(genrApi.name);
+              }
+            });
+          });
+        }),
+      )
+      .subscribe((data) => {
+        console.log(data);
+      });
   }
 
   showDialog() {

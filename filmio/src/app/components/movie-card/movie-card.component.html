@@ -28,40 +28,8 @@
   </div>
 
   <ng-template pTemplate="footer">
-    <div class="card__action">
-      <p-button (click)="showDialog()" label="Show detailse" />
-
-      <p-dialog
-        class="card__action modal"
-        (mouseenter)="showLink()"
-        (mouseleave)="hideLink()"
-        [header]="movieData.title"
-        [modal]="true"
-        [(visible)]="isVisible"
-        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-      >
-        <p-button (click)="openMovieCard()">Go to film</p-button>
-        <dl class="modal__content">
-          <dt>Original title</dt>
-          <dd>{{ movieData.original_title }}</dd>
-          <dt>Recommended age for watching</dt>
-          @if (isFamilyFriendly) {
-            <dd>0+</dd>
-          } @else {
-            <dd>18+</dd>
-          }
-          <dt>ID</dt>
-          <dd>{{ movieData.id }}</dd>
-          <dt>Language</dt>
-          <dd>{{ movieData.original_language }}</dd>
-          <dt>Overview</dt>
-          <dd>{{ movieData.overview }}</dd>
-        </dl>
-      </p-dialog>
-    </div>
-
     <div class="card__tags">
-      @for (genre of movieData.genre; track movieData.id) {
+      @for (genre of movieGenres; track movieData.id) {
         <p-tag [value]="genre" />
       }
     </div>

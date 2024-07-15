@@ -7,4 +7,14 @@ p-card {
     margin: 0 auto;
   }
 
+  .card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+    max-width: 200px;
+    width: 100%;
+  }
+
+
 }

@@ -186,4 +186,16 @@ export class MoviesService {
       },
     );
   };
+
+  getGenresForMovies = () => {
+    return this.http.get(
+      `${this.baseApiUrlTMDB}/genre/movie/list?api_key=${this.apiKeyTMDB}`,
+      {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${this.tokenTMDB}`,
+        },
+      },
+    );
+  };
 }
