@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ButtonModule } from "primeng/button";
-import { Subscription, catchError, tap } from "rxjs";
+import { Subscription, catchError, forkJoin, tap } from "rxjs";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { User } from "../../models/user.models";
 import { MoviesService } from "../../services/movies/movies.service";
@@ -17,6 +17,7 @@ export class MovieWatchListPageComponent implements OnInit {
   public watchlistMovies: any;
   public mesLoadingStatus = false;
   public isClearList = false;
+  public watchlistMoviesIds: number[] = [];
   private subscription = new Subscription();
   private userData: User | undefined | void;
 
@@ -59,8 +60,25 @@ export class MovieWatchListPageComponent implements OnInit {
   }
 
   clearMoviesList = () => {
-    if (!this.isClearList) {
-      this.isClearList = true;
+    this.watchlistMoviesIds = this.watchlistMovies.map((m: any) => m.id);
+    let observables: any = [];
+
+    if (this.userData) {
+      observables = this.watchlistMoviesIds.map((id: any) => {
+        if (this.userData) {
+          return this.movieService.clearMovieFromWatchlist(
+            this.userData.accountId,
+            id,
+          );
+        } else {
+          return undefined;
+        }
+      });
+
+      forkJoin(observables).subscribe((data) => {
+        this.watchlistMovies = [];
+        console.log(data);
+      });
     }
   };
 }

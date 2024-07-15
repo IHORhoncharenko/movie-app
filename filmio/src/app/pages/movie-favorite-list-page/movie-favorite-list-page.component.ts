@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ButtonModule } from "primeng/button";
 import { MessagesModule } from "primeng/messages";
-import { Subscription, catchError, tap } from "rxjs";
+import { Subscription, catchError, forkJoin, tap } from "rxjs";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { User } from "../../models/user.models";
 import { MoviesService } from "../../services/movies/movies.service";
@@ -16,7 +16,7 @@ import { AuthUserService } from "../../services/users/authUser.service.service";
 })
 export class MovieFavoriteListPageComponent implements OnInit {
   public favoritesMovies: any;
-  public isClearList = false;
+  public favoritesMoviesIds: number[] = [];
   public mesLoadingStatus = false;
   private userData: User | undefined | void;
   private subscription = new Subscription();
@@ -60,8 +60,25 @@ export class MovieFavoriteListPageComponent implements OnInit {
   }
 
   clearMoviesList = () => {
-    if (!this.isClearList) {
-      this.isClearList = true;
+    this.favoritesMoviesIds = this.favoritesMovies.map((m: any) => m.id);
+    let observables: any = [];
+
+    if (this.userData) {
+      observables = this.favoritesMoviesIds.map((id: any) => {
+        if (this.userData) {
+          return this.movieService.clearMovieFromFavoriteList(
+            this.userData.accountId,
+            id,
+          );
+        } else {
+          return undefined;
+        }
+      });
+
+      forkJoin(observables).subscribe((data) => {
+        this.favoritesMovies = [];
+        console.log(data);
+      });
     }
   };
 }

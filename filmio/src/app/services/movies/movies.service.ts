@@ -150,4 +150,40 @@ export class MoviesService {
       },
     );
   };
+
+  clearMovieFromFavoriteList = (accountID: string, media_id: number) => {
+    return this.http.post(
+      `${this.baseApiUrlTMDB}/${this.apiUrlAccountTMDB}/${accountID}/favorite?api_key=${this.apiKeyTMDB}`,
+      {
+        media_type: "movie",
+        media_id: media_id,
+        favorite: false,
+      },
+      {
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          Authorization: `Bearer ${this.tokenTMDB}`,
+        },
+      },
+    );
+  };
+
+  clearMovieFromWatchlist = (accountID: string, media_id: number) => {
+    return this.http.post(
+      `${this.baseApiUrlTMDB}/${this.apiUrlAccountTMDB}/${accountID}/watchlist?api_key=${this.apiKeyTMDB}`,
+      {
+        media_type: "movie",
+        media_id: media_id,
+        watchlist: false,
+      },
+      {
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          Authorization: `Bearer ${this.tokenTMDB}`,
+        },
+      },
+    );
+  };
 }

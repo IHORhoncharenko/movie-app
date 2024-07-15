@@ -7,10 +7,9 @@
 @if (mesLoadingStatus) {
   <p>Loading...</p>
 }
-@if (!isClearList) {
-  <div class="movie-list">
-    @for (movie of watchlistMovies; track movie.id) {
-      <app-movie-card [movieData]="movie"></app-movie-card>
-    }
-  </div>
-}
+
+<div class="movie-list">
+  @for (movie of watchlistMovies; track movie.id) {
+    <app-movie-card [movieData]="movie"></app-movie-card>
+  }
+</div>
