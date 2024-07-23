@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { BadgeModule } from "primeng/badge";
@@ -7,7 +7,9 @@ import { CardModule } from "primeng/card";
 import { DialogModule } from "primeng/dialog";
 import { RatingModule } from "primeng/rating";
 import { TagModule } from "primeng/tag";
+import { map } from "rxjs";
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
+import { MoviesService } from "../../services/movies/movies.service";
 
 @Component({
   selector: "app-movie-card",
@@ -29,35 +31,61 @@ import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHou
 export class MovieCardComponent {
   @Input()
   movieData: any = {};
-  @Output() addFavourite = new EventEmitter();
-  @Output() addWatchList = new EventEmitter();
 
-  public isShowrating = false;
+  public isShowRating = false;
   public value: number | undefined;
   public isLink = false;
+  public isVisible = false;
+  public isFamilyFriendly: boolean | undefined;
+  public urlPoster: string | undefined;
+  public movieGenres: any = [];
+  private movieGenresApi: any;
 
-  addToFavourite = () => {
-    this.addFavourite.emit(this.movieData.id);
-  };
+  constructor(
+    private router: Router,
+    private moviesService: MoviesService,
+  ) {}
 
-  addToWatchList = () => {
-    this.addWatchList.emit(this.movieData.id);
-  };
+  ngOnInit() {
+    this.value = Math.round(Number(this.movieData.vote_average / 2));
+    this.urlPoster = `https://media.themoviedb.org/t/p/w220_and_h330_face${this.movieData.poster_path}`;
 
-  constructor(private router: Router) {}
+    if (this.movieData.adult === false) {
+      this.isFamilyFriendly = true;
+    } else {
+      this.isFamilyFriendly = false;
+    }
 
-  visible: boolean = false;
+    this.moviesService
+      .getGenresForMovies()
+      .pipe(
+        map((data) => {
+          this.movieGenresApi = data;
+          this.movieGenresApi = this.movieGenresApi.genres;
+          return this.movieGenresApi.map((genrApi: any) => {
+            this.movieData.genre_ids.map((genr: any) => {
+              if (genrApi.id === genr) {
+                this.movieGenres.push(genrApi.name);
+              }
+            });
+          });
+        }),
+      )
+      .subscribe((data) => {
+        console.log(data);
+      });
+  }
 
   showDialog() {
-    this.visible = true;
+    this.isVisible = true;
   }
 
   mouseenter = () => {
-    this.isShowrating = true;
+    this.isShowRating = true;
   };
 
   mouseover = () => {
-    this.isShowrating = false;
+    this.isShowRating = false;
   };
 
   showLink = () => {
@@ -68,18 +96,7 @@ export class MovieCardComponent {
     this.isLink = false;
   };
 
-  ngOnInit() {
-    this.value = Math.round(Number(this.movieData.rating / 2));
-  }
-
   openMovieCard = () => {
-    // Використовуємо програмну навігацію для встановлення основного маршруту
-    this.router.navigateByUrl(`/movie/${this.movieData.id}`).then(() => {
-      // Додаємо маршрут для іменованого аутлета без зміни URL
-      this.router.navigate(
-        [{ outlets: { card: ["movie", this.movieData.id] } }],
-        { skipLocationChange: true },
-      );
-    });
+    this.router.navigateByUrl(`/movie/${this.movieData.id}`);
   };
 }

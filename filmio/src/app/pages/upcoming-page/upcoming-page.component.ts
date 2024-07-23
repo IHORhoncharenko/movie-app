@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
+import { Subscription } from "rxjs";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { SidebarComponent } from "../../components/sidebar/sidebar.component";
-import { MoviesService } from "../../services/movies.service";
+import { Movie } from "../../models/movie.models";
+import { MoviesService } from "../../services/movies/movies.service";
 
 @Component({
   selector: "app-upcoming-page",
@@ -11,20 +13,24 @@ import { MoviesService } from "../../services/movies.service";
   imports: [SidebarComponent, MovieCardComponent],
 })
 export class UpcomingPageComponent implements OnInit {
-  public movies: any = [];
-  public upcomingMovies: any = [];
+  public upcomingMovies: Movie[] | undefined;
+  private subscription: Subscription = new Subscription();
 
-  constructor(public movieService: MoviesService) {}
+  constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
-    this.movies.push(this.movieService.getMovies());
-
-    this.movies.forEach((e: any) => {
-      [...e].forEach((m) => {
-        if (m["category-label"] === "upcoming") {
-          this.upcomingMovies.push(m);
-        }
+    this.subscription = this.movieService
+      .getUpcomingMovies()
+      .subscribe((data) => {
+        this.upcomingMovies = data.results;
+        console.log(this.upcomingMovies);
       });
-    });
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      console.log("Відписка від Observable");
+      this.subscription.unsubscribe();
+    }
   }
 }

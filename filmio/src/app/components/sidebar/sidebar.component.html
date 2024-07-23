@@ -1,35 +1,20 @@
-<p-sidebar [(visible)]="sidebarVisible">
+<p-sidebar [(visible)]="isSidebarVisible">
   <ng-template pTemplate="header">
-    <div class="flex align-items-center gap-2">
+    <div class="header">
       <p-avatar
         fetchpriority="high"
         decoding="async"
-        [style]="{
-          width: '100%',
-          height: 'auto',
-          aspectRatio: '1/1',
-        }"
         size="xlarge"
         image="../../../assets/logo.webp"
-        shape="circle"
       />
-      <h1
-        [style]="{
-          fontFamily: 'monospace',
-          textAlign: 'center',
-          fontSize: 'x-large',
-        }"
-        class="font-bold"
-      >
-        Films of our youth...
-      </h1>
+      <h1>Films of our youth...</h1>
     </div>
   </ng-template>
 
   <div class="container">
     <p-button
       size="large"
-      (click)="sidebarVisible = false"
+      (click)="isSidebarVisible = false"
       [routerLink]="['/now-plaing']"
       routerLinkActive="page-active"
     >
@@ -37,7 +22,7 @@
     </p-button>
     <p-button
       size="large"
-      (click)="sidebarVisible = false"
+      (click)="isSidebarVisible = false"
       [routerLink]="['/popular']"
       routerLinkActive="page-active"
     >
@@ -45,7 +30,7 @@
     </p-button>
     <p-button
       size="large"
-      (click)="sidebarVisible = false"
+      (click)="isSidebarVisible = false"
       [routerLink]="['/top-rate']"
       routerLinkActive="page-active"
     >
@@ -53,7 +38,7 @@
     </p-button>
     <p-button
       size="large"
-      (click)="sidebarVisible = false"
+      (click)="isSidebarVisible = false"
       [routerLink]="['/upcoming']"
       routerLinkActive="page-active"
     >
@@ -62,4 +47,4 @@
   </div>
 </p-sidebar>
 
-<p-button (click)="sidebarVisible = true" icon="pi pi-plus" />
+<p-button class="btn" (click)="isSidebarVisible = true" icon="pi pi-plus" />

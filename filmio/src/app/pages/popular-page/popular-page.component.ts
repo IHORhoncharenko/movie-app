@@ -1,7 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Subscription } from "rxjs";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { SidebarComponent } from "../../components/sidebar/sidebar.component";
-import { MoviesService } from "../../services/movies.service";
+import { Movie } from "../../models/movie.models";
+import { MoviesService } from "../../services/movies/movies.service";
 
 @Component({
   selector: "app-popular-page",
@@ -10,21 +12,25 @@ import { MoviesService } from "../../services/movies.service";
   styleUrls: ["./popular-page.component.css"],
   imports: [SidebarComponent, MovieCardComponent],
 })
-export class PopularPageComponent implements OnInit {
-  public movies: any = [];
-  public popularMovies: any = [];
+export class PopularPageComponent implements OnInit, OnDestroy {
+  public popularMovies: Movie[] | undefined;
+  private subscription: Subscription = new Subscription();
 
-  constructor(public movieService: MoviesService) {}
+  constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
-    this.movies.push(this.movieService.getMovies());
-
-    this.movies.forEach((e: any) => {
-      [...e].forEach((m) => {
-        if (m["category-label"] === "popular") {
-          this.popularMovies.push(m);
-        }
+    this.subscription = this.movieService
+      .getPopularMovies()
+      .subscribe((data) => {
+        this.popularMovies = data.results;
+        console.log(this.popularMovies);
       });
-    });
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      console.log("Відписка від Observable");
+      this.subscription.unsubscribe();
+    }
   }
 }

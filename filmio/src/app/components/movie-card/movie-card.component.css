@@ -1,7 +1,20 @@
-.footer__tags {
-  margin-top: 1em;
+p-card {
+  max-width: 250px;
+  text-align: center;
 
-  p-tag {
-    margin: 3px;
+  hgroup {
+    max-width: 200px;
+    margin: 0 auto;
   }
+
+  .card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+    max-width: 200px;
+    width: 100%;
+  }
+
+
 }

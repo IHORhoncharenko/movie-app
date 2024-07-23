@@ -2,6 +2,21 @@
   background-color: aqua;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+
+  h1 {
+    margin-left: 1em;
+    font-size: x-large;
+  }
+}
+
+.p-sidebar-header>div:nth-child(1) h1 {
+  font-family: monospace;
+  margin-left: 1em;
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -11,4 +26,9 @@
   p-button {
     margin-bottom: 1em;
   }
+}
+
+.btn {
+  margin-bottom: 5px;
+  display: inline-block;
 }

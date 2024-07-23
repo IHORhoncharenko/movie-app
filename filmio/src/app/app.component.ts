@@ -1,60 +1,65 @@
-import { NgIf } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
-import {
-  ActivatedRoute,
-  Router,
-  RouterModule,
-  RouterOutlet,
-} from "@angular/router";
-import { MenuItem } from "primeng/api";
-import { MenubarModule } from "primeng/menubar";
-import { MovieCardMainComponent } from "./components/movie-card-main/movie-card-main.component";
+import { RouterModule, RouterOutlet } from "@angular/router";
+import { catchError, concatMap, throwError } from "rxjs";
+import { CatalogComponent } from "./components/catalog/catalog.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
-import { MovieCardPageComponent } from "./pages/movie-card-page/movie-card-page.component";
-import { MovieListPageComponent } from "./pages/movie-list-page/movie-list-page.component";
+import { AuthUserService } from "./services/users/authUser.service.service";
 
 @Component({
   selector: "app-root",
   standalone: true,
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
-  imports: [
-    RouterOutlet,
-    MovieListPageComponent,
-    SidebarComponent,
-    MovieCardPageComponent,
-    MovieCardMainComponent,
-    RouterModule,
-    MenubarModule,
-    NgIf,
-  ],
+  imports: [RouterOutlet, SidebarComponent, RouterModule, CatalogComponent],
 })
 export class AppComponent implements OnInit {
-  public items: MenuItem[] | undefined;
+  private requestToken: any;
+  private sessionID: any;
+  private accountId: any;
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-  ) {}
+  constructor(private authUserService: AuthUserService) {}
 
   ngOnInit() {
-    this.router.events.subscribe(() => {
-      this.items = [
-        {
-          icon: "pi pi-home",
-          route: "/",
-        },
-        {
-          label: "Favorite list",
-          icon: "pi pi-heart",
-          route: "favorite",
-        },
-        {
-          label: "Watch list",
-          icon: "pi pi-eye",
-          route: "watch-list",
-        },
-      ];
-    });
+    this.authUserService
+      .getRequestToken()
+      .pipe(
+        concatMap((response: any) => {
+          this.requestToken = response;
+          this.requestToken = this.requestToken.request_token;
+          return this.authUserService.getValidToken(this.requestToken).pipe(
+            catchError((error) => {
+              alert(`This is very bad...${JSON.stringify(error)}`);
+              return throwError(error);
+            }),
+          );
+        }),
+        concatMap(() => {
+          return this.authUserService.createSessionId(this.requestToken).pipe(
+            catchError((error) => {
+              alert(`This is very bad...${JSON.stringify(error)}`);
+              return throwError(error);
+            }),
+          );
+        }),
+        concatMap((response: any) => {
+          this.sessionID = response;
+          this.sessionID = this.sessionID.session_id;
+          return this.authUserService.getAccountId(this.sessionID).pipe(
+            catchError((error) => {
+              alert(`This is very bad...${JSON.stringify(error)}`);
+              return throwError(error);
+            }),
+          );
+        }),
+      )
+      .subscribe((response) => {
+        this.accountId = response;
+        this.accountId = this.accountId.id;
+        this.authUserService.setUserDataTMDB(
+          this.requestToken,
+          this.sessionID,
+          this.accountId,
+        );
+      });
   }
 }

@@ -1,38 +1,84 @@
 import { Component, OnInit } from "@angular/core";
 import { ButtonModule } from "primeng/button";
+import { MessagesModule } from "primeng/messages";
+import { Subscription, catchError, forkJoin, tap } from "rxjs";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
-import { MoviesService } from "../../services/movies.service";
+import { User } from "../../models/user.models";
+import { MoviesService } from "../../services/movies/movies.service";
+import { AuthUserService } from "../../services/users/authUser.service.service";
 
 @Component({
   selector: "app-movie-favorite-list-page",
   standalone: true,
-  imports: [ButtonModule, MovieCardComponent],
+  imports: [ButtonModule, MovieCardComponent, MessagesModule],
   templateUrl: "./movie-favorite-list-page.component.html",
   styleUrls: ["./movie-favorite-list-page.component.css"],
 })
 export class MovieFavoriteListPageComponent implements OnInit {
-  public favoritesMoviesId: any = [];
-  public allMovies: any = [];
-  public favoritesMovies: any = [];
-  public isClearList = false;
-  constructor(public movieService: MoviesService) {}
+  public favoritesMovies: any;
+  public favoritesMoviesIds: number[] = [];
+  public mesLoadingStatus = false;
+  private userData: User | undefined | void;
+  private subscription = new Subscription();
+
+  constructor(
+    private movieService: MoviesService,
+    private authUserService: AuthUserService,
+  ) {}
 
   ngOnInit() {
-    this.favoritesMoviesId = this.movieService.setFavoritesMovies();
-    this.allMovies = this.movieService.getMovies();
+    this.userData = this.authUserService.getUserDataTMDB();
 
-    this.allMovies.forEach((m: any) => {
-      this.favoritesMoviesId.forEach((f: any) => {
-        if (String(m.id) === String(f)) {
-          if (!this.favoritesMovies.includes(m)) {
-            this.favoritesMovies.push(m);
-          }
-        }
-      });
-    });
+    if (this.userData) {
+      this.mesLoadingStatus = true;
+
+      this.movieService
+        .getFavoriteMovies(this.userData.accountId)
+        .pipe(
+          catchError((error) => {
+            alert(`This is very bad bro...${error}`);
+            return error;
+          }),
+          tap(() => {
+            this.mesLoadingStatus = false;
+          }),
+        )
+        .subscribe((data) => {
+          this.mesLoadingStatus = false;
+          this.favoritesMovies = data;
+          this.favoritesMovies = this.favoritesMovies.results;
+          console.log(this.favoritesMovies);
+        });
+    }
   }
 
-  hideFavoritelist = () => {
-    this.isClearList = true;
+  ngOnDestroy() {
+    if (this.subscription) {
+      console.log("Відписка від Observable");
+      this.subscription.unsubscribe();
+    }
+  }
+
+  clearMoviesList = () => {
+    this.favoritesMoviesIds = this.favoritesMovies.map((m: any) => m.id);
+    let observables: any = [];
+
+    if (this.userData) {
+      observables = this.favoritesMoviesIds.map((id: any) => {
+        if (this.userData) {
+          return this.movieService.clearMovieFromFavoriteList(
+            this.userData.accountId,
+            id,
+          );
+        } else {
+          return undefined;
+        }
+      });
+
+      forkJoin(observables).subscribe((data) => {
+        this.favoritesMovies = [];
+        console.log(data);
+      });
+    }
   };
 }

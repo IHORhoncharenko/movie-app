@@ -1,7 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Subscription } from "rxjs";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { SidebarComponent } from "../../components/sidebar/sidebar.component";
-import { MoviesService } from "../../services/movies.service";
+import { Movie } from "../../models/movie.models";
+import { MoviesService } from "../../services/movies/movies.service";
 
 @Component({
   selector: "app-movie-list-page",
@@ -10,14 +12,23 @@ import { MoviesService } from "../../services/movies.service";
   styleUrls: ["./movie-list-page.component.css"],
   imports: [SidebarComponent, MovieCardComponent],
 })
-export class MovieListPageComponent implements OnInit {
-  public allMovies: any = [];
+export class MovieListPageComponent implements OnInit, OnDestroy {
+  public allMovies: Movie[] | undefined;
+  private subscription: Subscription = new Subscription();
 
-  constructor(public movieService: MoviesService) {}
+  constructor(private movieService: MoviesService) {}
 
   ngOnInit() {
-    this.allMovies.push(this.movieService.getMovies());
-    this.allMovies = this.allMovies[0];
-    console.log(this.allMovies);
+    this.subscription = this.movieService.getAllMovies().subscribe((data) => {
+      console.log(data);
+      this.allMovies = data;
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      console.log("Відписка від Observable");
+      this.subscription.unsubscribe();
+    }
   }
 }

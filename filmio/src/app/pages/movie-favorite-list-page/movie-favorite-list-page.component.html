@@ -1,13 +1,15 @@
 <p-button
-  (click)="movieService.clearFavoritesMovies(); hideFavoritelist()"
+  (onClick)="clearMoviesList()"
   class="btn"
   [size]="'small'"
   label="clear"
 />
-@if (!isClearList) {
-  <div class="movie-list">
-    @for (movie of favoritesMovies; track movie.id) {
-      <app-movie-card [movieData]="movie"></app-movie-card>
-    }
-  </div>
+@if (mesLoadingStatus) {
+  <p>Loading...</p>
 }
+
+<div class="movie-list">
+  @for (movie of favoritesMovies; track movie.id) {
+    <app-movie-card [movieData]="movie"></app-movie-card>
+  }
+</div>

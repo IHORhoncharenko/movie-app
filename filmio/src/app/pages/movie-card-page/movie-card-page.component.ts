@@ -1,78 +1,137 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { ActivatedRoute, RouterLink } from "@angular/router";
+import { BadgeModule } from "primeng/badge";
 import { ButtonModule } from "primeng/button";
+import { RatingModule } from "primeng/rating";
+import { TabViewModule } from "primeng/tabview";
 import { ToggleButtonModule } from "primeng/togglebutton";
-import { MovieCardMainComponent } from "../../components/movie-card-main/movie-card-main.component";
-import { movies } from "../../staticData/movies";
+import { Subscription } from "rxjs";
+import { ReviewComponent } from "../../components/review/review.component";
+import { Movie } from "../../models/movie.models";
+import { User } from "../../models/user.models";
+import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
+import { SafeUrlPipe } from "../../pipes/safeUrl/safeUrl.pipe";
+import { MoviesService } from "../../services/movies/movies.service";
+import { AuthUserService } from "../../services/users/authUser.service.service";
 
 @Component({
   selector: "app-movie-card-page",
   standalone: true,
   imports: [
-    MovieCardMainComponent,
     RouterLink,
     ButtonModule,
     ToggleButtonModule,
     FormsModule,
+    ConvertingMinutesToHoursPipe,
+    RatingModule,
+    FormsModule,
+    BadgeModule,
+    TabViewModule,
+    ButtonModule,
+    SafeUrlPipe,
+    ReviewComponent,
   ],
   templateUrl: "./movie-card-page.component.html",
   styleUrls: ["./movie-card-page.component.css"],
 })
-export class MovieCardPageComponent implements OnInit {
-  public moviesData: any[] = movies;
-  public movieDetailseData: any = {};
-  public idFavData: any[] = [];
-  public idWatchData: any[] = [];
-  public idStringFavor: any;
-  public idStringWatch: any;
-  public checked: boolean = false;
-  public favoriteList: any[] = [];
-  public watchList: any[] = [];
+export class MovieCardPageComponent implements OnInit, OnDestroy {
+  public movieDetailseData: Movie | undefined;
+  public value: number | undefined;
+  public isShowrating = false;
+  public isShowYoutube = false;
+  public correctUrlPoster: string | undefined;
+  public allMovies: Movie[] | undefined;
+  public isFamilyFriendly: boolean | undefined;
+  public urlPoster: string | undefined;
+  public reviewsMovie: any;
+  private subscription: Subscription = new Subscription();
+  private userData: User | undefined | void;
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    private movieService: MoviesService,
+    private authUserService: AuthUserService,
   ) {}
 
-  ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      const movieId = params["id"];
-      this.movieDetailseData =
-        this.moviesData.find((movie) => movie.id === Number(movieId)) || {};
+  ngOnInit() {
+    this.subscription = this.route.params.subscribe((params) => {
+      const movieId = Number(params["id"]);
+
+      this.movieService.getMovieById(movieId).subscribe((data) => {
+        this.movieDetailseData = data;
+
+        if (this.movieDetailseData) {
+          this.value = Math.round(Number(this.movieDetailseData.vote_average));
+
+          this.urlPoster = `https://media.themoviedb.org/t/p/w220_and_h330_face${this.movieDetailseData.poster_path}`;
+
+          if (this.movieDetailseData.adult === false) {
+            this.isFamilyFriendly = true;
+          } else {
+            this.isFamilyFriendly = false;
+          }
+
+          this.movieService
+            .getReviewsAboutMovie(this.movieDetailseData.id)
+            .subscribe((data) => {
+              this.reviewsMovie = data;
+              this.reviewsMovie = this.reviewsMovie.results;
+              console.log(JSON.stringify(this.reviewsMovie));
+            });
+        }
+      });
     });
+  }
 
-    const storedFavorites = localStorage.getItem("favoriteList");
-    const storedWatchlist = localStorage.getItem("watchList");
-
-    if (storedFavorites) {
-      this.favoriteList = JSON.parse(storedFavorites);
-    }
-
-    if (storedWatchlist) {
-      this.watchList = JSON.parse(storedWatchlist);
+  ngOnDestroy() {
+    if (this.subscription) {
+      console.log(`Відписка від Observable`);
+      this.subscription.unsubscribe();
     }
   }
 
-  getDataFilm = (data: any) => {
-    this.idFavData = data;
-
-    if (!this.favoriteList.includes(String(this.idFavData))) {
-      this.favoriteList.push(String(this.idFavData));
-    }
-
-    localStorage.setItem("favoriteList", JSON.stringify(this.favoriteList));
-    console.log(`favoriteList: ${this.favoriteList}`);
+  mouseenter = () => {
+    this.isShowrating = true;
   };
 
-  getDataWatchFilm = (data: any) => {
-    this.idWatchData = data;
+  mouseover = () => {
+    this.isShowrating = false;
+  };
 
-    if (!this.watchList.includes(String(this.idWatchData))) {
-      this.watchList.push(String(this.idWatchData));
+  showPlayerYouTube = () => {
+    this.isShowYoutube = true;
+  };
+
+  choosingFavoriteMovie = (movieId: number) => {
+    this.userData = this.authUserService.getUserDataTMDB();
+
+    if (this.userData && this.movieDetailseData) {
+      console.log(`
+        userData --- ${JSON.stringify(this.userData)}
+        movie --- ${JSON.stringify(this.movieDetailseData)}
+        `);
+      this.movieService
+        .addToFavorite(this.userData.accountId, movieId)
+        .subscribe((response) => {
+          console.log(response);
+        });
     }
+  };
 
-    localStorage.setItem("watchList", JSON.stringify(this.watchList));
-    console.log(`watchlist: ${this.watchList}`);
+  choosingWatchlistMovie = (movieId: number) => {
+    this.userData = this.authUserService.getUserDataTMDB();
+
+    if (this.userData && this.movieDetailseData) {
+      console.log(`
+        userData --- ${JSON.stringify(this.userData)}
+        movie --- ${JSON.stringify(this.movieDetailseData)}
+        `);
+      this.movieService
+        .addToWatchlist(this.userData.accountId, movieId)
+        .subscribe((response) => {
+          console.log(response);
+        });
+    }
   };
 }

@@ -1,29 +1,20 @@
-<p-card
-  class="ff"
-  [header]="movieData.title"
-  [subheader]="movieData.year"
-  [style]="{
-    'max-width': '250px',
-    margin: '1em',
-  }"
->
+<p-card>
   <ng-template pTemplate="header">
     <img
       (click)="openMovieCard()"
       fetchpriority="high"
       decoding="async"
       alt="movieData.title"
-      [src]="movieData.poster"
+      [src]="urlPoster"
     />
+    <hgroup>
+      <h2>{{ movieData.title }}</h2>
+      <p>{{ movieData.release_date }}</p>
+    </hgroup>
   </ng-template>
 
-  <div
-    [style]="{
-      textAlign: 'center',
-    }"
-  >
+  <div class="card__rating rating">
     <p-rating
-      class="small-rating"
       (mouseleave)="mouseover()"
       (mouseenter)="mouseenter()"
       stars="5"
@@ -31,78 +22,15 @@
       [readonly]="true"
       [cancel]="false"
     />
+    @if (isShowRating) {
+      <p-badge class="rating__badge" [value]="movieData.vote_average" />
+    }
   </div>
 
-  @if (isShowrating) {
-    <p-badge
-      [style]="{
-        'margin-left': '10px',
-        position: 'absolute',
-      }"
-      [value]="movieData.rating"
-    />
-  }
-
   <ng-template pTemplate="footer">
-    <div class="flex gap-3 mt-1">
-      <div
-        [style]="{
-          textAlign: 'center',
-        }"
-      >
-        <p-button
-          [style]="{
-            textAlign: 'center',
-          }"
-          (click)="showDialog()"
-          label="Show detailse"
-        />
-      </div>
-
-      <p-dialog
-        (mouseenter)="showLink()"
-        (mouseleave)="hideLink()"
-        (click)="openMovieCard()"
-        [header]="movieData.title"
-        [modal]="true"
-        [(visible)]="visible"
-        [style]="{ width: '50rem' }"
-        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-      >
-        <p-button (click)="openMovieCard()">Go to film</p-button>
-        <p class="mb-5">
-          {{ movieData.director }}
-        </p>
-        <p class="mb-5">
-          @for (actor of movieData.actors; track $index) {
-            <ul>
-              <li>{{ actor }}</li>
-            </ul>
-          }
-        </p>
-        <p class="mb-5">
-          {{ movieData.country }}
-        </p>
-        <p class="mb-5">
-          {{ movieData.language }}
-        </p>
-        <p class="mb-5">
-          {{ movieData.boxOffice }}
-        </p>
-        <p class="mb-5">
-          {{ movieData.runtime | convertingMinutesToHours }}
-        </p>
-      </p-dialog>
-    </div>
-
-    <div class="footer__tags">
-      @for (genre of movieData.genre; track $index) {
-        <p-tag
-          [style]="{
-            backgroundColor: 'darkgray',
-          }"
-          [value]="genre"
-        />
+    <div class="card__tags">
+      @for (genre of movieGenres; track movieData.id) {
+        <p-tag [value]="genre" />
       }
     </div>
   </ng-template>

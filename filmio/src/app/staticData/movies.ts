@@ -105,7 +105,7 @@ export const movies: any[] = [
     year: 1999,
     genre: ["Action", "Sci-Fi"],
     rating: 8.7,
-    director: "Lana Wachowski, Lilly Wachowski",
+    director: ["Lana Wachowski", "Lilly Wachowski"],
     actors: ["Keanu Reeves", "Laurence Fishburne", "Carrie-Anne Moss"],
     plot: "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
     poster: "https://m.media-amazon.com/images/I/51EG732BV3L._AC_.jpg",

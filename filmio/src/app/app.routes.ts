@@ -10,8 +10,8 @@ import { TopRatePageComponent } from "./pages/top-rate-page/top-rate-page.compon
 import { UpcomingPageComponent } from "./pages/upcoming-page/upcoming-page.component";
 
 export const routes: Routes = [
-  { path: "movie/:id", pathMatch: "full", component: MovieCardPageComponent },
   { path: "", pathMatch: "full", component: MovieListPageComponent },
+  { path: "movie/:id", pathMatch: "full", component: MovieCardPageComponent },
   { path: "now-plaing", pathMatch: "full", component: NowPlaingPageComponent },
   { path: "popular", pathMatch: "full", component: PopularPageComponent },
   { path: "top-rate", pathMatch: "full", component: TopRatePageComponent },
