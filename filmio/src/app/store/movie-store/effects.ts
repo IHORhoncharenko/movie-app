@@ -187,9 +187,8 @@ export class MovieEffects {
     this.actions$.pipe(
       ofType(storeActions.setFavoriteMovies),
       mergeMap((data) => {
-        const { accountID, media_ids } = data;
         return this.moviesService
-          .clearMovieFromFavoriteList(accountID, media_ids)
+          .clearMovieFromFavoriteList(data.accountID, data.media_ids)
           .pipe(
             map((data) =>
               storeActions.setFavoriteMoviesSuccess({
@@ -254,9 +253,8 @@ export class MovieEffects {
     this.actions$.pipe(
       ofType(storeActions.setWatchlistMovies),
       mergeMap((data) => {
-        const { accountID, media_ids } = data;
         return this.moviesService
-          .clearMovieFromWatchlist(accountID, media_ids)
+          .clearMovieFromWatchlist(data.accountID, data.media_ids)
           .pipe(
             map((data) =>
               storeActions.setWatchlistMoviesSuccess({
