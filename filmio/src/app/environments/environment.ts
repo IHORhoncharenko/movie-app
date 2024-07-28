@@ -14,4 +14,5 @@ export const environment = {
   apiUrlTMDB: "movie",
   apiUrlFavoriteMoviesTMDB: "favorite/movies",
   apiUrlWatchlistMoviesTMDB: "watchlist/movies",
+  apiUrlPosterTMDB: "https://media.themoviedb.org/t/p/w220_and_h330_face",
 };

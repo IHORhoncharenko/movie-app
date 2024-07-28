@@ -16,7 +16,7 @@
       </div>
 
       <div class="poster">
-        <img [src]="urlPoster" [alt]="movieDetailseData.title" />
+        <img [src]="correctUrlPoster" [alt]="movieDetailseData.title" />
       </div>
 
       <ul>
@@ -61,8 +61,8 @@
       </dl>
     </p-tabPanel>
     <p-tabPanel header="Reviews">
-      @for (movie of reviewsMovie; track movie.id) {
-        <app-review [movieData]="movie"></app-review>
+      @for (reviews of reviewsMovie; track $index) {
+        <app-review [movieData]="reviews"></app-review>
       }
     </p-tabPanel>
   </p-tabView>

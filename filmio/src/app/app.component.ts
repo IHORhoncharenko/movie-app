@@ -1,9 +1,19 @@
 import { Component, OnInit } from "@angular/core";
 import { RouterModule, RouterOutlet } from "@angular/router";
-import { catchError, concatMap, throwError } from "rxjs";
+import { Store } from "@ngrx/store";
 import { CatalogComponent } from "./components/catalog/catalog.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { AuthUserService } from "./services/users/authUser.service.service";
+import {
+  getRequestToken,
+  getUserAccountId,
+  getUserSessionId,
+  getValidRequestToken,
+} from "./store/user-store/user-actions";
+import {
+  selectorGetRequestToken,
+  selectorGetSessionId,
+} from "./store/user-store/user-selectors";
 
 @Component({
   selector: "app-root",
@@ -13,53 +23,42 @@ import { AuthUserService } from "./services/users/authUser.service.service";
   imports: [RouterOutlet, SidebarComponent, RouterModule, CatalogComponent],
 })
 export class AppComponent implements OnInit {
-  private requestToken: any;
+  private requestToken: string | null | undefined;
+  private isValidationToken: boolean = false;
   private sessionID: any;
   private accountId: any;
 
-  constructor(private authUserService: AuthUserService) {}
+  constructor(
+    private authUserService: AuthUserService,
+    private store: Store,
+  ) {}
 
   ngOnInit() {
-    this.authUserService
-      .getRequestToken()
-      .pipe(
-        concatMap((response: any) => {
-          this.requestToken = response;
-          this.requestToken = this.requestToken.request_token;
-          return this.authUserService.getValidToken(this.requestToken).pipe(
-            catchError((error) => {
-              alert(`This is very bad...${JSON.stringify(error)}`);
-              return throwError(error);
-            }),
-          );
-        }),
-        concatMap(() => {
-          return this.authUserService.createSessionId(this.requestToken).pipe(
-            catchError((error) => {
-              alert(`This is very bad...${JSON.stringify(error)}`);
-              return throwError(error);
-            }),
-          );
-        }),
-        concatMap((response: any) => {
-          this.sessionID = response;
-          this.sessionID = this.sessionID.session_id;
-          return this.authUserService.getAccountId(this.sessionID).pipe(
-            catchError((error) => {
-              alert(`This is very bad...${JSON.stringify(error)}`);
-              return throwError(error);
-            }),
-          );
-        }),
-      )
-      .subscribe((response) => {
-        this.accountId = response;
-        this.accountId = this.accountId.id;
-        this.authUserService.setUserDataTMDB(
-          this.requestToken,
-          this.sessionID,
-          this.accountId,
+    this.store.dispatch(getRequestToken());
+    this.store.select(selectorGetRequestToken).subscribe((data) => {
+      this.requestToken = data;
+
+      if (this.requestToken) {
+        this.store.dispatch(
+          getValidRequestToken({ requestToken: this.requestToken }),
         );
-      });
+        this.isValidationToken = true;
+      }
+
+      if (this.isValidationToken) {
+        this.store.dispatch(
+          getUserSessionId({ requestToken: this.requestToken }),
+        );
+        this.store.select(selectorGetSessionId).subscribe((data) => {
+          this.sessionID = data;
+
+          if (this.sessionID) {
+            this.store.dispatch(
+              getUserAccountId({ sessionID: this.sessionID }),
+            );
+          }
+        });
+      }
+    });
   }
 }

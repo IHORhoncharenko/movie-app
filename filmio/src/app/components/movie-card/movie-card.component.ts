@@ -1,6 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
+import { Store } from "@ngrx/store";
 import { BadgeModule } from "primeng/badge";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
@@ -10,6 +11,7 @@ import { TagModule } from "primeng/tag";
 import { map } from "rxjs";
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
 import { MoviesService } from "../../services/movies/movies.service";
+import { selectedMovie } from "../../store/movie-store/actions";
 
 @Component({
   selector: "app-movie-card",
@@ -44,6 +46,7 @@ export class MovieCardComponent {
   constructor(
     private router: Router,
     private moviesService: MoviesService,
+    private store: Store,
   ) {}
 
   ngOnInit() {
@@ -71,9 +74,7 @@ export class MovieCardComponent {
           });
         }),
       )
-      .subscribe((data) => {
-        console.log(data);
-      });
+      .subscribe(() => {});
   }
 
   showDialog() {
@@ -98,5 +99,9 @@ export class MovieCardComponent {
 
   openMovieCard = () => {
     this.router.navigateByUrl(`/movie/${this.movieData.id}`);
+  };
+
+  selectMovie = () => {
+    this.store.dispatch(selectedMovie({ selectedMovie: this.movieData }));
   };
 }

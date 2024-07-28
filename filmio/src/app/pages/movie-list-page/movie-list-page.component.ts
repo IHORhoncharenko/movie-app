@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Store } from "@ngrx/store";
 import { Subscription } from "rxjs";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { SidebarComponent } from "../../components/sidebar/sidebar.component";
 import { Movie } from "../../models/movie.models";
-import { MoviesService } from "../../services/movies/movies.service";
+import { loadAllMovies } from "../../store/movie-store/actions";
+import { selectLoadAllMovies } from "../../store/movie-store/selectors";
 
 @Component({
   selector: "app-movie-list-page",
@@ -13,16 +15,21 @@ import { MoviesService } from "../../services/movies/movies.service";
   imports: [SidebarComponent, MovieCardComponent],
 })
 export class MovieListPageComponent implements OnInit, OnDestroy {
-  public allMovies: Movie[] | undefined;
+  public allMovies: Movie[] | null | undefined;
   private subscription: Subscription = new Subscription();
 
-  constructor(private movieService: MoviesService) {}
+  constructor(private store: Store) {}
 
   ngOnInit() {
-    this.subscription = this.movieService.getAllMovies().subscribe((data) => {
-      console.log(data);
-      this.allMovies = data;
-    });
+    // виклик екшена
+    this.store.dispatch(loadAllMovies());
+
+    // підписка на отримання даних зі store,
+    this.subscription = this.store
+      .select(selectLoadAllMovies)
+      .subscribe((movies) => {
+        this.allMovies = movies;
+      });
   }
 
   ngOnDestroy() {

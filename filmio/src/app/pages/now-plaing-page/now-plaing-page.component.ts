@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Store } from "@ngrx/store";
 import { Subscription } from "rxjs";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { SidebarComponent } from "../../components/sidebar/sidebar.component";
 import { Movie } from "../../models/movie.models";
-import { MoviesService } from "../../services/movies/movies.service";
+import { loadNowPlaingMovies } from "../../store/movie-store/actions";
+import { selectLoadNowPlaingMovies } from "../../store/movie-store/selectors";
 
 @Component({
   selector: "app-now-plaing-page",
@@ -13,23 +15,25 @@ import { MoviesService } from "../../services/movies/movies.service";
   imports: [SidebarComponent, MovieCardComponent],
 })
 export class NowPlaingPageComponent implements OnInit, OnDestroy {
-  public nowPlayingMovies: Movie[] | undefined;
-  private subscribe: Subscription = new Subscription();
+  public nowPlayingMovies: Movie[] | undefined | null;
+  private subscription: Subscription = new Subscription();
 
-  constructor(private movieService: MoviesService) {}
+  constructor(private store: Store) {}
 
   ngOnInit() {
-    this.subscribe = this.movieService
-      .getNowPlayingMovies()
-      .subscribe((data) => {
-        this.nowPlayingMovies = data.results;
+    this.store.dispatch(loadNowPlaingMovies());
+
+    this.subscription = this.store
+      .select(selectLoadNowPlaingMovies)
+      .subscribe((movies) => {
+        this.nowPlayingMovies = movies;
       });
   }
 
   ngOnDestroy() {
-    if (this.subscribe) {
+    if (this.subscription) {
       console.log("Відписка від Observable");
-      this.subscribe.unsubscribe();
+      this.subscription.unsubscribe();
     }
   }
 }
