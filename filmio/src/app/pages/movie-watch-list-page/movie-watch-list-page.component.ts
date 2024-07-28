@@ -1,10 +1,14 @@
 import { Component, OnInit } from "@angular/core";
+import { Store } from "@ngrx/store";
 import { ButtonModule } from "primeng/button";
-import { Subscription, catchError, forkJoin, tap } from "rxjs";
+import { Subscription, switchMap, tap } from "rxjs";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
-import { User } from "../../models/user.models";
-import { MoviesService } from "../../services/movies/movies.service";
-import { AuthUserService } from "../../services/users/authUser.service.service";
+import {
+  getWatchlistMovies,
+  setWatchlistMovies,
+} from "../../store/movie-store/actions";
+import { selectorGetWatchlistMovies } from "../../store/movie-store/selectors";
+import { selectorGetAccountId } from "../../store/user-store/user-selectors";
 
 @Component({
   selector: "app-movie-watch-list-page",
@@ -19,37 +23,26 @@ export class MovieWatchListPageComponent implements OnInit {
   public isClearList = false;
   public watchlistMoviesIds: number[] = [];
   private subscription = new Subscription();
-  private userData: User | undefined | void;
+  private accountId: any | null | undefined;
 
-  constructor(
-    private movieService: MoviesService,
-    private authUserService: AuthUserService,
-  ) {}
+  constructor(private store: Store) {}
 
   ngOnInit() {
-    this.userData = this.authUserService.getUserDataTMDB();
-
-    if (this.userData) {
-      this.mesLoadingStatus = true;
-
-      this.movieService
-        .getWatchlistMovies(this.userData.accountId)
-        .pipe(
-          catchError((error) => {
-            alert(`This is very bad bro...${error}`);
-            return error;
-          }),
-          tap(() => {
-            this.mesLoadingStatus = false;
-          }),
-        )
-        .subscribe((data) => {
-          this.mesLoadingStatus = false;
-          this.watchlistMovies = data;
-          this.watchlistMovies = this.watchlistMovies.results;
-          console.log(this.watchlistMovies);
-        });
-    }
+    this.store
+      .select(selectorGetAccountId)
+      .pipe(
+        tap((data: any) => {
+          this.accountId = data;
+        }),
+        switchMap(() => {
+          this.store.dispatch(getWatchlistMovies(this.accountId));
+          return this.store.select(selectorGetWatchlistMovies);
+        }),
+      )
+      .subscribe((data) => {
+        this.watchlistMovies = data;
+        this.watchlistMoviesIds = this.watchlistMovies.map((m: any) => m.id);
+      });
   }
 
   ngOnDestroy() {
@@ -60,25 +53,13 @@ export class MovieWatchListPageComponent implements OnInit {
   }
 
   clearMoviesList = () => {
-    this.watchlistMoviesIds = this.watchlistMovies.map((m: any) => m.id);
-    let observables: any = [];
-
-    if (this.userData) {
-      observables = this.watchlistMoviesIds.map((id: any) => {
-        if (this.userData) {
-          return this.movieService.clearMovieFromWatchlist(
-            this.userData.accountId,
-            id,
-          );
-        } else {
-          return undefined;
-        }
-      });
-
-      forkJoin(observables).subscribe((data) => {
-        this.watchlistMovies = [];
-        console.log(data);
-      });
-    }
+    this.watchlistMoviesIds.map((movieId) => {
+      this.store.dispatch(
+        setWatchlistMovies({
+          accountID: this.accountId,
+          media_ids: movieId,
+        }),
+      );
+    });
   };
 }

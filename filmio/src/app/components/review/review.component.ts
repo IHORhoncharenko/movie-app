@@ -17,7 +17,8 @@ export class ReviewComponent implements OnInit {
 
   public value: number | undefined;
   public userName: boolean | undefined;
-  public urlPoster: string | undefined;
+  public correctUrlPoster: string | undefined | null;
+  private urlPoster = environment.apiUrlPosterTMDB;
   private apiKeyTMDB = environment.apiKeyTMDB;
 
   constructor() {}
@@ -26,7 +27,6 @@ export class ReviewComponent implements OnInit {
     this.userName = this.movieData.author_details.name;
     this.value = this.movieData.author_details.rating;
 
-    this.urlPoster = `https://image.tmdb.org/t/p/w500${this.movieData.author_details.avatar_path}?api_key=${this.apiKeyTMDB}`;
-    console.log(this.urlPoster);
+    this.correctUrlPoster = `${this.urlPoster}${this.movieData.author_details.avatar_path}?api_key=${this.apiKeyTMDB}`;
   }
 }

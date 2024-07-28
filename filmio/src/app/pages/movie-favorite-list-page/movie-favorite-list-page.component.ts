@@ -4,7 +4,10 @@ import { ButtonModule } from "primeng/button";
 import { MessagesModule } from "primeng/messages";
 import { Subscription, switchMap, tap } from "rxjs";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
-import { getFavoriteMovies } from "../../store/movie-store/actions";
+import {
+  getFavoriteMovies,
+  setFavoriteMovies,
+} from "../../store/movie-store/actions";
 import { selectorGetFavoriteMovies } from "../../store/movie-store/selectors";
 import { selectorGetAccountId } from "../../store/user-store/user-selectors";
 
@@ -38,31 +41,8 @@ export class MovieFavoriteListPageComponent implements OnInit {
       )
       .subscribe((data) => {
         this.favoriteMovies = data;
+        this.favoritesMoviesIds = this.favoriteMovies.map((m: any) => m.id);
       });
-
-    // this.userData = this.authUserService.getUserDataTMDB();
-
-    // if (this.userData) {
-    //   this.mesLoadingStatus = true;
-
-    //   this.movieService
-    //     .getFavoriteMovies(this.userData.accountId)
-    //     .pipe(
-    //       catchError((error) => {
-    //         alert(`This is very bad bro...${error}`);
-    //         return error;
-    //       }),
-    //       tap(() => {
-    //         this.mesLoadingStatus = false;
-    //       }),
-    //     )
-    //     .subscribe((data) => {
-    //       this.mesLoadingStatus = false;
-    //       this.favoritesMovies = data;
-    //       this.favoritesMovies = this.favoritesMovies.results;
-    //       console.log(this.favoritesMovies);
-    //     });
-    // }
   }
 
   ngOnDestroy() {
@@ -73,23 +53,13 @@ export class MovieFavoriteListPageComponent implements OnInit {
   }
 
   clearMoviesList = () => {
-    // this.favoritesMoviesIds = this.favoritesMovies.map((m: any) => m.id);
-    // let observables: any = [];
-    // if (this.userData) {
-    //   observables = this.favoritesMoviesIds.map((id: any) => {
-    //     if (this.userData) {
-    //       return this.movieService.clearMovieFromFavoriteList(
-    //         this.userData.accountId,
-    //         id,
-    //       );
-    //     } else {
-    //       return undefined;
-    //     }
-    //   });
-    //   forkJoin(observables).subscribe((data) => {
-    //     this.favoritesMovies = [];
-    //     console.log(data);
-    //   });
-    // }
+    this.favoritesMoviesIds.map((movieId) => {
+      this.store.dispatch(
+        setFavoriteMovies({
+          accountID: this.accountId,
+          media_ids: movieId,
+        }),
+      );
+    });
   };
 }

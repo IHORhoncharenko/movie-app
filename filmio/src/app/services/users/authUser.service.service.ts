@@ -1,7 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "../../environments/environment";
-import { User } from "../../models/user.models";
 
 @Injectable({
   providedIn: "root",
@@ -14,7 +13,6 @@ export class AuthUserService {
   private apiUrlRequestToken = environment.apiUrlRequestToken;
   private usernameTMDB = environment.usernameTMDB;
   private passwordTMDB = environment.passwordTMDB;
-  private userAuthPropTMDB: User | undefined;
   private baseApiUrlTMDB = environment.baseApiUrlTMDB;
 
   constructor(private http: HttpClient) {}
@@ -61,21 +59,5 @@ export class AuthUserService {
     return this.http.get(
       `${this.baseApiUrlTMDB}/${this.apiUrlAccountTMDB}?api_key=${this.apiKeyTMDB}&session_id=${sessionId}`,
     );
-  };
-
-  setUserDataTMDB = (token: string, sessionID: string, accountId: string) => {
-    return (this.userAuthPropTMDB = {
-      token: token,
-      accountId: accountId,
-      sessionID: sessionID,
-    });
-  };
-
-  getUserDataTMDB = () => {
-    if (this.userAuthPropTMDB) {
-      return this.userAuthPropTMDB;
-    } else {
-      return console.log(`userAuthProp not found`);
-    }
   };
 }

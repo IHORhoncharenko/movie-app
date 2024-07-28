@@ -161,7 +161,7 @@ export class MovieEffects {
     ),
   );
 
-  getFavoriteMoviesSuccess$ = createEffect(() =>
+  getFavoriteMovies$ = createEffect(() =>
     this.actions$.pipe(
       ofType(storeActions.getFavoriteMovies),
       mergeMap((data) => {
@@ -169,6 +169,120 @@ export class MovieEffects {
           map((data) =>
             storeActions.getFavoriteMoviesSuccess({
               favoriteMovies: data,
+            }),
+          ),
+          catchError((error) =>
+            of(
+              storeActions.loadMoviesFailure({
+                error,
+              }),
+            ),
+          ),
+        );
+      }),
+    ),
+  );
+
+  setFavoriteMovies$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(storeActions.setFavoriteMovies),
+      mergeMap((data) => {
+        const { accountID, media_ids } = data;
+        return this.moviesService
+          .clearMovieFromFavoriteList(accountID, media_ids)
+          .pipe(
+            map((data) =>
+              storeActions.setFavoriteMoviesSuccess({
+                favoriteMovies: data,
+              }),
+            ),
+            catchError((error) =>
+              of(
+                storeActions.loadMoviesFailure({
+                  error,
+                }),
+              ),
+            ),
+          );
+      }),
+    ),
+  );
+
+  addToWatchlistMovies$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(storeActions.addToWatchlistMovies),
+      mergeMap((data) => {
+        return this.moviesService
+          .addToWatchlist(data.acountId, data.movieId)
+          .pipe(
+            map((data) => storeActions.addToWatchlistMoviesSuccess()),
+            catchError((error) =>
+              of(
+                storeActions.loadMoviesFailure({
+                  error,
+                }),
+              ),
+            ),
+          );
+      }),
+    ),
+  );
+
+  getWatchlistMovies$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(storeActions.getWatchlistMovies),
+      mergeMap((data) => {
+        return this.moviesService.getWatchlistMovies(data.acountId).pipe(
+          map((data) =>
+            storeActions.getWatchlistMoviesSuccess({
+              watchlistMovies: data,
+            }),
+          ),
+          catchError((error) =>
+            of(
+              storeActions.loadMoviesFailure({
+                error,
+              }),
+            ),
+          ),
+        );
+      }),
+    ),
+  );
+
+  setWatchlistMovies$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(storeActions.setWatchlistMovies),
+      mergeMap((data) => {
+        const { accountID, media_ids } = data;
+        return this.moviesService
+          .clearMovieFromWatchlist(accountID, media_ids)
+          .pipe(
+            map((data) =>
+              storeActions.setWatchlistMoviesSuccess({
+                watchlistMovies: data,
+              }),
+            ),
+            catchError((error) =>
+              of(
+                storeActions.loadMoviesFailure({
+                  error,
+                }),
+              ),
+            ),
+          );
+      }),
+    ),
+  );
+
+  getGenresForMovies$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(storeActions.getGenresForMovies),
+      mergeMap((data) => {
+        return this.moviesService.getGenresForMovies().pipe(
+          map((data) =>
+            storeActions.getGenresForMoviesSuccess({
+              genresMovie: data,
             }),
           ),
           catchError((error) =>

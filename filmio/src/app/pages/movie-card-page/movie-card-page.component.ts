@@ -7,15 +7,16 @@ import { ButtonModule } from "primeng/button";
 import { RatingModule } from "primeng/rating";
 import { TabViewModule } from "primeng/tabview";
 import { ToggleButtonModule } from "primeng/togglebutton";
-import { Subscription } from "rxjs";
+import { Subscription, retry } from "rxjs";
 import { ReviewComponent } from "../../components/review/review.component";
 import { environment } from "../../environments/environment";
 import { Movie } from "../../models/movie.models";
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
 import { SafeUrlPipe } from "../../pipes/safeUrl/safeUrl.pipe";
-import { MoviesService } from "../../services/movies/movies.service";
-import { AuthUserService } from "../../services/users/authUser.service.service";
-import { addToFavoriteMovies } from "../../store/movie-store/actions";
+import {
+  addToFavoriteMovies,
+  addToWatchlistMovies,
+} from "../../store/movie-store/actions";
 import {
   selectReviewsMovie,
   selectSelectedMovie,
@@ -48,22 +49,22 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
   public isShowrating = false;
   public correctUrlPoster: string | undefined;
   public isFamilyFriendly: boolean | undefined;
-  public reviewsMovie: [] | null | undefined;
+  public reviewsMovie: any | null | undefined;
   private urlPoster = environment.apiUrlPosterTMDB;
   private accountId: number | string | null | undefined;
   private subscriptionSelectMovie: Subscription = new Subscription();
   private subscriptionReviewsMovie: Subscription = new Subscription();
 
-  constructor(
-    private movieService: MoviesService,
-    private authUserService: AuthUserService,
-    private store: Store,
-  ) {}
+  constructor(private store: Store) {}
 
   ngOnInit() {
-    this.store.select(selectorGetAccountId).subscribe((data) => {
-      this.accountId = data;
-    });
+    this.store
+      .select(selectorGetAccountId)
+      .pipe(retry(10))
+      .subscribe((data) => {
+        this.accountId = data;
+      });
+
     this.subscriptionSelectMovie = this.store
       .select(selectSelectedMovie)
       .subscribe((movie) => {
@@ -88,14 +89,6 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
-    if (this.subscriptionSelectMovie || this.subscriptionReviewsMovie) {
-      console.log(`Відписка від Observable`);
-      this.subscriptionSelectMovie.unsubscribe();
-      this.subscriptionReviewsMovie.unsubscribe();
-    }
-  }
-
   mouseenter = () => {
     this.isShowrating = true;
   };
@@ -116,13 +109,21 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
   };
 
   choosingWatchlistMovie = (movieId: number) => {
-    // if (this.movieDetailseData) {
-    //   this.store.dispatch(addToWatchlistMovies());
-    //   this.movieService
-    //     .addToWatchlist(this.accountId, movieId)
-    //     .subscribe((response) => {
-    //       console.log(response);
-    //     });
-    // }
+    if (this.movieDetailseData) {
+      this.store.dispatch(
+        addToWatchlistMovies({
+          movieId: this.movieDetailseData.id,
+          acountId: this.accountId,
+        }),
+      );
+    }
   };
+
+  ngOnDestroy() {
+    if (this.subscriptionSelectMovie || this.subscriptionReviewsMovie) {
+      console.log(`Відписка від Observable`);
+      this.subscriptionSelectMovie.unsubscribe();
+      this.subscriptionReviewsMovie.unsubscribe();
+    }
+  }
 }

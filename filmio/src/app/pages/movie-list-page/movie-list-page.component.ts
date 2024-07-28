@@ -21,10 +21,7 @@ export class MovieListPageComponent implements OnInit, OnDestroy {
   constructor(private store: Store) {}
 
   ngOnInit() {
-    // виклик екшена
     this.store.dispatch(loadAllMovies());
-
-    // підписка на отримання даних зі store,
     this.subscription = this.store
       .select(selectLoadAllMovies)
       .subscribe((movies) => {

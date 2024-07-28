@@ -11,6 +11,7 @@ export interface MovieState {
   upcomingMovies?: Movie[] | null;
   selectedMovie?: Movie | null;
   reviewsMovie?: MovieReviews | null;
+  genresMovie?: any | null;
 }
 
 export const initialState: MovieState = {
@@ -23,4 +24,5 @@ export const initialState: MovieState = {
   upcomingMovies: null,
   selectedMovie: null,
   reviewsMovie: null,
+  genresMovie: null,
 };
