@@ -21,7 +21,7 @@ import {
   selectReviewsMovie,
   selectSelectedMovie,
 } from "../../store/movie-store/selectors";
-import { selectorGetAccountId } from "../../store/user-store/user-selectors";
+import { selectAccountId } from "../../store/user-store/user-selectors";
 
 @Component({
   selector: "app-movie-card-page",
@@ -59,7 +59,7 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store
-      .select(selectorGetAccountId)
+      .select(selectAccountId)
       .pipe(retry(10))
       .subscribe((data) => {
         this.accountId = data;

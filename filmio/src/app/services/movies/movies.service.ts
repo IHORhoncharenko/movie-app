@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { forkJoin, map } from "rxjs";
 import { environment } from "../../environments/environment";
-import { MovieApi } from "../../models/movieApi.models";
+import { MovieApi } from "../../models/movie-api.models";
 
 @Injectable({
   providedIn: "root",

@@ -66,7 +66,7 @@ export const MovieReducer = createReducer(
       reviewsMovie: reviewsMovie.results,
     };
   }),
-  on(storeActions.getGenresForMoviesSuccess, (state, { genresMovie }) => {
+  on(storeActions.loadGenresForMoviesSuccess, (state, { genresMovie }) => {
     return {
       ...state,
       genresMovie: genresMovie.genres,

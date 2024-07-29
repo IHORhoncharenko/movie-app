@@ -275,11 +275,11 @@ export class MovieEffects {
 
   getGenresForMovies$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(storeActions.getGenresForMovies),
+      ofType(storeActions.loadGenresForMovies),
       mergeMap((data) => {
         return this.moviesService.getGenresForMovies().pipe(
           map((data) =>
-            storeActions.getGenresForMoviesSuccess({
+            storeActions.loadGenresForMoviesSuccess({
               genresMovie: data,
             }),
           ),

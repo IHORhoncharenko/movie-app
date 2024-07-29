@@ -8,8 +8,8 @@ import {
   getFavoriteMovies,
   setFavoriteMovies,
 } from "../../store/movie-store/actions";
-import { selectorGetFavoriteMovies } from "../../store/movie-store/selectors";
-import { selectorGetAccountId } from "../../store/user-store/user-selectors";
+import { selectFavoriteMovies } from "../../store/movie-store/selectors";
+import { selectAccountId } from "../../store/user-store/user-selectors";
 
 @Component({
   selector: "app-movie-favorite-list-page",
@@ -29,14 +29,14 @@ export class MovieFavoriteListPageComponent implements OnInit {
 
   ngOnInit() {
     this.store
-      .select(selectorGetAccountId)
+      .select(selectAccountId)
       .pipe(
         tap((data: any) => {
           this.accountId = data;
         }),
         switchMap(() => {
           this.store.dispatch(getFavoriteMovies(this.accountId));
-          return this.store.select(selectorGetFavoriteMovies);
+          return this.store.select(selectFavoriteMovies);
         }),
       )
       .subscribe((data) => {

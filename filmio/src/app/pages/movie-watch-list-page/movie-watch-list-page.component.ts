@@ -7,8 +7,8 @@ import {
   getWatchlistMovies,
   setWatchlistMovies,
 } from "../../store/movie-store/actions";
-import { selectorGetWatchlistMovies } from "../../store/movie-store/selectors";
-import { selectorGetAccountId } from "../../store/user-store/user-selectors";
+import { selectWatchlistMovies } from "../../store/movie-store/selectors";
+import { selectAccountId } from "../../store/user-store/user-selectors";
 
 @Component({
   selector: "app-movie-watch-list-page",
@@ -29,14 +29,14 @@ export class MovieWatchListPageComponent implements OnInit {
 
   ngOnInit() {
     this.store
-      .select(selectorGetAccountId)
+      .select(selectAccountId)
       .pipe(
         tap((data: any) => {
           this.accountId = data;
         }),
         switchMap(() => {
           this.store.dispatch(getWatchlistMovies(this.accountId));
-          return this.store.select(selectorGetWatchlistMovies);
+          return this.store.select(selectWatchlistMovies);
         }),
       )
       .subscribe((data) => {

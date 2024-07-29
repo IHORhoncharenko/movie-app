@@ -12,7 +12,7 @@ import { map } from "rxjs";
 import { environment } from "../../environments/environment";
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
 import { selectedMovie } from "../../store/movie-store/actions";
-import { selectorGetGenresMovie } from "../../store/movie-store/selectors";
+import { selectGenresMovie } from "../../store/movie-store/selectors";
 
 @Component({
   selector: "app-movie-card",
@@ -60,7 +60,7 @@ export class MovieCardComponent {
     }
 
     this.store
-      .select(selectorGetGenresMovie)
+      .select(selectGenresMovie)
       .pipe(
         map((data) => {
           data.map((genreApi: any) => {

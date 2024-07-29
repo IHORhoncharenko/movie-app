@@ -3,15 +3,19 @@ import { UserState } from "./user-state";
 
 export const selectState = createFeatureSelector<UserState>("userState");
 
-export const selectorGetRequestToken = createSelector(
+export const selectRequestToken = createSelector(
   selectState,
   (state) => state.requestToken,
 );
-export const selectorGetSessionId = createSelector(
+export const selectValidRequestToken = createSelector(
+  selectState,
+  (state) => state.requestToken,
+);
+export const selectSessionId = createSelector(
   selectState,
   (state) => state.sessionID,
 );
-export const selectorGetAccountId = createSelector(
+export const selectAccountId = createSelector(
   selectState,
-  (state) => state.accountId,
+  (state) => state.accountID,
 );

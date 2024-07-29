@@ -32,15 +32,15 @@ export const selectReviewsMovie = createSelector(
   selectState,
   (state) => state.reviewsMovie,
 );
-export const selectorGetFavoriteMovies = createSelector(
+export const selectFavoriteMovies = createSelector(
   selectState,
   (state) => state.favoriteMovies,
 );
-export const selectorGetWatchlistMovies = createSelector(
+export const selectWatchlistMovies = createSelector(
   selectState,
   (state) => state.watchlistMovies,
 );
-export const selectorGetGenresMovie = createSelector(
+export const selectGenresMovie = createSelector(
   selectState,
   (state) => state.genresMovie,
 );

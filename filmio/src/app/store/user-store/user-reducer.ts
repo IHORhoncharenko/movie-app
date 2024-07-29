@@ -4,22 +4,22 @@ import { initialState } from "./user-state";
 
 export const UserReducer = createReducer(
   initialState,
-  on(storeActions.getRequestTokenSuccess, (state, { requestToken }) => {
+  on(storeActions.loadRequestTokenSuccess, (state, { requestToken }) => {
     return {
       ...state,
-      requestToken: requestToken.request_token,
+      requestToken: requestToken,
     };
   }),
-  on(storeActions.getUserSessionIdSuccess, (state, { sessionID }) => {
+  on(storeActions.loadUserSessionIdSuccess, (state, { sessionID }) => {
     return {
       ...state,
-      sessionID: sessionID.session_id,
+      sessionID: sessionID,
     };
   }),
-  on(storeActions.getUserAccountIdSuccess, (state, { accountId }) => {
+  on(storeActions.loadUserAccountIdSuccess, (state, { accountID }) => {
     return {
       ...state,
-      accountId: accountId.id,
+      accountID: accountID,
     };
   }),
 );

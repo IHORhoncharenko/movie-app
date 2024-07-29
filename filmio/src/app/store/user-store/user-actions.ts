@@ -1,42 +1,45 @@
 import { createAction, props } from "@ngrx/store";
 
-export const getRequestToken = createAction(
+export const loadRequestToken = createAction(
   "[User Autentification] Get Request Token",
 );
-export const getRequestTokenSuccess = createAction(
+export const loadRequestTokenSuccess = createAction(
   "[User Autentification] Get Request Token Success",
   props<{ requestToken: any | null | void }>(),
 );
-export const getValidRequestToken = createAction(
+export const loadValidRequestToken = createAction(
   "[User Autentification] Get Valid Request Token",
   props<{
     requestToken: any | null;
   }>(),
 );
-export const getValidRequestTokenSuccess = createAction(
+export const loadValidRequestTokenSuccess = createAction(
   "[User Autentification] Get Valid Request Token Success",
+  props<{
+    requestToken: any | null;
+  }>(),
 );
-export const getUserSessionId = createAction(
+export const loadUserSessionId = createAction(
   "[User Autentification] Get SessionId",
   props<{
     requestToken: any | null;
   }>(),
 );
-export const getUserSessionIdSuccess = createAction(
+export const loadUserSessionIdSuccess = createAction(
   "[User Autentification] Get SessionId Success",
   props<{ sessionID: any | null }>(),
 );
-export const getUserAccountId = createAction(
+export const loadUserAccountId = createAction(
   "[User Autentification] Get AccountId",
   props<{
     sessionID: any | null;
   }>(),
 );
-export const getUserAccountIdSuccess = createAction(
+export const loadUserAccountIdSuccess = createAction(
   "[User Autentification] Get AccountId Success",
-  props<{ accountId: any | null }>(),
+  props<{ accountID: any | null }>(),
 );
-export const getUserDataFailure = createAction(
+export const loadUserDataFailure = createAction(
   "[User Autentification] User Autentification Failure",
   props<{ error: any }>(),
 );

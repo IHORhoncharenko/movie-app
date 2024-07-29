@@ -5,10 +5,10 @@ export const selectedMovie = createAction(
   "[Movie] Selected Movie",
   props<{ selectedMovie: Movie | null }>(),
 );
-export const getGenresForMovies = createAction(
+export const loadGenresForMovies = createAction(
   "[Genres] Get Genres For Movies",
 );
-export const getGenresForMoviesSuccess = createAction(
+export const loadGenresForMoviesSuccess = createAction(
   "[Genres] Get Genres For Movies Success",
   props<{ genresMovie: any | null }>(),
 );
