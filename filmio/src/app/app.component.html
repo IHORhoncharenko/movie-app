@@ -3,7 +3,10 @@
 </header>
 
 <app-sidebar></app-sidebar>
-<router-outlet></router-outlet>
+<app-subscribe-popup></app-subscribe-popup>
+@if (!isSearchMovie) {
+  <router-outlet></router-outlet>
+}
 
 <footer>
   <small>IHOR[honcharenko], 2024</small>

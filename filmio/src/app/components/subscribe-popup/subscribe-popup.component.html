@@ -1,0 +1,109 @@
+<p-toast />
+@if (isShowUnsubscribe) {
+  <p-button
+    class="btn"
+    (onClick)="showDialogUnsubscribe()"
+    label="Unsubscribe"
+    severity="secondary"
+  />
+} @else {
+  <p-button class="btn" (onClick)="showDialogSubscribe()" label="Subscribe" />
+}
+
+<form [formGroup]="userSubscribe" (ngSubmit)="handleSubmitUserSubscribe()">
+  <p-dialog
+    header="Edit Profile"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '25rem' }"
+    class="form"
+  >
+    <div class="row">
+      <label for="username" class="font-semibold w-6rem">Username</label>
+      <input
+        formControlName="name"
+        pInputText
+        id="username"
+        class="flex-auto"
+        autocomplete="off"
+      />
+    </div>
+    <div class="row">
+      <label for="email" class="font-semibold w-6rem">Email</label>
+      <input
+        formControlName="email"
+        pInputText
+        id="email"
+        class="flex-auto"
+        autocomplete="off"
+      />
+    </div>
+    <div class="row">
+      <label for="years" class="font-semibold w-6rem">Years old</label>
+      <p-dropdown
+        id="years"
+        formControlName="years"
+        [options]="years"
+        optionLabel="year"
+        placeholder="Select years old"
+      />
+    </div>
+    <div class="row">
+      <label for="genres" class="font-semibold w-6rem">Movie genres</label>
+      <p-multiSelect
+        id="genres"
+        [options]="genres"
+        formControlName="genres"
+        optionLabel="name"
+        placeholder="Select favorite genres"
+      />
+    </div>
+    <div class="row">
+      <label for="agr">I agree to the terms of use of this site</label>
+      <p-checkbox formControlName="agree" inputId="agr" value="agree" />
+    </div>
+    <div class="row">
+      <p-button
+        type="submite"
+        (onClick)="showSuccess(); visible = false"
+        label="Success"
+        severity="success"
+        [disabled]="!userSubscribe.valid"
+      />
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        (onClick)="visible = false"
+      />
+    </div>
+  </p-dialog>
+</form>
+
+<form [formGroup]="userUnsubscribe" (ngSubmit)="handleSubmitUserUnsubscribe()">
+  <p-dialog
+    header="Edit Profile"
+    [modal]="true"
+    [(visible)]="visibleUnsubscribeDialog"
+    [style]="{ width: '25rem' }"
+    class="flex align-items-center gap-3"
+  >
+    <div class="row">
+      <p-checkbox formControlName="agree" inputId="agr" value="agree" />
+      <label for="agr">Unsubscribe from the site</label>
+    </div>
+    <div class="row">
+      <p-button
+        type="submite"
+        (onClick)="showSuccessUnsubscribe(); visibleUnsubscribeDialog = false"
+        label="Success"
+        severity="success"
+        [disabled]="!userUnsubscribe.valid"
+      />
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        (onClick)="visible = false"
+      />
+    </div>
+  </p-dialog>
+</form>

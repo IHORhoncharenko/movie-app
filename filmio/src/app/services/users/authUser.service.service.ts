@@ -14,8 +14,6 @@ export class AuthUserService {
   private apiUrlSessionTMDB = environment.apiUrlSessionTMDB;
   private apiUrlAccountTMDB = environment.apiUrlAccountTMDB;
   private apiUrlRequestToken = environment.apiUrlRequestToken;
-  private usernameTMDB = environment.usernameTMDB;
-  private passwordTMDB = environment.passwordTMDB;
   private baseApiUrlTMDB = environment.baseApiUrlTMDB;
 
   constructor(private http: HttpClient) {}
@@ -32,8 +30,8 @@ export class AuthUserService {
     return this.http.post<RequestToken>(
       `${this.baseApiUrlTMDB}/${this.apiUrlValidTokenTMDB}?api_key=${this.apiKeyTMDB}`,
       JSON.stringify({
-        username: this.usernameTMDB,
-        password: this.passwordTMDB,
+        username: localStorage.getItem("name"),
+        password: localStorage.getItem("password"),
         request_token: token,
       }),
       {

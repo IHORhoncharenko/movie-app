@@ -39,21 +39,30 @@ export const MovieReducer = createReducer(
     };
   }),
 
-  on(storeActions.getWatchlistMoviesSuccess, (state, { watchlistMovies }) => {
+  on(
+    storeActions.loadFavoriteListMoviesSuccess,
+    (state, { favoriteMovies }) => {
+      return {
+        ...state,
+        favoriteMovies: favoriteMovies,
+      };
+    },
+  ),
+  on(storeActions.addSearchMoviesSuccess, (state, { searchMovie }) => {
     return {
       ...state,
-      watchlistMovies: watchlistMovies.results,
+      searchMovie: searchMovie,
     };
   }),
 
-  on(storeActions.getFavoriteMoviesSuccess, (state, { favoriteMovies }) => {
+  on(storeActions.loadWatchListMoviesSuccess, (state, { watchlistMovies }) => {
     return {
       ...state,
-      favoriteMovies: favoriteMovies.results,
+      watchlistMovies: watchlistMovies,
     };
   }),
 
-  on(storeActions.selectedMovie, (state, { selectedMovie }) => {
+  on(storeActions.loadSelectedMovie, (state, { selectedMovie }) => {
     return {
       ...state,
       selectedMovie: selectedMovie,
@@ -70,18 +79,6 @@ export const MovieReducer = createReducer(
     return {
       ...state,
       genresMovie: genresMovie.genres,
-    };
-  }),
-  on(storeActions.setFavoriteMoviesSuccess, (state, { favoriteMovies }) => {
-    return {
-      ...state,
-      favoriteMovies: favoriteMovies.results,
-    };
-  }),
-  on(storeActions.setWatchlistMoviesSuccess, (state, { watchlistMovies }) => {
-    return {
-      ...state,
-      watchlistMovies: watchlistMovies.results,
     };
   }),
   on(storeActions.loadMoviesFailure, (state, { error }) => {

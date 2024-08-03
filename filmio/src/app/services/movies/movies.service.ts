@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { forkJoin, map } from "rxjs";
 import { environment } from "../../environments/environment";
 import { MovieApi } from "../../models/movie-api.models";
+import { Movie } from "../../models/movie.models";
 
 @Injectable({
   providedIn: "root",
@@ -59,11 +60,17 @@ export class MoviesService {
       this.getNowPlayingMovies(),
     ]).pipe(
       map((data) => {
-        return data
-          .map((movieApi) => {
-            return [...movieApi.results];
-          })
-          .flat();
+        const allMovies: Movie[] = [];
+        data.forEach((movieApi) => {
+          movieApi.results.forEach((movie) => {
+            if (
+              !allMovies.find((existingMovie) => existingMovie.id === movie.id)
+            ) {
+              allMovies.push(movie);
+            }
+          });
+        });
+        return allMovies;
       }),
     );
   };
@@ -117,7 +124,7 @@ export class MoviesService {
   };
 
   getFavoriteMovies = (accountID: string) => {
-    return this.http.get(
+    return this.http.get<any>(
       `${this.baseApiUrlTMDB}/account/${accountID}/${this.apiUrlFavoriteMoviesTMDB}?api_key=${this.apiKeyTMDB}`,
       {
         headers: {
@@ -128,7 +135,7 @@ export class MoviesService {
     );
   };
   getWatchlistMovies = (accountID: string) => {
-    return this.http.get(
+    return this.http.get<any>(
       `${this.baseApiUrlTMDB}/account/${accountID}/${this.apiUrlWatchlistMoviesTMDB}?api_key=${this.apiKeyTMDB}`,
       {
         headers: {
@@ -151,7 +158,7 @@ export class MoviesService {
     );
   };
 
-  clearMovieFromFavoriteList = (accountID: string, media_id: number) => {
+  clearFavoriteList = (accountID: string, media_id: number) => {
     return this.http.post(
       `${this.baseApiUrlTMDB}/${this.apiUrlAccountTMDB}/${accountID}/favorite?api_key=${this.apiKeyTMDB}`,
       {
@@ -169,7 +176,7 @@ export class MoviesService {
     );
   };
 
-  clearMovieFromWatchlist = (accountID: string, media_id: number) => {
+  clearWatchlist = (accountID: string, media_id: number) => {
     return this.http.post(
       `${this.baseApiUrlTMDB}/${this.apiUrlAccountTMDB}/${accountID}/watchlist?api_key=${this.apiKeyTMDB}`,
       {

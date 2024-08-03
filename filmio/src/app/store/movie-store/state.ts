@@ -3,7 +3,7 @@ import { Movie } from "../../models/movie.models";
 
 export interface MovieState {
   allMovies?: Movie[] | null;
-  favoriteMovies?: any | null;
+  favoriteMovies?: Movie[] | null;
   watchlistMovies?: Movie[] | null;
   nowPlaingMovies?: Movie[] | null;
   popularMovies?: Movie[] | null;
@@ -12,6 +12,7 @@ export interface MovieState {
   selectedMovie?: Movie | null;
   reviewsMovie?: MovieReviews | null;
   genresMovie?: any | null;
+  searchMovie?: string | null;
 }
 
 export const initialState: MovieState = {
@@ -25,4 +26,5 @@ export const initialState: MovieState = {
   selectedMovie: null,
   reviewsMovie: null,
   genresMovie: null,
+  searchMovie: null,
 };

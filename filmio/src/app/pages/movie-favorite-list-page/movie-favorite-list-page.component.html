@@ -4,22 +4,16 @@
   [size]="'small'"
   label="clear"
 />
-@if (mesLoadingStatus) {
-  <p>Loading...</p>
-}
 
-<div class="movie-list">
-  @for (movie of favoriteMovies; track movie.id) {
-    <app-movie-card [movieData]="movie"></app-movie-card>
-  }
-</div>
-
-<!-- @if (favoritesMovies.length !== 0) {
-  <p>Sorry! But you dont have any movies at your favorite movies listing</p>
-} @else {
+@if (favoriteMovies) {
   <div class="movie-list">
-    @for (movie of favoritesMovies; track movie.id) {
+    @for (movie of favoriteMovies; track movie.id) {
       <app-movie-card [movieData]="movie"></app-movie-card>
     }
   </div>
-} -->
+}
+
+@if (!favoriteMovies && isShowPopupAutorization) {
+  <p>Loading...</p>
+  <app-login-popup></app-login-popup>
+}

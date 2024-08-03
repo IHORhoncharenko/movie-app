@@ -11,7 +11,7 @@ import { TagModule } from "primeng/tag";
 import { map } from "rxjs";
 import { environment } from "../../environments/environment";
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
-import { selectedMovie } from "../../store/movie-store/actions";
+import { loadSelectedMovie } from "../../store/movie-store/actions";
 import { selectGenresMovie } from "../../store/movie-store/selectors";
 
 @Component({
@@ -100,6 +100,6 @@ export class MovieCardComponent {
   };
 
   selectMovie = () => {
-    this.store.dispatch(selectedMovie({ selectedMovie: this.movieData }));
+    this.store.dispatch(loadSelectedMovie({ selectedMovie: this.movieData }));
   };
 }

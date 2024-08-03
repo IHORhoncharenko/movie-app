@@ -19,3 +19,7 @@ export const selectAccountId = createSelector(
   selectState,
   (state) => state.accountID,
 );
+export const selectUserDataSubscribe = createSelector(
+  selectState,
+  (state) => state.subscribe,
+);

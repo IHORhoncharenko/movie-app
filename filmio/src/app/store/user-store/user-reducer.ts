@@ -22,4 +22,16 @@ export const UserReducer = createReducer(
       accountID: accountID,
     };
   }),
+  on(storeActions.loadSubscribeDataUserSuccess, (state, { subscribe }) => {
+    return {
+      ...state,
+      subscribe: subscribe,
+    };
+  }),
+  on(storeActions.deleteSubscribeDataUserSuccess, (state, { subscribe }) => {
+    return {
+      ...state,
+      subscribe: subscribe,
+    };
+  }),
 );

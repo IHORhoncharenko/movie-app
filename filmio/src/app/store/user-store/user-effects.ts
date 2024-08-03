@@ -18,7 +18,7 @@ export class UserEffects {
               `color: red; font-weight: 700`,
             );
           }),
-          retry(8), //повторні 8 запитів до сереверу у випадки невдачі отримання данних
+          retry(8),
           map((data) => {
             console.log(`[data] >>> loadRequestToken$`, data);
             console.log(
@@ -54,7 +54,7 @@ export class UserEffects {
               `color: red; font-weight: 700`,
             );
           }),
-          retry(8), //повторні 8 запитів до сереверу у випадки невдачі отримання данних
+          retry(8),
           map((data) => {
             console.log(`[data] >>> loadValidRequestToken$`, data);
             console.log(
@@ -90,7 +90,7 @@ export class UserEffects {
               `color: red; font-weight: 700`,
             );
           }),
-          retry(8), //повторні 8 запитів до сереверу у випадки невдачі отримання данних
+          retry(8),
           map((data) => {
             console.log(`[data] >>> loadUserSessionId$`, data);
             console.log(
@@ -126,7 +126,7 @@ export class UserEffects {
               `color: red; font-weight: 700`,
             );
           }),
-          retry(8), //повторні 8 запитів до сереверу у випадки невдачі отримання данних
+          retry(8),
           map((data) => {
             console.log(`[data] >>> loadUserAccountId$`, data);
             console.log(
@@ -146,6 +146,29 @@ export class UserEffects {
             ),
           ),
         );
+      }),
+    ),
+  );
+
+  dataUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(storeActions.loadSubscribeDataUser),
+      map((action) => {
+        console.log(`[action] >>> loadUserAccountId$`, action);
+        return storeActions.loadSubscribeDataUserSuccess({
+          subscribe: action.subscribe,
+        });
+      }),
+    ),
+  );
+
+  dataUserRemove$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(storeActions.deleteSubscribeDataUser),
+      map(() => {
+        return storeActions.deleteSubscribeDataUserSuccess({
+          subscribe: null,
+        });
       }),
     ),
   );
