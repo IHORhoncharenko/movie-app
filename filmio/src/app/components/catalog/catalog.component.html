@@ -37,14 +37,7 @@
       type="search"
       pInputText
       size="25"
+      id="search-row"
     />
   </form>
 </p-menubar>
-
-@if (isSearch && filteredMovies) {
-  <div class="movie-list">
-    @for (movie of filteredMovies; track movie.id) {
-      <app-movie-card [movieData]="movie"></app-movie-card>
-    }
-  </div>
-}

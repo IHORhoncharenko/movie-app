@@ -35,6 +35,7 @@ export class MovieEffects {
       ofType(storeActions.loadGenresForMovies),
       mergeMap((data) => {
         return this.moviesService.getGenresForMovies().pipe(
+          retry(8),
           map((data) =>
             storeActions.loadGenresForMoviesSuccess({
               genresMovie: data,
@@ -169,7 +170,7 @@ export class MovieEffects {
       ofType(storeActions.addFavoriteListMovies),
       mergeMap((action) => {
         return this.moviesService
-          .addToFavorite(action.accountID, action.media_id)
+          .addToFavorite(action.accountID, action.media_id, action.sessionID)
           .pipe(
             map(() => {
               return storeActions.addFavoriteListMoviesSuccess();
@@ -191,7 +192,7 @@ export class MovieEffects {
       ofType(storeActions.addWatchListMovies),
       mergeMap((action) => {
         return this.moviesService
-          .addToWatchlist(action.accountID, action.media_id)
+          .addToWatchlist(action.accountID, action.media_id, action.sessionID)
           .pipe(
             map(() => {
               return storeActions.addWatchListMoviesSuccess();
@@ -214,11 +215,12 @@ export class MovieEffects {
       filter((action) => action.accountID !== null && action.mediaID !== null),
       mergeMap((action) =>
         this.moviesService
-          .clearFavoriteList(action.accountID, action.mediaID)
+          .clearFavoriteList(action.accountID, action.mediaID, action.sessionID)
           .pipe(
             map(() =>
               storeActions.loadFavoriteListMovies({
                 accountID: action.accountID,
+                sessionID: action.sessionID,
               }),
             ),
             catchError((error) =>
@@ -239,11 +241,12 @@ export class MovieEffects {
       filter((action) => action.accountID !== null && action.mediaID !== null),
       mergeMap((action) =>
         this.moviesService
-          .clearWatchlist(action.accountID, action.mediaID)
+          .clearWatchlist(action.accountID, action.mediaID, action.sessionID)
           .pipe(
             map(() =>
               storeActions.loadWatchListMovies({
                 accountID: action.accountID,
+                sessionID: action.sessionID,
               }),
             ),
             catchError((error) =>
@@ -263,33 +266,35 @@ export class MovieEffects {
       ofType(storeActions.loadFavoriteListMovies),
       filter((action) => action.accountID !== null),
       mergeMap((action) => {
-        return this.moviesService.getFavoriteMovies(action.accountID).pipe(
-          tap(() => {
-            console.log(
-              `%c Get favorite movies ...`,
-              `color: red; font-weight: 700`,
-            );
-          }),
-          retry(8),
-          map((data) => {
-            console.log(`[data] >>> loadFavoriteListMovies$`, data);
-            console.log(
-              `%c favoriteListMovies >>>`,
-              `color: green; font-weight: 700`,
-              data.results,
-            );
-            return storeActions.loadFavoriteListMoviesSuccess({
-              favoriteMovies: data.results,
-            });
-          }),
-          catchError((error) =>
-            of(
-              storeActions.loadMoviesFailure({
-                error,
-              }),
+        return this.moviesService
+          .getFavoriteMovies(action.accountID, action.sessionID)
+          .pipe(
+            tap(() => {
+              console.log(
+                `%c Get favorite movies ...`,
+                `color: red; font-weight: 700`,
+              );
+            }),
+            retry(8),
+            map((data) => {
+              console.log(`[data] >>> loadFavoriteListMovies$`, data);
+              console.log(
+                `%c favoriteListMovies >>>`,
+                `color: green; font-weight: 700`,
+                data.results,
+              );
+              return storeActions.loadFavoriteListMoviesSuccess({
+                favoriteMovies: data.results,
+              });
+            }),
+            catchError((error) =>
+              of(
+                storeActions.loadMoviesFailure({
+                  error,
+                }),
+              ),
             ),
-          ),
-        );
+          );
       }),
     ),
   );
@@ -299,44 +304,64 @@ export class MovieEffects {
       ofType(storeActions.loadWatchListMovies),
       filter((action) => action.accountID !== null),
       mergeMap((action) => {
-        return this.moviesService.getWatchlistMovies(action.accountID).pipe(
-          tap(() => {
-            console.log(
-              `%c Get watchlist movies ...`,
-              `color: red; font-weight: 700`,
-            );
-          }),
-          retry(8),
-          map((data) => {
-            console.log(`[data] >>> loadWatchListMovies$`, data);
-            console.log(
-              `%c loadWatchListMovies >>>`,
-              `color: green; font-weight: 700`,
-              data.results,
-            );
-            return storeActions.loadWatchListMoviesSuccess({
-              watchlistMovies: data.results,
-            });
-          }),
-          catchError((error) =>
-            of(
-              storeActions.loadMoviesFailure({
-                error,
-              }),
+        return this.moviesService
+          .getWatchlistMovies(action.accountID, action.sessionID)
+          .pipe(
+            tap(() => {
+              console.log(
+                `%c Get watchlist movies ...`,
+                `color: red; font-weight: 700`,
+              );
+            }),
+            retry(8),
+            map((data) => {
+              console.log(`[data] >>> loadWatchListMovies$`, data);
+              console.log(
+                `%c loadWatchListMovies >>>`,
+                `color: green; font-weight: 700`,
+                data.results,
+              );
+              return storeActions.loadWatchListMoviesSuccess({
+                watchlistMovies: data.results,
+              });
+            }),
+            catchError((error) =>
+              of(
+                storeActions.loadMoviesFailure({
+                  error,
+                }),
+              ),
             ),
-          ),
-        );
+          );
       }),
     ),
   );
 
-  addFavoriteListSearchMovies$ = createEffect(() =>
+  addSearchMovies$ = createEffect(() =>
     this.actions$.pipe(
       ofType(storeActions.addSearchMovies),
       filter((action) => action.searchMovie !== null),
       map((action) => {
         return storeActions.addSearchMoviesSuccess({
           searchMovie: action.searchMovie,
+        });
+      }),
+      catchError((error) =>
+        of(
+          storeActions.loadMoviesFailure({
+            error,
+          }),
+        ),
+      ),
+    ),
+  );
+
+  deleteSearchMovies$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(storeActions.deleteSearchMovies),
+      map(() => {
+        return storeActions.deleteSearchMoviesSuccess({
+          searchMovie: null,
         });
       }),
       catchError((error) =>

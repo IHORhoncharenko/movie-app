@@ -7,7 +7,7 @@ import { ButtonModule } from "primeng/button";
 import { RatingModule } from "primeng/rating";
 import { TabViewModule } from "primeng/tabview";
 import { ToggleButtonModule } from "primeng/togglebutton";
-import { Subscription, filter, tap } from "rxjs";
+import { Subscription, filter, switchMap, tap } from "rxjs";
 import { LoginPopupComponent } from "../../components/login-popup/login-popup/login-popup.component";
 import { ReviewComponent } from "../../components/review/review.component";
 import { environment } from "../../environments/environment";
@@ -22,7 +22,10 @@ import {
   selectReviewsMovie,
   selectSelectedMovie,
 } from "../../store/movie-store/selectors";
-import { selectAccountId } from "../../store/user-store/user-selectors";
+import {
+  selectAccountId,
+  selectSessionId,
+} from "../../store/user-store/user-selectors";
 
 @Component({
   selector: "app-movie-card-page",
@@ -56,6 +59,7 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
   public isShowPopupAutorization: boolean | undefined;
   private urlPoster = environment.apiUrlPosterTMDB;
   private accountID: string | null | undefined;
+  private sessionID: string | null | undefined;
   private movieId: number | null | undefined;
   private subscriptionSelectMovie: Subscription = new Subscription();
   private subscriptionReviewsMovie: Subscription = new Subscription();
@@ -67,8 +71,13 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
       .select(selectAccountId)
       .pipe(
         filter((accountID) => accountID !== null && accountID !== undefined),
-        tap((accountID) => {
+        switchMap((accountID) => {
           this.accountID = accountID;
+          return this.store.select(selectSessionId);
+        }),
+        filter((sessionID) => sessionID !== null && sessionID !== undefined),
+        tap((sessionID) => {
+          this.sessionID = sessionID;
         }),
       )
       .subscribe(() => {
@@ -112,10 +121,11 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
       this.isAutorization = false;
       this.isShowPopupAutorization = true;
     }
-    if (this.movieDetailseData && this.accountID) {
+    if (this.movieDetailseData && this.accountID && this.sessionID) {
       this.store.dispatch(
         addFavoriteListMovies({
           accountID: this.accountID,
+          sessionID: this.sessionID,
           media_id: movieId,
         }),
       );
@@ -127,10 +137,11 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
       this.isAutorization = false;
       this.isShowPopupAutorization = true;
     }
-    if (this.movieDetailseData && this.accountID) {
+    if (this.movieDetailseData && this.accountID && this.sessionID) {
       this.store.dispatch(
         addWatchListMovies({
           accountID: this.accountID,
+          sessionID: this.sessionID,
           media_id: movieId,
         }),
       );

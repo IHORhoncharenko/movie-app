@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { ButtonModule } from "primeng/button";
 import { MessagesModule } from "primeng/messages";
-import { Subscription, filter, map, mergeMap, tap } from "rxjs";
+import { Subscription, filter, map, mergeMap, switchMap, tap } from "rxjs";
 import { LoginPopupComponent } from "../../components/login-popup/login-popup/login-popup.component";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { Movie } from "../../models/movie.models";
@@ -11,7 +11,10 @@ import {
   removeMoviesFromFavoriteList,
 } from "../../store/movie-store/actions";
 import { selectFavoriteMovies } from "../../store/movie-store/selectors";
-import { selectAccountId } from "../../store/user-store/user-selectors";
+import {
+  selectAccountId,
+  selectSessionId,
+} from "../../store/user-store/user-selectors";
 
 @Component({
   selector: "app-movie-favorite-list-page",
@@ -31,6 +34,7 @@ export class MovieFavoriteListPageComponent implements OnInit {
   public isShowPopupAutorization: boolean | undefined;
   private subscription = new Subscription();
   private accountID: string | null | undefined;
+  private sessionID: string | null | undefined;
 
   constructor(private store: Store) {}
 
@@ -39,13 +43,20 @@ export class MovieFavoriteListPageComponent implements OnInit {
       .select(selectAccountId)
       .pipe(
         filter((accountID) => accountID !== null && accountID !== undefined),
-        map((accountID) => {
+        switchMap((accountID) => {
           this.accountID = accountID;
-          return this.store.dispatch(
-            loadFavoriteListMovies({ accountID: this.accountID }),
-          );
+          return this.store.select(selectSessionId);
+        }),
+        tap((sessionID) => {
+          this.sessionID = sessionID;
         }),
         mergeMap(() => {
+          this.store.dispatch(
+            loadFavoriteListMovies({
+              accountID: this.accountID,
+              sessionID: this.sessionID,
+            }),
+          );
           return this.store.select(selectFavoriteMovies);
         }),
         filter((movies) => movies !== null && movies !== undefined),
@@ -77,11 +88,19 @@ export class MovieFavoriteListPageComponent implements OnInit {
             filter(
               (accountID) => accountID !== null && accountID !== undefined,
             ),
-            map((accountID) => {
+            switchMap((accountID) => {
               this.accountID = accountID;
+              return this.store.select(selectSessionId);
+            }),
+            filter(
+              (sessionID) => sessionID !== null && sessionID !== undefined,
+            ),
+            map((sessionID) => {
+              this.sessionID = sessionID;
               return this.store.dispatch(
                 removeMoviesFromFavoriteList({
                   accountID: this.accountID,
+                  sessionID: this.sessionID,
                   mediaID: movieId,
                 }),
               );

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { ButtonModule } from "primeng/button";
-import { Subscription, filter, map, mergeMap, tap } from "rxjs";
+import { Subscription, filter, map, mergeMap, switchMap, tap } from "rxjs";
 import { LoginPopupComponent } from "../../components/login-popup/login-popup/login-popup.component";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { Movie } from "../../models/movie.models";
@@ -10,7 +10,10 @@ import {
   removeMoviesFromWatchList,
 } from "../../store/movie-store/actions";
 import { selectWatchlistMovies } from "../../store/movie-store/selectors";
-import { selectAccountId } from "../../store/user-store/user-selectors";
+import {
+  selectAccountId,
+  selectSessionId,
+} from "../../store/user-store/user-selectors";
 
 @Component({
   selector: "app-movie-watch-list-page",
@@ -25,6 +28,7 @@ export class MovieWatchListPageComponent implements OnInit {
   public isShowPopupAutorization: boolean | undefined;
   private subscription = new Subscription();
   private accountID: string | null | undefined;
+  private sessionID: string | null | undefined;
 
   constructor(private store: Store) {}
 
@@ -33,13 +37,20 @@ export class MovieWatchListPageComponent implements OnInit {
       .select(selectAccountId)
       .pipe(
         filter((accountID) => accountID !== null && accountID !== undefined),
-        map((accountID) => {
+        switchMap((accountID) => {
           this.accountID = accountID;
-          return this.store.dispatch(
-            loadWatchListMovies({ accountID: this.accountID }),
-          );
+          return this.store.select(selectSessionId);
+        }),
+        tap((sessionID) => {
+          this.sessionID = sessionID;
         }),
         mergeMap(() => {
+          this.store.dispatch(
+            loadWatchListMovies({
+              accountID: this.accountID,
+              sessionID: this.sessionID,
+            }),
+          );
           return this.store.select(selectWatchlistMovies);
         }),
         filter((movies) => movies !== null && movies !== undefined),
@@ -71,11 +82,16 @@ export class MovieWatchListPageComponent implements OnInit {
             filter(
               (accountID) => accountID !== null && accountID !== undefined,
             ),
-            map((accountID) => {
+            switchMap((accountID) => {
               this.accountID = accountID;
+              return this.store.select(selectSessionId);
+            }),
+            map((sessionID) => {
+              this.sessionID = sessionID;
               return this.store.dispatch(
                 removeMoviesFromWatchList({
                   accountID: this.accountID,
+                  sessionID: this.sessionID,
                   mediaID: movieId,
                 }),
               );

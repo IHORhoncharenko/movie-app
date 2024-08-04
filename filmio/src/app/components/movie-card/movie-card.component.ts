@@ -8,7 +8,7 @@ import { CardModule } from "primeng/card";
 import { DialogModule } from "primeng/dialog";
 import { RatingModule } from "primeng/rating";
 import { TagModule } from "primeng/tag";
-import { map } from "rxjs";
+import { filter, map } from "rxjs";
 import { environment } from "../../environments/environment";
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
 import { loadSelectedMovie } from "../../store/movie-store/actions";
@@ -62,8 +62,9 @@ export class MovieCardComponent {
     this.store
       .select(selectGenresMovie)
       .pipe(
-        map((data) => {
-          data.map((genreApi: any) => {
+        filter((genres) => genres !== null && genres !== undefined),
+        map((genres) => {
+          genres.map((genreApi: any) => {
             this.movieData.genre_ids.map((genreMovie: any) => {
               if (genreApi.id === genreMovie) {
                 this.movieGenres.push(genreApi.name);

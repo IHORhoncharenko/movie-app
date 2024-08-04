@@ -75,15 +75,9 @@ export class MoviesService {
     );
   };
 
-  addToFavorite = (accountID: string, media_id: number) => {
-    console.log(
-      `
-      accountID --- ${accountID},
-      media_id --- ${media_id}
-      `,
-    );
+  addToFavorite = (accountID: string, media_id: number, sessionID: string) => {
     return this.http.post(
-      `${this.baseApiUrlTMDB}/${this.apiUrlAccountTMDB}/${accountID}/favorite?api_key=${this.apiKeyTMDB}`,
+      `${this.baseApiUrlTMDB}/${this.apiUrlAccountTMDB}/${accountID}/favorite?api_key=${this.apiKeyTMDB}&session_id=${sessionID}`,
       {
         media_type: "movie",
         media_id: media_id,
@@ -99,15 +93,9 @@ export class MoviesService {
     );
   };
 
-  addToWatchlist = (accountID: string, media_id: number) => {
-    console.log(
-      `
-      accountID --- ${accountID},
-      media_id --- ${media_id}
-      `,
-    );
+  addToWatchlist = (accountID: string, media_id: number, sessionID: string) => {
     return this.http.post(
-      `${this.baseApiUrlTMDB}/${this.apiUrlAccountTMDB}/${accountID}/watchlist?api_key=${this.apiKeyTMDB}`,
+      `${this.baseApiUrlTMDB}/${this.apiUrlAccountTMDB}/${accountID}/watchlist?api_key=${this.apiKeyTMDB}&session_id=${sessionID}`,
       {
         media_type: "movie",
         media_id: media_id,
@@ -123,9 +111,9 @@ export class MoviesService {
     );
   };
 
-  getFavoriteMovies = (accountID: string) => {
+  getFavoriteMovies = (accountID: string, sessionID: string) => {
     return this.http.get<any>(
-      `${this.baseApiUrlTMDB}/account/${accountID}/${this.apiUrlFavoriteMoviesTMDB}?api_key=${this.apiKeyTMDB}`,
+      `${this.baseApiUrlTMDB}/account/${accountID}/${this.apiUrlFavoriteMoviesTMDB}?api_key=${this.apiKeyTMDB}&session_id=${sessionID}`,
       {
         headers: {
           accept: "application/json",
@@ -134,9 +122,9 @@ export class MoviesService {
       },
     );
   };
-  getWatchlistMovies = (accountID: string) => {
+  getWatchlistMovies = (accountID: string, sessionID: string) => {
     return this.http.get<any>(
-      `${this.baseApiUrlTMDB}/account/${accountID}/${this.apiUrlWatchlistMoviesTMDB}?api_key=${this.apiKeyTMDB}`,
+      `${this.baseApiUrlTMDB}/account/${accountID}/${this.apiUrlWatchlistMoviesTMDB}?api_key=${this.apiKeyTMDB}&session_id=${sessionID}`,
       {
         headers: {
           accept: "application/json",
@@ -158,9 +146,13 @@ export class MoviesService {
     );
   };
 
-  clearFavoriteList = (accountID: string, media_id: number) => {
+  clearFavoriteList = (
+    accountID: string,
+    media_id: number,
+    sessionID: string,
+  ) => {
     return this.http.post(
-      `${this.baseApiUrlTMDB}/${this.apiUrlAccountTMDB}/${accountID}/favorite?api_key=${this.apiKeyTMDB}`,
+      `${this.baseApiUrlTMDB}/${this.apiUrlAccountTMDB}/${accountID}/favorite?api_key=${this.apiKeyTMDB}&session_id=${sessionID}`,
       {
         media_type: "movie",
         media_id: media_id,
@@ -176,9 +168,9 @@ export class MoviesService {
     );
   };
 
-  clearWatchlist = (accountID: string, media_id: number) => {
+  clearWatchlist = (accountID: string, media_id: number, sessionID: string) => {
     return this.http.post(
-      `${this.baseApiUrlTMDB}/${this.apiUrlAccountTMDB}/${accountID}/watchlist?api_key=${this.apiKeyTMDB}`,
+      `${this.baseApiUrlTMDB}/${this.apiUrlAccountTMDB}/${accountID}/watchlist?api_key=${this.apiKeyTMDB}&session_id=${sessionID}`,
       {
         media_type: "movie",
         media_id: media_id,

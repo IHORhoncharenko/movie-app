@@ -81,6 +81,12 @@ export const MovieReducer = createReducer(
       genresMovie: genresMovie.genres,
     };
   }),
+  on(storeActions.deleteSearchMoviesSuccess, (state, { searchMovie }) => {
+    return {
+      ...state,
+      searchMovie: searchMovie,
+    };
+  }),
   on(storeActions.loadMoviesFailure, (state, { error }) => {
     return {
       ...state,

@@ -60,6 +60,7 @@ export const addWatchListMovies = createAction(
   "[Movie] Adding movie to watchlist",
   props<{
     accountID: string;
+    sessionID: string;
     media_id: number;
   }>(),
 );
@@ -70,6 +71,7 @@ export const loadWatchListMovies = createAction(
   "[Movie] Download the list of movies to watch",
   props<{
     accountID: any | null;
+    sessionID: any | null;
   }>(),
 );
 export const loadWatchListMoviesSuccess = createAction(
@@ -82,6 +84,7 @@ export const removeMoviesFromWatchList = createAction(
   "[Movie] Remove the list of movies to watch",
   props<{
     accountID: any | null;
+    sessionID: any | null;
     mediaID: any | null;
   }>(),
 );
@@ -90,6 +93,7 @@ export const addFavoriteListMovies = createAction(
   "[Movie] Adding movie to favorites list",
   props<{
     accountID: string;
+    sessionID: string;
     media_id: number;
   }>(),
 );
@@ -100,6 +104,7 @@ export const loadFavoriteListMovies = createAction(
   "[Movie] Downloading movies from the favorites list",
   props<{
     accountID: any | null;
+    sessionID: any | null;
   }>(),
 );
 export const loadFavoriteListMoviesSuccess = createAction(
@@ -112,6 +117,7 @@ export const removeMoviesFromFavoriteList = createAction(
   "[Movie] Remove movies from the favorites list",
   props<{
     accountID: any | null;
+    sessionID: any | null;
     mediaID: any | null;
   }>(),
 );
@@ -126,6 +132,14 @@ export const addSearchMoviesSuccess = createAction(
   "[Movie] Adding search movie Success",
   props<{
     searchMovie: string;
+  }>(),
+);
+export const deleteSearchMovies = createAction("[Movie] Delete search movie");
+
+export const deleteSearchMoviesSuccess = createAction(
+  "[Movie] Delete search movie",
+  props<{
+    searchMovie: null;
   }>(),
 );
 
