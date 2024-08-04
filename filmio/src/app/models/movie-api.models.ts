@@ -1,5 +1,5 @@
+import { MovieDatesApi } from "./movie-dates-api.models";
 import { Movie } from "./movie.models";
-import { MovieDatesApi } from "./movieDatesApi.models";
 
 export interface MovieApi {
   dates?: MovieDatesApi;

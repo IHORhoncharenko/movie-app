@@ -4,12 +4,15 @@
   [size]="'small'"
   label="clear"
 />
-@if (mesLoadingStatus) {
-  <p>Loading...</p>
+@if (watchlistMovies) {
+  <div class="movie-list">
+    @for (movie of watchlistMovies; track movie.id) {
+      <app-movie-card [movieData]="movie"></app-movie-card>
+    }
+  </div>
 }
 
-<div class="movie-list">
-  @for (movie of watchlistMovies; track movie.id) {
-    <app-movie-card [movieData]="movie"></app-movie-card>
-  }
-</div>
+@if (!watchlistMovies && isShowPopupAutorization) {
+  <p>Loading...</p>
+  <app-login-popup></app-login-popup>
+}

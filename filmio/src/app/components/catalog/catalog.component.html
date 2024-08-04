@@ -24,4 +24,20 @@
       </div>
     </ng-template>
   </ng-template>
+  <form
+    role="search"
+    class="form"
+    [formGroup]="searchRow"
+    (ngSubmit)="onSubmit()"
+  >
+    <input
+      placeholder="Search movie by name..."
+      formControlName="search"
+      aria-label="serch"
+      type="search"
+      pInputText
+      size="25"
+      id="search-row"
+    />
+  </form>
 </p-menubar>

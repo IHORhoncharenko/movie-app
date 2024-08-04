@@ -1,54 +1,73 @@
 import { Component, OnInit } from "@angular/core";
+import { Store } from "@ngrx/store";
 import { ButtonModule } from "primeng/button";
 import { MessagesModule } from "primeng/messages";
-import { Subscription, catchError, forkJoin, tap } from "rxjs";
+import { Subscription, filter, map, mergeMap, switchMap, tap } from "rxjs";
+import { LoginPopupComponent } from "../../components/login-popup/login-popup/login-popup.component";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
-import { User } from "../../models/user.models";
-import { MoviesService } from "../../services/movies/movies.service";
-import { AuthUserService } from "../../services/users/authUser.service.service";
+import { Movie } from "../../models/movie.models";
+import {
+  loadFavoriteListMovies,
+  removeMoviesFromFavoriteList,
+} from "../../store/movie-store/actions";
+import { selectFavoriteMovies } from "../../store/movie-store/selectors";
+import {
+  selectAccountId,
+  selectSessionId,
+} from "../../store/user-store/user-selectors";
 
 @Component({
   selector: "app-movie-favorite-list-page",
   standalone: true,
-  imports: [ButtonModule, MovieCardComponent, MessagesModule],
+  imports: [
+    ButtonModule,
+    MovieCardComponent,
+    MessagesModule,
+    LoginPopupComponent,
+  ],
   templateUrl: "./movie-favorite-list-page.component.html",
   styleUrls: ["./movie-favorite-list-page.component.css"],
 })
 export class MovieFavoriteListPageComponent implements OnInit {
-  public favoritesMovies: any;
+  public favoriteMovies: Movie[] | null | undefined;
   public favoritesMoviesIds: number[] = [];
-  public mesLoadingStatus = false;
-  private userData: User | undefined | void;
+  public isShowPopupAutorization: boolean | undefined;
   private subscription = new Subscription();
+  private accountID: string | null | undefined;
+  private sessionID: string | null | undefined;
 
-  constructor(
-    private movieService: MoviesService,
-    private authUserService: AuthUserService,
-  ) {}
+  constructor(private store: Store) {}
 
   ngOnInit() {
-    this.userData = this.authUserService.getUserDataTMDB();
+    this.store
+      .select(selectAccountId)
+      .pipe(
+        filter((accountID) => accountID !== null && accountID !== undefined),
+        switchMap((accountID) => {
+          this.accountID = accountID;
+          return this.store.select(selectSessionId);
+        }),
+        tap((sessionID) => {
+          this.sessionID = sessionID;
+        }),
+        mergeMap(() => {
+          this.store.dispatch(
+            loadFavoriteListMovies({
+              accountID: this.accountID,
+              sessionID: this.sessionID,
+            }),
+          );
+          return this.store.select(selectFavoriteMovies);
+        }),
+        filter((movies) => movies !== null && movies !== undefined),
+        tap((movies) => {
+          this.favoriteMovies = movies;
+        }),
+      )
+      .subscribe();
 
-    if (this.userData) {
-      this.mesLoadingStatus = true;
-
-      this.movieService
-        .getFavoriteMovies(this.userData.accountId)
-        .pipe(
-          catchError((error) => {
-            alert(`This is very bad bro...${error}`);
-            return error;
-          }),
-          tap(() => {
-            this.mesLoadingStatus = false;
-          }),
-        )
-        .subscribe((data) => {
-          this.mesLoadingStatus = false;
-          this.favoritesMovies = data;
-          this.favoritesMovies = this.favoritesMovies.results;
-          console.log(this.favoritesMovies);
-        });
+    if (!this.accountID) {
+      this.isShowPopupAutorization = true;
     }
   }
 
@@ -60,24 +79,34 @@ export class MovieFavoriteListPageComponent implements OnInit {
   }
 
   clearMoviesList = () => {
-    this.favoritesMoviesIds = this.favoritesMovies.map((m: any) => m.id);
-    let observables: any = [];
-
-    if (this.userData) {
-      observables = this.favoritesMoviesIds.map((id: any) => {
-        if (this.userData) {
-          return this.movieService.clearMovieFromFavoriteList(
-            this.userData.accountId,
-            id,
-          );
-        } else {
-          return undefined;
-        }
-      });
-
-      forkJoin(observables).subscribe((data) => {
-        this.favoritesMovies = [];
-        console.log(data);
+    if (this.favoriteMovies) {
+      this.favoritesMoviesIds = this.favoriteMovies.map((m: any) => m.id);
+      this.favoritesMoviesIds.map((movieId) => {
+        this.store
+          .select(selectAccountId)
+          .pipe(
+            filter(
+              (accountID) => accountID !== null && accountID !== undefined,
+            ),
+            switchMap((accountID) => {
+              this.accountID = accountID;
+              return this.store.select(selectSessionId);
+            }),
+            filter(
+              (sessionID) => sessionID !== null && sessionID !== undefined,
+            ),
+            map((sessionID) => {
+              this.sessionID = sessionID;
+              return this.store.dispatch(
+                removeMoviesFromFavoriteList({
+                  accountID: this.accountID,
+                  sessionID: this.sessionID,
+                  mediaID: movieId,
+                }),
+              );
+            }),
+          )
+          .subscribe();
       });
     }
   };

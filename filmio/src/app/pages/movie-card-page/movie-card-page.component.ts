@@ -1,19 +1,31 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import { RouterLink } from "@angular/router";
+import { Store } from "@ngrx/store";
 import { BadgeModule } from "primeng/badge";
 import { ButtonModule } from "primeng/button";
 import { RatingModule } from "primeng/rating";
 import { TabViewModule } from "primeng/tabview";
 import { ToggleButtonModule } from "primeng/togglebutton";
-import { Subscription } from "rxjs";
+import { Subscription, filter, switchMap, tap } from "rxjs";
+import { LoginPopupComponent } from "../../components/login-popup/login-popup/login-popup.component";
 import { ReviewComponent } from "../../components/review/review.component";
+import { environment } from "../../environments/environment";
 import { Movie } from "../../models/movie.models";
-import { User } from "../../models/user.models";
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
 import { SafeUrlPipe } from "../../pipes/safeUrl/safeUrl.pipe";
-import { MoviesService } from "../../services/movies/movies.service";
-import { AuthUserService } from "../../services/users/authUser.service.service";
+import {
+  addFavoriteListMovies,
+  addWatchListMovies,
+} from "../../store/movie-store/actions";
+import {
+  selectReviewsMovie,
+  selectSelectedMovie,
+} from "../../store/movie-store/selectors";
+import {
+  selectAccountId,
+  selectSessionId,
+} from "../../store/user-store/user-selectors";
 
 @Component({
   selector: "app-movie-card-page",
@@ -31,63 +43,68 @@ import { AuthUserService } from "../../services/users/authUser.service.service";
     ButtonModule,
     SafeUrlPipe,
     ReviewComponent,
+    LoginPopupComponent,
   ],
   templateUrl: "./movie-card-page.component.html",
   styleUrls: ["./movie-card-page.component.css"],
 })
 export class MovieCardPageComponent implements OnInit, OnDestroy {
-  public movieDetailseData: Movie | undefined;
+  public movieDetailseData: Movie | undefined | null;
   public value: number | undefined;
   public isShowrating = false;
-  public isShowYoutube = false;
   public correctUrlPoster: string | undefined;
-  public allMovies: Movie[] | undefined;
   public isFamilyFriendly: boolean | undefined;
-  public urlPoster: string | undefined;
-  public reviewsMovie: any;
-  private subscription: Subscription = new Subscription();
-  private userData: User | undefined | void;
+  public reviewsMovie: any | null | undefined;
+  public isAutorization: boolean | undefined;
+  public isShowPopupAutorization: boolean | undefined;
+  private urlPoster = environment.apiUrlPosterTMDB;
+  private accountID: string | null | undefined;
+  private sessionID: string | null | undefined;
+  private movieId: number | null | undefined;
+  private subscriptionSelectMovie: Subscription = new Subscription();
+  private subscriptionReviewsMovie: Subscription = new Subscription();
 
-  constructor(
-    private route: ActivatedRoute,
-    private movieService: MoviesService,
-    private authUserService: AuthUserService,
-  ) {}
+  constructor(private store: Store) {}
 
   ngOnInit() {
-    this.subscription = this.route.params.subscribe((params) => {
-      const movieId = Number(params["id"]);
-
-      this.movieService.getMovieById(movieId).subscribe((data) => {
-        this.movieDetailseData = data;
-
-        if (this.movieDetailseData) {
-          this.value = Math.round(Number(this.movieDetailseData.vote_average));
-
-          this.urlPoster = `https://media.themoviedb.org/t/p/w220_and_h330_face${this.movieDetailseData.poster_path}`;
-
-          if (this.movieDetailseData.adult === false) {
-            this.isFamilyFriendly = true;
-          } else {
-            this.isFamilyFriendly = false;
-          }
-
-          this.movieService
-            .getReviewsAboutMovie(this.movieDetailseData.id)
-            .subscribe((data) => {
-              this.reviewsMovie = data;
-              this.reviewsMovie = this.reviewsMovie.results;
-              console.log(JSON.stringify(this.reviewsMovie));
-            });
-        }
+    this.store
+      .select(selectAccountId)
+      .pipe(
+        filter((accountID) => accountID !== null && accountID !== undefined),
+        switchMap((accountID) => {
+          this.accountID = accountID;
+          return this.store.select(selectSessionId);
+        }),
+        filter((sessionID) => sessionID !== null && sessionID !== undefined),
+        tap((sessionID) => {
+          this.sessionID = sessionID;
+        }),
+      )
+      .subscribe(() => {
+        this.isAutorization = true;
       });
-    });
-  }
 
-  ngOnDestroy() {
-    if (this.subscription) {
-      console.log(`Відписка від Observable`);
-      this.subscription.unsubscribe();
+    this.subscriptionSelectMovie = this.store
+      .select(selectSelectedMovie)
+      .subscribe((movie) => {
+        this.movieDetailseData = movie;
+      });
+
+    if (this.movieDetailseData) {
+      this.value = Math.round(Number(this.movieDetailseData.vote_average));
+      this.correctUrlPoster = `${this.urlPoster}${this.movieDetailseData.poster_path}`;
+
+      if (this.movieDetailseData.adult === false) {
+        this.isFamilyFriendly = true;
+      } else {
+        this.isFamilyFriendly = false;
+      }
+
+      this.subscriptionReviewsMovie = this.store
+        .select(selectReviewsMovie)
+        .subscribe((data) => {
+          this.reviewsMovie = data;
+        });
     }
   }
 
@@ -99,39 +116,43 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
     this.isShowrating = false;
   };
 
-  showPlayerYouTube = () => {
-    this.isShowYoutube = true;
-  };
-
   choosingFavoriteMovie = (movieId: number) => {
-    this.userData = this.authUserService.getUserDataTMDB();
-
-    if (this.userData && this.movieDetailseData) {
-      console.log(`
-        userData --- ${JSON.stringify(this.userData)}
-        movie --- ${JSON.stringify(this.movieDetailseData)}
-        `);
-      this.movieService
-        .addToFavorite(this.userData.accountId, movieId)
-        .subscribe((response) => {
-          console.log(response);
-        });
+    if (!this.accountID) {
+      this.isAutorization = false;
+      this.isShowPopupAutorization = true;
+    }
+    if (this.movieDetailseData && this.accountID && this.sessionID) {
+      this.store.dispatch(
+        addFavoriteListMovies({
+          accountID: this.accountID,
+          sessionID: this.sessionID,
+          media_id: movieId,
+        }),
+      );
     }
   };
 
   choosingWatchlistMovie = (movieId: number) => {
-    this.userData = this.authUserService.getUserDataTMDB();
-
-    if (this.userData && this.movieDetailseData) {
-      console.log(`
-        userData --- ${JSON.stringify(this.userData)}
-        movie --- ${JSON.stringify(this.movieDetailseData)}
-        `);
-      this.movieService
-        .addToWatchlist(this.userData.accountId, movieId)
-        .subscribe((response) => {
-          console.log(response);
-        });
+    if (!this.accountID) {
+      this.isAutorization = false;
+      this.isShowPopupAutorization = true;
+    }
+    if (this.movieDetailseData && this.accountID && this.sessionID) {
+      this.store.dispatch(
+        addWatchListMovies({
+          accountID: this.accountID,
+          sessionID: this.sessionID,
+          media_id: movieId,
+        }),
+      );
     }
   };
+
+  ngOnDestroy() {
+    if (this.subscriptionSelectMovie || this.subscriptionReviewsMovie) {
+      console.log(`Відписка від Observable`);
+      this.subscriptionSelectMovie.unsubscribe();
+      this.subscriptionReviewsMovie.unsubscribe();
+    }
+  }
 }
