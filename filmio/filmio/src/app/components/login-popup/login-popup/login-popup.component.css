@@ -1,0 +1,15 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+
+}
+
+label {
+  margin-right: 1em;
+}
+
+.content-action {
+  display: flex;
+  justify-content: space-evenly;
+}

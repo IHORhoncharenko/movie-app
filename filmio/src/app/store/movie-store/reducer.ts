@@ -87,6 +87,13 @@ export const MovieReducer = createReducer(
       searchMovie: searchMovie,
     };
   }),
+  on(storeActions.addSortingMovie, (state, { sortingMovie }) => {
+    return {
+      ...state,
+      sortingMovie: sortingMovie,
+    };
+  }),
+
   on(storeActions.loadMoviesFailure, (state, { error }) => {
     return {
       ...state,

@@ -7,6 +7,7 @@ import { MenuItem } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { InputTextModule } from "primeng/inputtext";
 import { MenubarModule } from "primeng/menubar";
+import { ClearObservable } from "../../abstract/clear-observers";
 import { addSearchMovies } from "../../store/movie-store/actions";
 import { LoginPopupComponent } from "../login-popup/login-popup/login-popup.component";
 import { MovieCardComponent } from "../movie-card/movie-card.component";
@@ -27,14 +28,16 @@ import { MovieCardComponent } from "../movie-card/movie-card.component";
   templateUrl: "./catalog.component.html",
   styleUrls: ["./catalog.component.css"],
 })
-export class CatalogComponent implements OnInit {
+export class CatalogComponent extends ClearObservable implements OnInit {
   public items: MenuItem[] | undefined;
   public searchRow!: FormGroup;
 
   constructor(
     private store: Store,
     private router: Router,
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.searchRow = new FormGroup({

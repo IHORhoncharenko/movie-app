@@ -13,6 +13,7 @@ export interface MovieState {
   reviewsMovie?: MovieReviews | null;
   genresMovie?: any | null;
   searchMovie?: string | null;
+  sortingMovie?: any | null;
 }
 
 export const initialState: MovieState = {
@@ -27,4 +28,5 @@ export const initialState: MovieState = {
   reviewsMovie: null,
   genresMovie: null,
   searchMovie: null,
+  sortingMovie: null,
 };

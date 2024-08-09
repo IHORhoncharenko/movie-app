@@ -1,5 +1,13 @@
-<div class="movie-list">
-  @for (movie of upcomingMovies; track movie.id) {
-    <app-movie-card [movieData]="movie"></app-movie-card>
-  }
-</div>
+@if (!isUseSortElements) {
+  <div class="movie-list">
+    @for (movie of upcomingMovies; track movie.id) {
+      <app-movie-card [movieData]="movie"></app-movie-card>
+    }
+  </div>
+} @else {
+  <div class="movie-list">
+    @for (movie of sortingMovies; track movie.id) {
+      <app-movie-card [movieData]="movie"></app-movie-card>
+    }
+  </div>
+}

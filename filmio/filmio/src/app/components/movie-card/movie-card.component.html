@@ -1,0 +1,37 @@
+<p-card>
+  <ng-template pTemplate="header">
+    <img
+      (click)="openMovieCard(); selectMovie()"
+      fetchpriority="high"
+      decoding="async"
+      alt="movieData.title"
+      [src]="correctUrlPoster"
+    />
+    <hgroup>
+      <h2>{{ movieData.title }}</h2>
+      <p>{{ movieData.release_date }}</p>
+    </hgroup>
+  </ng-template>
+
+  <div class="card__rating rating">
+    <p-rating
+      (mouseleave)="mouseover()"
+      (mouseenter)="mouseenter()"
+      stars="5"
+      [(ngModel)]="value"
+      [readonly]="true"
+      [cancel]="false"
+    />
+    @if (isShowRating) {
+      <p-badge class="rating__badge" [value]="movieData.vote_average" />
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="card__tags">
+      @for (genre of movieGenres; track movieData.id) {
+        <p-tag [value]="genre" />
+      }
+    </div>
+  </ng-template>
+</p-card>

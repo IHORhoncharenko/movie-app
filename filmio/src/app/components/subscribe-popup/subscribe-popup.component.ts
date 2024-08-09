@@ -17,7 +17,8 @@ import { InputTextModule } from "primeng/inputtext";
 import { MultiSelectModule } from "primeng/multiselect";
 import { RippleModule } from "primeng/ripple";
 import { ToastModule } from "primeng/toast";
-import { map } from "rxjs";
+import { map, takeUntil } from "rxjs";
+import { ClearObservable } from "../../abstract/clear-observers";
 import { selectGenresMovie } from "../../store/movie-store/selectors";
 import {
   deleteSubscribeDataUser,
@@ -45,7 +46,7 @@ import { selectUserDataSubscribe } from "../../store/user-store/user-selectors";
   styleUrls: ["./subscribe-popup.component.css"],
   providers: [MessageService],
 })
-export class SubscribePopupComponent implements OnInit {
+export class SubscribePopupComponent extends ClearObservable implements OnInit {
   public userSubscribe!: FormGroup;
   public userUnsubscribe!: FormGroup;
   public value: string | undefined;
@@ -58,7 +59,9 @@ export class SubscribePopupComponent implements OnInit {
   constructor(
     private store: Store,
     private messageService: MessageService,
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.userSubscribe = new FormGroup({
@@ -80,6 +83,7 @@ export class SubscribePopupComponent implements OnInit {
     this.store
       .select(selectGenresMovie)
       .pipe(
+        takeUntil(this.destroy$),
         map((movie) => {
           this.genres = movie;
         }),
@@ -89,6 +93,7 @@ export class SubscribePopupComponent implements OnInit {
     this.store
       .select(selectUserDataSubscribe)
       .pipe(
+        takeUntil(this.destroy$),
         map((data) => {
           if (data?.agree) {
             this.isShowUnsubscribe = true;

@@ -121,7 +121,6 @@ export const removeMoviesFromFavoriteList = createAction(
     mediaID: any | null;
   }>(),
 );
-
 export const addSearchMovies = createAction(
   "[Movie] Adding search movie",
   props<{
@@ -131,7 +130,7 @@ export const addSearchMovies = createAction(
 export const addSearchMoviesSuccess = createAction(
   "[Movie] Adding search movie Success",
   props<{
-    searchMovie: string;
+    searchMovie: string | null;
   }>(),
 );
 export const deleteSearchMovies = createAction("[Movie] Delete search movie");
@@ -140,6 +139,13 @@ export const deleteSearchMoviesSuccess = createAction(
   "[Movie] Delete search movie",
   props<{
     searchMovie: null;
+  }>(),
+);
+
+export const addSortingMovie = createAction(
+  "[Movie] Select sorting movie",
+  props<{
+    sortingMovie: any | null;
   }>(),
 );
 

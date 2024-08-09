@@ -1,0 +1,43 @@
+<p-dialog
+  header="Sign in"
+  [modal]="true"
+  [(visible)]="visible"
+  [style]="{ width: '25rem' }"
+>
+  <form [formGroup]="userAuthorization" (ngSubmit)="handleSubmit()">
+    <div class="content">
+      <div>
+        <label for="name" class="font-semibold w-6rem">name</label>
+        <input
+          formControlName="name"
+          pInputText
+          id="name"
+          class="flex-auto"
+          autocomplete="off"
+        />
+      </div>
+      <div>
+        <label for="password">password</label>
+        <input
+          formControlName="password"
+          pInputText
+          id="password"
+          type="password"
+        />
+      </div>
+      <div class="content-action">
+        <p-button
+          type="ngSubmit"
+          label="Ok"
+          (onClick)="visible = false"
+          [disabled]="!userAuthorization.valid"
+        />
+        <p-button
+          label="Cancel"
+          severity="secondary"
+          (onClick)="visible = false"
+        />
+      </div>
+    </div>
+  </form>
+</p-dialog>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { filter, switchMap, tap } from "rxjs";
+import { filter, switchMap, takeUntil, tap } from "rxjs";
+import { ClearObservable } from "../../abstract/clear-observers";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { Movie } from "../../models/movie.models";
 import {
@@ -15,18 +16,21 @@ import {
   styleUrls: ["./search-page.component.css"],
   imports: [MovieCardComponent],
 })
-export class SearchPageComponent implements OnInit {
+export class SearchPageComponent extends ClearObservable implements OnInit {
   public isSearch: boolean | undefined | null;
   public searchMovieName: string | undefined | null;
   public allMovies: Movie[] | undefined | null;
   public filteredMovies: Movie[] | undefined | null;
 
-  constructor(private store: Store) {}
+  constructor(private store: Store) {
+    super();
+  }
 
   ngOnInit() {
     this.store
       .select(selectSearchMovie)
       .pipe(
+        takeUntil(this.destroy$),
         filter((movieName) => movieName !== null && movieName !== undefined),
         tap((movieName) => {
           this.searchMovieName = movieName;
