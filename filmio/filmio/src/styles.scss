@@ -1,0 +1,11 @@
+@import "primeng/resources/themes/saga-blue/theme.css";
+@import "primeng/resources/primeng.css";
+// Обнулення стилів, але  поки не розкоментовувати так як прийдеться переписувати всі стилі Prime NG
+// @import "../src/assets/styles/reset.css"
+
+
+/* You can add global styles to this file, and also import other style files */
+
+li{
+  list-style: none;
+}

@@ -1,3 +1,6 @@
+.sort{
+  display: flex;
+}
 header{
   margin-bottom: 5px;
 }
@@ -9,5 +12,10 @@ footer {
     color: #777;
   }
 }
-
+.search-row{
+    display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      align-items: center;
+}
 

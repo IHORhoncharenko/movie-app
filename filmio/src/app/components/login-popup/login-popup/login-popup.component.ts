@@ -13,7 +13,8 @@ import { DialogModule } from "primeng/dialog";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { InputTextModule } from "primeng/inputtext";
 import { PasswordModule } from "primeng/password";
-import { concatMap, filter, tap } from "rxjs";
+import { concatMap, filter, takeUntil, tap } from "rxjs";
+import { ClearObservable } from "../../../abstract/clear-observers";
 import {
   loadRequestToken,
   loadUserAccountId,
@@ -43,7 +44,7 @@ import {
   templateUrl: "./login-popup.component.html",
   styleUrls: ["./login-popup.component.css"],
 })
-export class LoginPopupComponent implements OnInit {
+export class LoginPopupComponent extends ClearObservable implements OnInit {
   public value: string | undefined;
   public userAuthorization!: FormGroup;
   public visible: boolean = true;
@@ -51,7 +52,9 @@ export class LoginPopupComponent implements OnInit {
   private sessionID: string | null | undefined;
   private accountID: string | null | undefined;
 
-  constructor(private store: Store) {}
+  constructor(private store: Store) {
+    super();
+  }
 
   ngOnInit() {
     this.userAuthorization = new FormGroup({
@@ -69,6 +72,7 @@ export class LoginPopupComponent implements OnInit {
     this.store
       .select(selectRequestToken)
       .pipe(
+        takeUntil(this.destroy$),
         filter((requestToken) => {
           return requestToken !== null && requestToken !== undefined;
         }),

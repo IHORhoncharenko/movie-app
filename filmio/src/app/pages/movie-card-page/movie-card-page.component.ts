@@ -2,12 +2,15 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
 import { Store } from "@ngrx/store";
+import { Message } from "primeng/api";
 import { BadgeModule } from "primeng/badge";
 import { ButtonModule } from "primeng/button";
+import { MessagesModule } from "primeng/messages";
 import { RatingModule } from "primeng/rating";
 import { TabViewModule } from "primeng/tabview";
 import { ToggleButtonModule } from "primeng/togglebutton";
-import { Subscription, filter, switchMap, tap } from "rxjs";
+import { filter, switchMap, takeUntil, tap } from "rxjs";
+import { ClearObservable } from "../../abstract/clear-observers";
 import { LoginPopupComponent } from "../../components/login-popup/login-popup/login-popup.component";
 import { ReviewComponent } from "../../components/review/review.component";
 import { environment } from "../../environments/environment";
@@ -44,11 +47,15 @@ import {
     SafeUrlPipe,
     ReviewComponent,
     LoginPopupComponent,
+    MessagesModule,
   ],
   templateUrl: "./movie-card-page.component.html",
   styleUrls: ["./movie-card-page.component.css"],
 })
-export class MovieCardPageComponent implements OnInit, OnDestroy {
+export class MovieCardPageComponent
+  extends ClearObservable
+  implements OnInit, OnDestroy
+{
   public movieDetailseData: Movie | undefined | null;
   public value: number | undefined;
   public isShowrating = false;
@@ -57,19 +64,30 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
   public reviewsMovie: any | null | undefined;
   public isAutorization: boolean | undefined;
   public isShowPopupAutorization: boolean | undefined;
+  public messages: Message[] | undefined;
+  public successAddin = false;
   private urlPoster = environment.apiUrlPosterTMDB;
   private accountID: string | null | undefined;
   private sessionID: string | null | undefined;
-  private movieId: number | null | undefined;
-  private subscriptionSelectMovie: Subscription = new Subscription();
-  private subscriptionReviewsMovie: Subscription = new Subscription();
 
-  constructor(private store: Store) {}
+  constructor(private store: Store) {
+    super();
+  }
 
   ngOnInit() {
+    this.messages = [
+      { severity: "info", detail: "Info Message" },
+      { severity: "success", detail: "Success Message" },
+      { severity: "warn", detail: "Warning Message" },
+      { severity: "error", detail: "Error Message" },
+      { severity: "secondary", detail: "Secondary Message" },
+      { severity: "contrast", detail: "Contrast Message" },
+    ];
+
     this.store
       .select(selectAccountId)
       .pipe(
+        takeUntil(this.destroy$),
         filter((accountID) => accountID !== null && accountID !== undefined),
         switchMap((accountID) => {
           this.accountID = accountID;
@@ -84,8 +102,9 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
         this.isAutorization = true;
       });
 
-    this.subscriptionSelectMovie = this.store
+    this.store
       .select(selectSelectedMovie)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((movie) => {
         this.movieDetailseData = movie;
       });
@@ -100,8 +119,9 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
         this.isFamilyFriendly = false;
       }
 
-      this.subscriptionReviewsMovie = this.store
+      this.store
         .select(selectReviewsMovie)
+        .pipe(takeUntil(this.destroy$))
         .subscribe((data) => {
           this.reviewsMovie = data;
         });
@@ -122,6 +142,7 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
       this.isShowPopupAutorization = true;
     }
     if (this.movieDetailseData && this.accountID && this.sessionID) {
+      this.successAddin = true;
       this.store.dispatch(
         addFavoriteListMovies({
           accountID: this.accountID,
@@ -138,6 +159,7 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
       this.isShowPopupAutorization = true;
     }
     if (this.movieDetailseData && this.accountID && this.sessionID) {
+      this.successAddin = true;
       this.store.dispatch(
         addWatchListMovies({
           accountID: this.accountID,
@@ -147,12 +169,4 @@ export class MovieCardPageComponent implements OnInit, OnDestroy {
       );
     }
   };
-
-  ngOnDestroy() {
-    if (this.subscriptionSelectMovie || this.subscriptionReviewsMovie) {
-      console.log(`Відписка від Observable`);
-      this.subscriptionSelectMovie.unsubscribe();
-      this.subscriptionReviewsMovie.unsubscribe();
-    }
-  }
 }

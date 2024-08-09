@@ -48,3 +48,7 @@ export const selectSearchMovie = createSelector(
   selectState,
   (state) => state.searchMovie,
 );
+export const selectSortingMethod = createSelector(
+  selectState,
+  (state) => state.sortingMovie,
+);

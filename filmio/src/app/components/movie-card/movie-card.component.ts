@@ -8,7 +8,8 @@ import { CardModule } from "primeng/card";
 import { DialogModule } from "primeng/dialog";
 import { RatingModule } from "primeng/rating";
 import { TagModule } from "primeng/tag";
-import { filter, map } from "rxjs";
+import { filter, map, takeUntil } from "rxjs";
+import { ClearObservable } from "../../abstract/clear-observers";
 import { environment } from "../../environments/environment";
 import { ConvertingMinutesToHoursPipe } from "../../pipes/convertingMinutesToHours/convertingMinutesToHours.pipe";
 import { loadSelectedMovie } from "../../store/movie-store/actions";
@@ -31,7 +32,7 @@ import { selectGenresMovie } from "../../store/movie-store/selectors";
     TagModule,
   ],
 })
-export class MovieCardComponent {
+export class MovieCardComponent extends ClearObservable {
   @Input()
   movieData: any = {};
 
@@ -47,10 +48,12 @@ export class MovieCardComponent {
   constructor(
     private router: Router,
     private store: Store,
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
-    this.value = Math.round(Number(this.movieData.vote_average / 2));
+    this.value = Math.round(this.movieData.vote_average / 2);
     this.correctUrlPoster = `${this.urlPoster}${this.movieData.poster_path}`;
 
     if (this.movieData.adult === false) {
@@ -62,6 +65,7 @@ export class MovieCardComponent {
     this.store
       .select(selectGenresMovie)
       .pipe(
+        takeUntil(this.destroy$),
         filter((genres) => genres !== null && genres !== undefined),
         map((genres) => {
           genres.map((genreApi: any) => {

@@ -4,6 +4,7 @@ import { Store } from "@ngrx/store";
 import { CatalogComponent } from "./components/catalog/catalog.component";
 import { LoginPopupComponent } from "./components/login-popup/login-popup/login-popup.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
+import { SortComponent } from "./components/sort/sort.component";
 import { SubscribePopupComponent } from "./components/subscribe-popup/subscribe-popup.component";
 import { SearchPageComponent } from "./pages/search-page/search-page.component";
 import { loadGenresForMovies } from "./store/movie-store/actions";
@@ -21,6 +22,7 @@ import { loadGenresForMovies } from "./store/movie-store/actions";
     LoginPopupComponent,
     SubscribePopupComponent,
     SearchPageComponent,
+    SortComponent,
   ],
 })
 export class AppComponent implements OnInit {
