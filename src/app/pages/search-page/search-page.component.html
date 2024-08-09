@@ -1,0 +1,11 @@
+@if (isSearch && filteredMovies) {
+  <div class="movie-list">
+    @for (movie of filteredMovies; track movie.id) {
+      <app-movie-card [movieData]="movie"></app-movie-card>
+    }
+  </div>
+}
+
+@if (isSearch && filteredMovies?.length === 0) {
+  <strong>Sorry, unfortunately we don't have this movie</strong>
+}

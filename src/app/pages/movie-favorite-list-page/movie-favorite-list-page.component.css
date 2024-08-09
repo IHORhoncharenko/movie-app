@@ -1,0 +1,10 @@
+.btn {
+  margin: 0 0 1em 1em;
+  display: inline-block;
+}
+
+.movie-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}

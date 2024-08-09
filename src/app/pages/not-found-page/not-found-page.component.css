@@ -1,0 +1,13 @@
+.wrapp {
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+
+  img {
+    width: 75%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: contain;
+
+  }
+}

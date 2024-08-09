@@ -1,0 +1,50 @@
+<p-sidebar [(visible)]="isSidebarVisible">
+  <ng-template pTemplate="header">
+    <div class="header">
+      <p-avatar
+        fetchpriority="high"
+        decoding="async"
+        size="xlarge"
+        image="../../../assets/logo.webp"
+      />
+      <h1>Films of our youth...</h1>
+    </div>
+  </ng-template>
+
+  <div class="container">
+    <p-button
+      size="large"
+      (click)="isSidebarVisible = false"
+      [routerLink]="['/now-plaing']"
+      routerLinkActive="page-active"
+    >
+      Now Plaing
+    </p-button>
+    <p-button
+      size="large"
+      (click)="isSidebarVisible = false"
+      [routerLink]="['/popular']"
+      routerLinkActive="page-active"
+    >
+      Popular
+    </p-button>
+    <p-button
+      size="large"
+      (click)="isSidebarVisible = false"
+      [routerLink]="['/top-rate']"
+      routerLinkActive="page-active"
+    >
+      Top rate
+    </p-button>
+    <p-button
+      size="large"
+      (click)="isSidebarVisible = false"
+      [routerLink]="['/upcoming']"
+      routerLinkActive="page-active"
+    >
+      Upcoming
+    </p-button>
+  </div>
+</p-sidebar>
+
+<p-button class="btn" (click)="isSidebarVisible = true" icon="pi pi-plus" />

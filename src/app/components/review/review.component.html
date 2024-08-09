@@ -1,0 +1,24 @@
+<article>
+  <img [src]="correctUrlPoster" alt="" />
+  <div class="content">
+    @if (userName) {
+      <h2>{{ movieData.author_details.name }}</h2>
+    } @else {
+      <h2>No name</h2>
+    }
+    <div class="details">
+      <p-rating
+        stars="10"
+        [(ngModel)]="value"
+        [readonly]="true"
+        [cancel]="false"
+      />
+      <time [attr.datetime]="movieData.created_at">{{
+        movieData.created_at | date: "medium"
+      }}</time>
+    </div>
+    <p>
+      {{ movieData.content }}
+    </p>
+  </div>
+</article>

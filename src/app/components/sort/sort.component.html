@@ -1,0 +1,11 @@
+<div class="sort">
+  <form [formGroup]="sortMovie">
+    <p-dropdown
+      (onChange)="onSubmit()"
+      formControlName="selectedSortMethod"
+      [options]="sorting"
+      optionLabel="selectedSort"
+      placeholder="sorting by"
+    />
+  </form>
+</div>

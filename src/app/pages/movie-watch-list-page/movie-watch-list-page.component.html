@@ -1,0 +1,27 @@
+<p-button
+  (onClick)="clearMoviesList()"
+  class="btn"
+  [size]="'small'"
+  label="clear"
+/>
+
+@if (!isUseSortElements && watchlistMovies) {
+  <div class="movie-list">
+    @for (movie of watchlistMovies; track movie.id) {
+      <app-movie-card [movieData]="movie"></app-movie-card>
+    }
+  </div>
+}
+
+@if (isUseSortElements && watchlistMovies) {
+  <div class="movie-list">
+    @for (movie of sortingMovies; track movie.id) {
+      <app-movie-card [movieData]="movie"></app-movie-card>
+    }
+  </div>
+}
+
+@if (!watchlistMovies && isShowPopupAutorization) {
+  <p>Loading...</p>
+  <app-login-popup></app-login-popup>
+}

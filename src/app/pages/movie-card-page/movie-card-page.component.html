@@ -1,0 +1,73 @@
+@if (movieDetailseData) {
+  <p-tabView>
+    <p-tabPanel header="Information">
+      <div class="header-card">
+        <h2>{{ movieDetailseData.title }}</h2>
+        <div class="header-card__icons icons-group">
+          <button
+            (click)="choosingFavoriteMovie(movieDetailseData.id)"
+            class="icons-group__favorite--active"
+          ></button>
+          <button
+            (click)="choosingWatchlistMovie(movieDetailseData.id)"
+            class="icons-group__watch-list--active"
+          ></button>
+        </div>
+      </div>
+
+      <div class="poster">
+        <img [src]="correctUrlPoster" [alt]="movieDetailseData.title" />
+      </div>
+
+      <ul>
+        <li>{{ movieDetailseData.release_date }}</li>
+        <li>
+          <p-rating
+            (mouseleave)="mouseover()"
+            (mouseenter)="mouseenter()"
+            stars="10"
+            [(ngModel)]="value"
+            [readonly]="true"
+            [cancel]="false"
+          ></p-rating>
+
+          @if (isShowrating) {
+            <p-badge
+              class="badge-rating"
+              [value]="movieDetailseData.vote_average"
+            ></p-badge>
+          }
+        </li>
+      </ul>
+
+      <p>{{ movieDetailseData.overview }}</p>
+    </p-tabPanel>
+    <p-tabPanel header="Details">
+      <dl>
+        <dt>Original title</dt>
+        <dd>{{ movieDetailseData.original_title }}</dd>
+        <dt>Recommended age for watching</dt>
+        @if (isFamilyFriendly) {
+          <dd>0+</dd>
+        } @else {
+          <dd>18+</dd>
+        }
+        <dt>ID</dt>
+        <dd>{{ movieDetailseData.id }}</dd>
+        <dt>Language</dt>
+        <dd>{{ movieDetailseData.original_language }}</dd>
+        <dt>Overview</dt>
+        <dd>{{ movieDetailseData.overview }}</dd>
+      </dl>
+    </p-tabPanel>
+    <p-tabPanel header="Reviews">
+      @for (reviews of reviewsMovie; track $index) {
+        <app-review [movieData]="reviews"></app-review>
+      }
+    </p-tabPanel>
+  </p-tabView>
+
+  @if (!isAutorization && isShowPopupAutorization) {
+    <app-login-popup></app-login-popup>
+  }
+}
